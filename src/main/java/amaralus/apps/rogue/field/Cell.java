@@ -12,6 +12,7 @@ public class Cell {
     private Cell leftCell;
 
     private GraphicsComponent graphicsComponent;
+    private boolean canWalk = false;
 
     public Cell() {
         graphicsComponent = new GraphicsComponent(EntitySymbol.SPACE, Palette.BLACK_BLUE);
@@ -51,5 +52,13 @@ public class Cell {
 
     public GraphicsComponent getGraphicsComponent() {
         return graphicsComponent;
+    }
+
+    public void setCanWalk(boolean canWalk) {
+        this.canWalk = canWalk;
+    }
+
+    public boolean isCanWalk() {
+        return canWalk;
     }
 }

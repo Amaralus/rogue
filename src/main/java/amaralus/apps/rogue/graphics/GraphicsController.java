@@ -9,8 +9,6 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-import static amaralus.apps.rogue.graphics.Palette.BLACK_BLUE;
-
 public class GraphicsController {
 
     private final GameController gameController;
@@ -27,8 +25,8 @@ public class GraphicsController {
         for (List<Cell> cellLine : gameController.getGameField().getCellLines()) {
             StringBuilder builder = new StringBuilder();
 
-            // текущий цвет для определения новых цветов (по умолчанию чёрный)
-            Color currentColor = BLACK_BLUE;
+            // текущий цвет для определения новых цветов
+            Color currentColor = cellLine.get(0).getGraphicsComponent().getColor();
             for (Cell aCellLine : cellLine) {
                 GraphicsComponent grComponent = aCellLine.getGraphicsComponent();
 
