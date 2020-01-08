@@ -1,7 +1,7 @@
 package amaralus.apps.rogue;
 
 import amaralus.apps.rogue.field.GameField;
-import amaralus.apps.rogue.graphics.GraphicController;
+import amaralus.apps.rogue.graphics.GraphicsController;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public class GameController {
 
     private final MainApplication application;
-    private final GraphicController graphicController;
+    private final GraphicsController graphicsController;
 
     private boolean handleEvents = true;
 
@@ -18,12 +18,12 @@ public class GameController {
 
     public GameController(MainApplication application) {
         this.application = application;
-        graphicController = new GraphicController(this);
+        graphicsController = new GraphicsController(this);
 
         application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
 
         gameField = new GameField(120, 30);
-        graphicController.draw();
+        graphicsController.draw();
     }
 
     public void handleKeyEvent(KeyCode key) {

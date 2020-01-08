@@ -1,6 +1,8 @@
 package amaralus.apps.rogue.field;
 
 import amaralus.apps.rogue.graphics.EntitySymbol;
+import amaralus.apps.rogue.graphics.GraphicsComponent;
+import amaralus.apps.rogue.graphics.Palette;
 
 public class Cell {
 
@@ -9,7 +11,11 @@ public class Cell {
     private Cell rightCell;
     private Cell leftCell;
 
-    private EntitySymbol entitySymbol = EntitySymbol.CENTRAL_DOT;
+    private GraphicsComponent graphicsComponent;
+
+    public Cell() {
+        graphicsComponent = new GraphicsComponent(EntitySymbol.SPACE, Palette.BLACK_BLUE);
+    }
 
     public Cell getTopCell() {
         return topCell;
@@ -43,11 +49,7 @@ public class Cell {
         this.leftCell = leftCell;
     }
 
-    public EntitySymbol getEntitySymbol() {
-        return entitySymbol;
-    }
-
-    public void setEntitySymbol(EntitySymbol entitySymbol) {
-        this.entitySymbol = entitySymbol;
+    public GraphicsComponent getGraphicsComponent() {
+        return graphicsComponent;
     }
 }
