@@ -1,4 +1,4 @@
-package amaralus.apps.rogue;
+package amaralus.apps.rogue.graphics;
 
 public enum EntitySymbol {
     SMILING_FACE('\u263a'),
@@ -8,7 +8,9 @@ public enum EntitySymbol {
     WALL_BOTTOM_RIGHT('\u2554'),
     WALL_BOTTOM_LEFT('\u2557'),
     WALL_TOP_RIGHT('\u255a'),
-    WALL_TOP_LEFT('\u255d');
+    WALL_TOP_LEFT('\u255d'),
+    CENTRAL_DOT('\u2219'),
+    SPACE(' ');
 
     private char symbol;
 

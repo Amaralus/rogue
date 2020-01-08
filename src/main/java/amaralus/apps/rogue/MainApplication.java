@@ -23,7 +23,7 @@ public class MainApplication extends Application {
     }
 
     private final Pane pane = new TextFlow();
-    private final Scene scene = new Scene(pane, 1150, 540);
+    private final Scene scene = new Scene(pane, 1143, 540);
 
     @Override
     public void start(Stage primaryStage) {
