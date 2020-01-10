@@ -1,4 +1,6 @@
-package amaralus.apps.rogue.field;
+package amaralus.apps.rogue.entities.field;
+
+import amaralus.apps.rogue.entities.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,5 +57,13 @@ public class GameField {
 
     public List<List<Cell>> getCellLines() {
         return cellLines;
+    }
+
+    public void addEntity(Unit entity, int x, int y) {
+        Cell cell = getCell(x, y);
+        if (cell.isCanWalk()) {
+            cell.setEntity(entity);
+            entity.setCurrentCell(cell);
+        }
     }
 }

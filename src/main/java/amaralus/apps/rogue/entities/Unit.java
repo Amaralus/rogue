@@ -1,0 +1,62 @@
+package amaralus.apps.rogue.entities;
+
+import amaralus.apps.rogue.entities.field.Cell;
+import amaralus.apps.rogue.graphics.GraphicsComponent;
+
+public class Unit {
+
+    private GraphicsComponent graphicsComponent;
+    protected Cell currentCell;
+
+    public Unit(GraphicsComponent graphicsComponent) {
+        this.graphicsComponent = graphicsComponent;
+    }
+
+    public void moveTop() {
+        if (currentCell.topCellExist() && currentCell.getTopCell().isCanWalk()) {
+            currentCell.setEntity(null);
+            currentCell = currentCell.getTopCell();
+            currentCell.setEntity(this);
+        }
+    }
+
+    public void moveBottom() {
+        if (currentCell.bottomCellExist() && currentCell.getBottomCell().isCanWalk()) {
+            currentCell.setEntity(null);
+            currentCell = currentCell.getBottomCell();
+            currentCell.setEntity(this);
+        }
+    }
+
+    public void moveRight() {
+        if (currentCell.rightCellExist() && currentCell.getRightCell().isCanWalk()) {
+            currentCell.setEntity(null);
+            currentCell = currentCell.getRightCell();
+            currentCell.setEntity(this);
+        }
+    }
+
+    public void moveLeft() {
+        if (currentCell.leftCellExist() && currentCell.getLeftCell().isCanWalk()) {
+            currentCell.setEntity(null);
+            currentCell = currentCell.getLeftCell();
+            currentCell.setEntity(this);
+        }
+    }
+
+    public GraphicsComponent getGraphicsComponent() {
+        return graphicsComponent;
+    }
+
+    public void setGraphicsComponent(GraphicsComponent graphicsComponent) {
+        this.graphicsComponent = graphicsComponent;
+    }
+
+    public Cell getCurrentCell() {
+        return currentCell;
+    }
+
+    public void setCurrentCell(Cell currentCell) {
+        this.currentCell = currentCell;
+    }
+}

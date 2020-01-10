@@ -1,7 +1,7 @@
 package amaralus.apps.rogue.graphics;
 
 import amaralus.apps.rogue.GameController;
-import amaralus.apps.rogue.field.Cell;
+import amaralus.apps.rogue.entities.field.Cell;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -26,9 +26,9 @@ public class GraphicsController {
             StringBuilder builder = new StringBuilder();
 
             // текущий цвет для определения новых цветов
-            Color currentColor = cellLine.get(0).getGraphicsComponent().getColor();
-            for (Cell aCellLine : cellLine) {
-                GraphicsComponent grComponent = aCellLine.getGraphicsComponent();
+            Color currentColor = cellLine.get(0).getActualGraphicsComponent().getColor();
+            for (Cell cell : cellLine) {
+                GraphicsComponent grComponent = cell.getActualGraphicsComponent();
 
                 // если новый цвет отличается
                 if (currentColor != grComponent.getColor()) {

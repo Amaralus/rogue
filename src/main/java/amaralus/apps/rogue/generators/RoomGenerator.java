@@ -1,7 +1,7 @@
 package amaralus.apps.rogue.generators;
 
-import amaralus.apps.rogue.field.Cell;
-import amaralus.apps.rogue.field.GameField;
+import amaralus.apps.rogue.entities.field.Cell;
+import amaralus.apps.rogue.entities.field.GameField;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.Palette;
 
@@ -12,8 +12,8 @@ import static amaralus.apps.rogue.graphics.EntitySymbol.*;
 
 public class RoomGenerator {
 
-    public void generate(GameField field, int width, int height, int x, int y) {
-        List<List<Cell>> roomCells = field.getCellLines().subList(y, y + height).stream()
+    public void generate(GameField gameField, int width, int height, int x, int y) {
+        List<List<Cell>> roomCells = gameField.getCellLines().subList(y, y + height).stream()
                 .map(list -> list.subList(x, x + width))
                 .collect(Collectors.toList());
 
