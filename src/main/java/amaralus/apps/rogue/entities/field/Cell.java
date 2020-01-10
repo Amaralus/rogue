@@ -1,9 +1,8 @@
 package amaralus.apps.rogue.entities.field;
 
 import amaralus.apps.rogue.entities.Unit;
-import amaralus.apps.rogue.graphics.EntitySymbol;
+import amaralus.apps.rogue.graphics.DefaultComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
-import amaralus.apps.rogue.graphics.Palette;
 
 public class Cell {
 
@@ -13,12 +12,24 @@ public class Cell {
     private Cell leftCell;
 
     private GraphicsComponent graphicsComponent;
+    private CellType type;
 
-    private Unit entity;
+    private Unit unit;
     private boolean canWalk = false;
 
     public Cell() {
-        graphicsComponent = new GraphicsComponent(EntitySymbol.SPACE, Palette.BLACK_BLUE);
+        graphicsComponent = DefaultComponentsPool.EMPTY;
+        type = CellType.EMPTY;
+    }
+
+    // тип клетки
+
+    public CellType getType() {
+        return type;
+    }
+
+    public void setType(CellType type) {
+        this.type = type;
     }
 
     // соседние клетки
@@ -89,33 +100,37 @@ public class Cell {
 
     // графика
 
+    public void setGraphicsComponent(GraphicsComponent graphicsComponent) {
+        this.graphicsComponent = graphicsComponent;
+    }
+
     public GraphicsComponent getGraphicsComponent() {
         return graphicsComponent;
     }
 
     public GraphicsComponent getActualGraphicsComponent() {
-        if (containsEntity())
-            return entity.getGraphicsComponent();
+        if (containsUnit())
+            return unit.getGraphicsComponent();
         else
             return graphicsComponent;
     }
 
     // сущность
 
-    public Unit getEntity() {
-        return entity;
+    public Unit getUnit() {
+        return unit;
     }
 
-    public void setEntity(Unit unit) {
-        this.entity = unit;
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
-    public boolean containsEntity() {
-        return entity != null;
+    public boolean containsUnit() {
+        return unit != null;
     }
 
-    public boolean notContainsEntity() {
-        return !containsEntity();
+    public boolean notContainsUnit() {
+        return !containsUnit();
     }
 
     // возможность пройти
@@ -125,6 +140,6 @@ public class Cell {
     }
 
     public boolean isCanWalk() {
-        return notContainsEntity() && canWalk;
+        return canWalk;
     }
 }

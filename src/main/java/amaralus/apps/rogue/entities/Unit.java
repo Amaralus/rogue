@@ -13,34 +13,34 @@ public class Unit {
     }
 
     public void moveTop() {
-        if (currentCell.topCellExist() && currentCell.getTopCell().isCanWalk()) {
-            currentCell.setEntity(null);
+        if (currentCell.topCellExist() && currentCell.getTopCell().isCanWalk() && currentCell.getTopCell().notContainsUnit()) {
+            currentCell.setUnit(null);
             currentCell = currentCell.getTopCell();
-            currentCell.setEntity(this);
+            currentCell.setUnit(this);
         }
     }
 
     public void moveBottom() {
-        if (currentCell.bottomCellExist() && currentCell.getBottomCell().isCanWalk()) {
-            currentCell.setEntity(null);
+        if (currentCell.bottomCellExist() && currentCell.getBottomCell().isCanWalk() && currentCell.getBottomCell().notContainsUnit()) {
+            currentCell.setUnit(null);
             currentCell = currentCell.getBottomCell();
-            currentCell.setEntity(this);
+            currentCell.setUnit(this);
         }
     }
 
     public void moveRight() {
-        if (currentCell.rightCellExist() && currentCell.getRightCell().isCanWalk()) {
-            currentCell.setEntity(null);
+        if (currentCell.rightCellExist() && currentCell.getRightCell().isCanWalk() && currentCell.getRightCell().notContainsUnit()) {
+            currentCell.setUnit(null);
             currentCell = currentCell.getRightCell();
-            currentCell.setEntity(this);
+            currentCell.setUnit(this);
         }
     }
 
     public void moveLeft() {
-        if (currentCell.leftCellExist() && currentCell.getLeftCell().isCanWalk()) {
-            currentCell.setEntity(null);
+        if (currentCell.leftCellExist() && currentCell.getLeftCell().isCanWalk() && currentCell.getLeftCell().notContainsUnit()) {
+            currentCell.setUnit(null);
             currentCell = currentCell.getLeftCell();
-            currentCell.setEntity(this);
+            currentCell.setUnit(this);
         }
     }
 

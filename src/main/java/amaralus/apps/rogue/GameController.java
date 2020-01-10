@@ -36,8 +36,8 @@ public class GameController {
 
         player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 
-        gameField.addEntity(player,58, 20);
-        gameField.addEntity(new Unit(new GraphicsComponent(HEART, RED)), 56, 19);
+        gameField.addUnit(player,58, 20);
+        gameField.addUnit(new Unit(new GraphicsComponent(HEART, RED)), 56, 19);
 
         graphicsController.draw();
     }

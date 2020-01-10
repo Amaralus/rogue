@@ -2,17 +2,18 @@ package amaralus.apps.rogue.generators;
 
 import amaralus.apps.rogue.entities.field.Cell;
 import amaralus.apps.rogue.entities.field.GameField;
-import amaralus.apps.rogue.graphics.GraphicsComponent;
-import amaralus.apps.rogue.graphics.Palette;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static amaralus.apps.rogue.graphics.EntitySymbol.*;
+import static amaralus.apps.rogue.entities.field.CellType.FLOOR;
+import static amaralus.apps.rogue.entities.field.CellType.WALL;
+import static amaralus.apps.rogue.graphics.DefaultComponentsPool.*;
 
 public class RoomGenerator {
 
     public void generate(GameField gameField, int width, int height, int x, int y) {
+
         List<List<Cell>> roomCells = gameField.getCellLines().subList(y, y + height).stream()
                 .map(list -> list.subList(x, x + width))
                 .collect(Collectors.toList());
@@ -22,25 +23,25 @@ public class RoomGenerator {
 
             for (int j = 0; j < cellList.size(); j++) {
                 Cell cell = cellList.get(j);
-                GraphicsComponent grComponent = cell.getGraphicsComponent();
+
+                cell.setType(WALL);
 
                 if (i == 0 || i == roomCells.size() - 1)
-                    grComponent.setEntitySymbol(WALL_HORIZONTAL);
+                    cell.setGraphicsComponent(HORIZONTAL_WALL);
                 else if (j == 0 || j == cellList.size() - 1)
-                    grComponent.setEntitySymbol(WALL_VERTICAL);
+                    cell.setGraphicsComponent(VERTICAL_WALL);
                 else {
-                    grComponent.setEntitySymbol(CENTRAL_DOT);
+                    cell.setGraphicsComponent(FLOOR_ROOM);
+                    cell.setType(FLOOR);
                     cell.setCanWalk(true);
                 }
-
-                grComponent.setColor(Palette.WHITE_GRAY);
             }
         }
 
-        roomCells.get(0).get(0).getGraphicsComponent().setEntitySymbol(WALL_BOTTOM_RIGHT);
-        roomCells.get(0).get(width - 1).getGraphicsComponent().setEntitySymbol(WALL_BOTTOM_LEFT);
-        roomCells.get(height - 1).get(0).getGraphicsComponent().setEntitySymbol(WALL_TOP_RIGHT);
-        roomCells.get(height - 1).get(width - 1).getGraphicsComponent().setEntitySymbol(WALL_TOP_LEFT);
+        roomCells.get(0).get(0).setGraphicsComponent(TL_CORNER);
+        roomCells.get(0).get(width - 1).setGraphicsComponent(TR_CORNER);
+        roomCells.get(height - 1).get(0).setGraphicsComponent(BL_CORNER);
+        roomCells.get(height - 1).get(width - 1).setGraphicsComponent(BR_CORNER);
 
     }
 }
