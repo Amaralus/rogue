@@ -32,9 +32,9 @@ public class GameController {
 
         gameField = new GameField(120, 30);
 
-        WorldGenerator worldGenerator = new WorldGenerator();
+        WorldGenerator worldGenerator = new WorldGenerator(gameField);
 
-        worldGenerator.generateRoom(gameField, 54, 17, 10, 6);
+        worldGenerator.generateRoom(54, 17, 10, 6);
 
         player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 

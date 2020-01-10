@@ -14,7 +14,13 @@ import static amaralus.apps.rogue.graphics.DefaultComponentsPool.*;
 
 public class WorldGenerator {
 
-    public Room generateRoom(GameField gameField, int x, int y, int width, int height) {
+    private GameField gameField;
+
+    public WorldGenerator(GameField gameField) {
+        this.gameField = gameField;
+    }
+
+    public Room generateRoom(int x, int y, int width, int height) {
 
         List<List<Cell>> roomCells = gameField.getCellLines().subList(y, y + height).stream()
                 .map(list -> list.subList(x, x + width))
@@ -47,4 +53,10 @@ public class WorldGenerator {
 
         return new Room(roomCells, Position.of(x, y), width, height);
     }
+
+    public void corridorGenerator(Position from, Position to) {
+
+    }
+
+    //private Cell getNext(Cell currentCell, boolean altWay)
 }
