@@ -1,5 +1,6 @@
 package amaralus.apps.rogue;
 
+import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.GameField;
 import amaralus.apps.rogue.generators.WorldGenerator;
@@ -35,10 +36,13 @@ public class GameController {
         WorldGenerator worldGenerator = new WorldGenerator(gameField);
 
         worldGenerator.generateRoom(54, 17, 10, 6);
+        worldGenerator.generateRoom(18, 8, 20, 7);
+
+        worldGenerator.generateCorridor(Position.of(33, 12), Position.of(60, 19));
 
         player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 
-        gameField.addUnit(player,58, 20);
+        gameField.addUnit(player, 20, 11);
         gameField.addUnit(new Unit(new GraphicsComponent(HEART, RED)), 56, 19);
 
         graphicsController.draw();

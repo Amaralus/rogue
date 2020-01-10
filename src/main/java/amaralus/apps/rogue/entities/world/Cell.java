@@ -21,7 +21,7 @@ public class Cell {
 
     Cell(Position position) {
         this.position = position;
-        graphicsComponent = DefaultComponentsPool.EMPTY;
+        graphicsComponent = DefaultComponentsPool.EMPTY_CELL;
         type = CellType.EMPTY;
     }
 
