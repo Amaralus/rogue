@@ -1,7 +1,7 @@
 package amaralus.apps.rogue.graphics;
 
 import amaralus.apps.rogue.GameController;
-import amaralus.apps.rogue.entities.field.Cell;
+import amaralus.apps.rogue.entities.world.Cell;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;

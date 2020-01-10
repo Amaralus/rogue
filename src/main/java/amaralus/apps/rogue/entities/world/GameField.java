@@ -1,6 +1,7 @@
-package amaralus.apps.rogue.entities.field;
+package amaralus.apps.rogue.entities.world;
 
-import amaralus.apps.rogue.entities.Unit;
+import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.units.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,23 +17,23 @@ public class GameField {
 
         cellLines = new ArrayList<>(height);
 
-        for (int i = 0; i < height; i++) {
-            List<Cell> cellLine = createCellLine(width);
+        for (int y = 0; y < height; y++) {
+            List<Cell> cellLine = createCellLine(y, width);
             cellLines.add(cellLine);
 
-            if (i > 0) connectCellLines(cellLines.get(i - 1), cellLine);
+            if (y > 0) connectCellLines(cellLines.get(y - 1), cellLine);
         }
     }
 
-    private List<Cell> createCellLine(int width) {
+    private List<Cell> createCellLine(int y, int width) {
         List<Cell> cellLine = new ArrayList<>(width);
 
-        for (int i = 0; i < width; i++) {
-            Cell cell = new Cell();
+        for (int x = 0; x < width; x++) {
+            Cell cell = new Cell(Position.of(x, y));
             cellLine.add(cell);
 
-            if (i > 0) {
-                Cell prevCell = cellLine.get(i - 1);
+            if (x > 0) {
+                Cell prevCell = cellLine.get(x - 1);
                 prevCell.setRightCell(cell);
                 cell.setLeftCell(prevCell);
             }

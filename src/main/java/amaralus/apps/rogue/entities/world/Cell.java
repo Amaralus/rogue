@@ -1,11 +1,13 @@
-package amaralus.apps.rogue.entities.field;
+package amaralus.apps.rogue.entities.world;
 
-import amaralus.apps.rogue.entities.Unit;
+import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.graphics.DefaultComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
 public class Cell {
 
+    private Position position;
     private Cell topCell;
     private Cell bottomCell;
     private Cell rightCell;
@@ -17,9 +19,14 @@ public class Cell {
     private Unit unit;
     private boolean canWalk = false;
 
-    public Cell() {
+    Cell(Position position) {
+        this.position = position;
         graphicsComponent = DefaultComponentsPool.EMPTY;
         type = CellType.EMPTY;
+    }
+
+    public Position getPosition() {
+        return position;
     }
 
     // тип клетки

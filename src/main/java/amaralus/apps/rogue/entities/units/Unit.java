@@ -1,6 +1,7 @@
-package amaralus.apps.rogue.entities;
+package amaralus.apps.rogue.entities.units;
 
-import amaralus.apps.rogue.entities.field.Cell;
+import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
 public class Unit {
@@ -58,5 +59,9 @@ public class Unit {
 
     public void setCurrentCell(Cell currentCell) {
         this.currentCell = currentCell;
+    }
+
+    public Position getPosition() {
+        return currentCell.getPosition();
     }
 }

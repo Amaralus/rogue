@@ -1,18 +1,20 @@
 package amaralus.apps.rogue.generators;
 
-import amaralus.apps.rogue.entities.field.Cell;
-import amaralus.apps.rogue.entities.field.GameField;
+import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.world.Room;
+import amaralus.apps.rogue.entities.world.Cell;
+import amaralus.apps.rogue.entities.world.GameField;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static amaralus.apps.rogue.entities.field.CellType.FLOOR;
-import static amaralus.apps.rogue.entities.field.CellType.WALL;
+import static amaralus.apps.rogue.entities.world.CellType.FLOOR;
+import static amaralus.apps.rogue.entities.world.CellType.WALL;
 import static amaralus.apps.rogue.graphics.DefaultComponentsPool.*;
 
-public class RoomGenerator {
+public class WorldGenerator {
 
-    public void generate(GameField gameField, int width, int height, int x, int y) {
+    public Room generateRoom(GameField gameField, int x, int y, int width, int height) {
 
         List<List<Cell>> roomCells = gameField.getCellLines().subList(y, y + height).stream()
                 .map(list -> list.subList(x, x + width))
@@ -43,5 +45,6 @@ public class RoomGenerator {
         roomCells.get(height - 1).get(0).setGraphicsComponent(BL_CORNER);
         roomCells.get(height - 1).get(width - 1).setGraphicsComponent(BR_CORNER);
 
+        return new Room(roomCells, Position.of(x, y), width, height);
     }
 }

@@ -1,4 +1,4 @@
-package amaralus.apps.rogue.entities.field;
+package amaralus.apps.rogue.entities.world;
 
 public enum CellType {
 

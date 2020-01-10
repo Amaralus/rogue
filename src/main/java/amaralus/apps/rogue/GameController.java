@@ -1,8 +1,8 @@
 package amaralus.apps.rogue;
 
-import amaralus.apps.rogue.entities.Unit;
-import amaralus.apps.rogue.entities.field.GameField;
-import amaralus.apps.rogue.generators.RoomGenerator;
+import amaralus.apps.rogue.entities.units.Unit;
+import amaralus.apps.rogue.entities.world.GameField;
+import amaralus.apps.rogue.generators.WorldGenerator;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.GraphicsController;
 import javafx.scene.input.KeyCode;
@@ -32,7 +32,9 @@ public class GameController {
 
         gameField = new GameField(120, 30);
 
-        new RoomGenerator().generate(gameField, 10, 6, 54, 17);
+        WorldGenerator worldGenerator = new WorldGenerator();
+
+        worldGenerator.generateRoom(gameField, 54, 17, 10, 6);
 
         player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 
