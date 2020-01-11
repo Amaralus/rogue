@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class BspAreaGenerator {
 
     private static final int MIN_AREA_SIZE = 4;
-    private static final int MIN_X_AREA_SIZE = MIN_AREA_SIZE * 3;
+    private static final int MIN_X_AREA_SIZE = MIN_AREA_SIZE * 4;
     private static final int MIN_Y_AREA_SIZE = MIN_AREA_SIZE * 2;
 
     public List<FieldArea> generateArea(GameField gameField) {

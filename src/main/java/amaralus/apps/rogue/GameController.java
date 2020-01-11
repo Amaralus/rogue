@@ -1,18 +1,13 @@
 package amaralus.apps.rogue;
 
-import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.GameField;
 import amaralus.apps.rogue.generators.WorldGenerator;
-import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.GraphicsController;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
 import java.util.List;
-
-import static amaralus.apps.rogue.graphics.EntitySymbol.*;
-import static amaralus.apps.rogue.graphics.Palette.*;
 
 public class GameController {
 
@@ -30,20 +25,13 @@ public class GameController {
         graphicsController = new GraphicsController(this);
 
         application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
+        handleEvents = false;
 
         gameField = new GameField(120, 30);
 
         WorldGenerator worldGenerator = new WorldGenerator(gameField);
 
-        worldGenerator.generateRoom(54, 17, 10, 6);
-        worldGenerator.generateRoom(18, 8, 20, 7);
-
-        worldGenerator.generateCorridor(Position.of(33, 12), Position.of(60, 19));
-
-        player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
-
-        gameField.addUnit(player, 20, 11);
-        gameField.addUnit(new Unit(new GraphicsComponent(HEART, RED)), 56, 19);
+        worldGenerator.generateDungeon();
 
         graphicsController.draw();
     }

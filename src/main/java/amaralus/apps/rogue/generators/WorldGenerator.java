@@ -1,6 +1,7 @@
 package amaralus.apps.rogue.generators;
 
 import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.world.FieldArea;
 import amaralus.apps.rogue.entities.world.Room;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.GameField;
@@ -12,14 +13,57 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.entities.world.CellType.*;
+import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.DefaultComponentsPool.*;
 
 public class WorldGenerator {
 
     private GameField gameField;
+    private BspAreaGenerator areaGenerator = new BspAreaGenerator();
 
     public WorldGenerator(GameField gameField) {
         this.gameField = gameField;
+    }
+
+    public void generateDungeon() {
+        List<FieldArea> areaList = areaGenerator.generateArea(gameField);
+
+        int roomCount = randInt(4, areaList.size());
+        areaList = getRandomAreas(areaList, roomCount);
+
+        List<Room> roomList = new ArrayList<>(roomCount);
+        for (FieldArea area : areaList) {
+            roomList.add(generateRoomInArea(area));
+        }
+
+        for (Room room : roomList) {
+            generateCorridor(randPositionFromRoom(room), randPositionFromRoom(randElement(roomList)));
+        }
+    }
+
+    private Room generateRoomInArea(FieldArea area) {
+        int roomHeight = randInt(5, area.getHeight());
+        int roomWidth = randInt(5, area.getWidth());
+
+        if (roomWidth > 20) roomWidth = 20;
+
+        Position areaPosition = area.getAreaCells().get(0).get(0).getPosition();
+        return generateRoom(
+                areaPosition.x() + randInt(area.getWidth() - roomWidth),
+                areaPosition.y() + randInt(area.getHeight() - roomHeight),
+                roomWidth,
+                roomHeight);
+    }
+
+    private List<FieldArea> getRandomAreas(List<FieldArea> areas, int count) {
+        List<FieldArea> randomAreas = new ArrayList<>(count);
+
+        for (int i = 0; i < count; i++) {
+            int index = excRandInt(areas.size());
+            randomAreas.add(areas.remove(index));
+        }
+
+        return randomAreas;
     }
 
     public Room generateRoom(int x, int y, int width, int height) {
@@ -57,7 +101,7 @@ public class WorldGenerator {
     }
 
     public void generateCorridor(Position from, Position to) {
-        boolean altWay = RandomGenerator.randBoolean();
+        boolean altWay = randBoolean();
 
         List<UnaryOperator<Cell>> movementList = getFuncList(from, to, altWay);
         movementList.addAll(getFuncList(from, to, !altWay));
@@ -89,6 +133,9 @@ public class WorldGenerator {
     }
 
     private List<UnaryOperator<Cell>> getFuncList(UnaryOperator<Cell> func, int count) {
+        if (count < 0)
+            count *= -1;
+
         List<UnaryOperator<Cell>> funcList = new ArrayList<>(count);
 
         if (func == null) return funcList;
