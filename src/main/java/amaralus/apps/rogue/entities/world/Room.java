@@ -11,11 +11,11 @@ public class Room {
     private final int width;
     private final int height;
 
-    public Room(List<List<Cell>> roomCells, Position position, int width, int height) {
+    public Room(List<List<Cell>> roomCells, Position position) {
         this.position = position;
         this.roomCells = roomCells;
-        this.width = width;
-        this.height = height;
+        this.width = roomCells.get(0).size();
+        this.height = roomCells.size();
     }
 
     public Position getPosition() {

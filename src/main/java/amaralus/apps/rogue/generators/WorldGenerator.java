@@ -53,7 +53,7 @@ public class WorldGenerator {
         roomCells.get(height - 1).get(0).setGraphicsComponent(BL_CORNER);
         roomCells.get(height - 1).get(width - 1).setGraphicsComponent(BR_CORNER);
 
-        return new Room(roomCells, Position.of(x, y), width, height);
+        return new Room(roomCells, Position.of(x, y));
     }
 
     public void generateCorridor(Position from, Position to) {

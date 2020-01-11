@@ -11,7 +11,7 @@ public final class DefaultComponentsPool {
 
     public static final GraphicsComponent VERTICAL_WALL = new GraphicsComponent(WALL_VERTICAL, WHITE_GRAY);
     public static final GraphicsComponent HORIZONTAL_WALL = new GraphicsComponent(WALL_HORIZONTAL, WHITE_GRAY);
-    public static final GraphicsComponent DOOR = new GraphicsComponent(WALL_VERTICAL_HORIZONTAL, ORANGE_BROWN);
+    public static final GraphicsComponent DOOR = new GraphicsComponent(WALL_VERTICAL_HORIZONTAL, WHITE_GRAY);
 
     public static final GraphicsComponent TR_CORNER = new GraphicsComponent(WALL_TOP_RIGHT, WHITE_GRAY);
     public static final GraphicsComponent TL_CORNER = new GraphicsComponent(WALL_TOP_LEFT, WHITE_GRAY);
