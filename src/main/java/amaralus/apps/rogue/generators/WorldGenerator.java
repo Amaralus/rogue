@@ -25,7 +25,7 @@ public class WorldGenerator {
         this.gameField = gameField;
     }
 
-    public void generateDungeon() {
+    public Room generateDungeon() {
         List<FieldArea> areaList = areaGenerator.generateArea(gameField);
 
         int roomCount = randInt(4, areaList.size());
@@ -39,6 +39,8 @@ public class WorldGenerator {
         for (Room room : roomList) {
             generateCorridor(randPositionFromRoom(room), randPositionFromRoom(randElement(roomList)));
         }
+
+        return randElement(roomList);
     }
 
     private Room generateRoomInArea(FieldArea area) {

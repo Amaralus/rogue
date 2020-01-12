@@ -60,8 +60,8 @@ public class GameField {
         return cellLines;
     }
 
-    public void addUnit(Unit entity, int x, int y) {
-        Cell cell = getCell(x, y);
+    public void addUnit(Unit entity, Position position) {
+        Cell cell = getCell(position.x(), position.y());
         if (cell.isCanWalk() && cell.notContainsUnit()) {
             cell.setUnit(entity);
             entity.setCurrentCell(cell);
