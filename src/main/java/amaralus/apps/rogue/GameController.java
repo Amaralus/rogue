@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
 
 import java.util.List;
 
+import static amaralus.apps.rogue.entities.Direction.*;
 import static amaralus.apps.rogue.graphics.EntitySymbol.SMILING_FACE;
 import static amaralus.apps.rogue.graphics.Palette.YELLOW;
 
@@ -55,16 +56,16 @@ public class GameController {
         try {
             switch (key) {
                 case UP:
-                    player.moveTop();
+                    player.move(TOP);
                     break;
                 case DOWN:
-                    player.moveBottom();
+                    player.move(BOTTOM);
                     break;
                 case RIGHT:
-                    player.moveRight();
+                    player.move(RIGHT);
                     break;
                 case LEFT:
-                    player.moveLeft();
+                    player.move(LEFT);
                     break;
             }
 

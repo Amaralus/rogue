@@ -1,5 +1,6 @@
 package amaralus.apps.rogue.entities.units;
 
+import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
@@ -13,34 +14,11 @@ public class Unit {
         this.graphicsComponent = graphicsComponent;
     }
 
-    public void moveTop() {
-        if (currentCell.topCellExist() && currentCell.getTopCell().isCanWalk() && currentCell.getTopCell().notContainsUnit()) {
+    public void move(Direction direction) {
+        Cell nextCell = direction.nextCell(currentCell);
+        if (nextCell != null && nextCell.isCanWalk() && nextCell.notContainsUnit()) {
             currentCell.setUnit(null);
-            currentCell = currentCell.getTopCell();
-            currentCell.setUnit(this);
-        }
-    }
-
-    public void moveBottom() {
-        if (currentCell.bottomCellExist() && currentCell.getBottomCell().isCanWalk() && currentCell.getBottomCell().notContainsUnit()) {
-            currentCell.setUnit(null);
-            currentCell = currentCell.getBottomCell();
-            currentCell.setUnit(this);
-        }
-    }
-
-    public void moveRight() {
-        if (currentCell.rightCellExist() && currentCell.getRightCell().isCanWalk() && currentCell.getRightCell().notContainsUnit()) {
-            currentCell.setUnit(null);
-            currentCell = currentCell.getRightCell();
-            currentCell.setUnit(this);
-        }
-    }
-
-    public void moveLeft() {
-        if (currentCell.leftCellExist() && currentCell.getLeftCell().isCanWalk() && currentCell.getLeftCell().notContainsUnit()) {
-            currentCell.setUnit(null);
-            currentCell = currentCell.getLeftCell();
+            currentCell = nextCell;
             currentCell.setUnit(this);
         }
     }
