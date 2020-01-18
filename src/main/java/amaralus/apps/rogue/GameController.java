@@ -30,41 +30,50 @@ public class GameController {
         this.application = application;
         graphicsController = new GraphicsController(this);
 
-        application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
+        try {
 
-        gameField = new GameField(120, 30);
+            application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
 
-        WorldGenerator worldGenerator = new WorldGenerator(gameField);
+            gameField = new GameField(120, 30);
 
-        Room room = worldGenerator.generateDungeon();
+            WorldGenerator worldGenerator = new WorldGenerator(gameField);
 
-        player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
+            Room room = worldGenerator.generateDungeon();
 
-        gameField.addUnit(player, RandomGenerator.randPositionFromRoom(room));
+            player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 
-        graphicsController.draw();
+            gameField.addUnit(player, RandomGenerator.randPositionFromRoom(room));
+
+            graphicsController.draw();
+        } catch (Exception e) {
+            showErrorAndExit(e);
+        }
     }
 
     public void handleKeyEvent(KeyCode key) {
         if (!handleEvents)
             return;
 
-        switch (key) {
-            case UP:
-                player.moveTop();
-                break;
-            case DOWN:
-                player.moveBottom();
-                break;
-            case RIGHT:
-                player.moveRight();
-                break;
-            case LEFT:
-                player.moveLeft();
-                break;
-        }
+        try {
+            switch (key) {
+                case UP:
+                    player.moveTop();
+                    break;
+                case DOWN:
+                    player.moveBottom();
+                    break;
+                case RIGHT:
+                    player.moveRight();
+                    break;
+                case LEFT:
+                    player.moveLeft();
+                    break;
+            }
 
-        graphicsController.draw();
+            graphicsController.draw();
+        } catch (Exception e) {
+            showErrorAndExit(e);
+        }
     }
 
     public void updateTexts(List<Text> textList) {
