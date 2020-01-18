@@ -29,11 +29,9 @@ public class GameController {
     public GameController(MainApplication application) {
         this.application = application;
         graphicsController = new GraphicsController(this);
+        application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
 
         try {
-
-            application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
-
             gameField = new GameField(120, 30);
 
             WorldGenerator worldGenerator = new WorldGenerator(gameField);

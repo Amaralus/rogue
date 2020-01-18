@@ -3,6 +3,7 @@ package amaralus.apps.rogue.generators;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.world.Room;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -48,6 +49,18 @@ public final class RandomGenerator {
 
     public static <E> E randElement(List<E> list) {
         return list.get(getInstance().random.nextInt(list.size()));
+    }
+
+    public static  <E> List<E> randUniqueElements(List<E> elements, int count) {
+        List<E> elementList = new ArrayList<>(elements);
+        List<E> randomElements = new ArrayList<>(count);
+
+        for (int i = 0; i < count; i++) {
+            int index = excRandInt(elementList.size());
+            randomElements.add(elementList.remove(index));
+        }
+
+        return randomElements;
     }
 
     public static Position randPositionFromRoom(Room room) {

@@ -5,12 +5,10 @@ import amaralus.apps.rogue.entities.world.FieldArea;
 import amaralus.apps.rogue.entities.world.Room;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.GameField;
-import amaralus.apps.rogue.graphics.DefaultComponentsPool;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.entities.world.CellType.*;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
@@ -19,21 +17,24 @@ import static amaralus.apps.rogue.graphics.DefaultComponentsPool.*;
 public class WorldGenerator {
 
     private GameField gameField;
-    private BspAreaGenerator areaGenerator = new BspAreaGenerator();
+    private RoomGenerator roomGenerator;
+    private BspAreaGenerator areaGenerator;
 
     public WorldGenerator(GameField gameField) {
         this.gameField = gameField;
+        roomGenerator = new RoomGenerator();
+        areaGenerator = new BspAreaGenerator();
     }
 
     public Room generateDungeon() {
         List<FieldArea> areaList = areaGenerator.generateArea(gameField);
 
         int roomCount = randInt(4, areaList.size());
-        areaList = getRandomAreas(areaList, roomCount);
+        areaList = randUniqueElements(areaList, roomCount);
 
         List<Room> roomList = new ArrayList<>(roomCount);
         for (FieldArea area : areaList) {
-            roomList.add(generateRoomInArea(area));
+            roomList.add(roomGenerator.generateRoom(area));
         }
 
         for (Room room : roomList) {
@@ -41,65 +42,6 @@ public class WorldGenerator {
         }
 
         return randElement(roomList);
-    }
-
-    private Room generateRoomInArea(FieldArea area) {
-        int roomHeight = randInt(5, area.getHeight());
-        int roomWidth = randInt(5, area.getWidth());
-
-        if (roomWidth > 20) roomWidth = 20;
-
-        Position areaPosition = area.getAreaCells().get(0).get(0).getPosition();
-        return generateRoom(
-                areaPosition.x() + randInt(area.getWidth() - roomWidth),
-                areaPosition.y() + randInt(area.getHeight() - roomHeight),
-                roomWidth,
-                roomHeight);
-    }
-
-    private List<FieldArea> getRandomAreas(List<FieldArea> areas, int count) {
-        List<FieldArea> randomAreas = new ArrayList<>(count);
-
-        for (int i = 0; i < count; i++) {
-            int index = excRandInt(areas.size());
-            randomAreas.add(areas.remove(index));
-        }
-
-        return randomAreas;
-    }
-
-    public Room generateRoom(int x, int y, int width, int height) {
-
-        List<List<Cell>> roomCells = gameField.getCellLines().subList(y, y + height).stream()
-                .map(list -> list.subList(x, x + width))
-                .collect(Collectors.toList());
-
-        for (int i = 0; i < roomCells.size(); i++) {
-            List<Cell> cellList = roomCells.get(i);
-
-            for (int j = 0; j < cellList.size(); j++) {
-                Cell cell = cellList.get(j);
-
-                cell.setType(WALL);
-
-                if (i == 0 || i == roomCells.size() - 1)
-                    cell.setGraphicsComponent(HORIZONTAL_WALL);
-                else if (j == 0 || j == cellList.size() - 1)
-                    cell.setGraphicsComponent(VERTICAL_WALL);
-                else {
-                    cell.setGraphicsComponent(DefaultComponentsPool.ROOM_FLOOR);
-                    cell.setType(FLOOR);
-                    cell.setCanWalk(true);
-                }
-            }
-        }
-
-        roomCells.get(0).get(0).setGraphicsComponent(TL_CORNER);
-        roomCells.get(0).get(width - 1).setGraphicsComponent(TR_CORNER);
-        roomCells.get(height - 1).get(0).setGraphicsComponent(BL_CORNER);
-        roomCells.get(height - 1).get(width - 1).setGraphicsComponent(BR_CORNER);
-
-        return new Room(roomCells, Position.of(x, y));
     }
 
     public void generateCorridor(Position from, Position to) {
