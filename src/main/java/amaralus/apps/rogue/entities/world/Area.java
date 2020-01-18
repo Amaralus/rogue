@@ -1,5 +1,6 @@
 package amaralus.apps.rogue.entities.world;
 
+import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
 
-public class Area {
+public class Area implements Destroyable {
 
     private final List<List<Cell>> cells;
     private final int height;
@@ -17,6 +18,16 @@ public class Area {
         this.cells = cells;
         height = cells.size();
         width = cells.get(0).size();
+    }
+
+    @Override
+    public void destroy() {
+        for (List<Cell> cellList : cells) {
+            for (Cell cell : cellList) {
+                cell.destroy();
+            }
+            cellList.clear();
+        }
     }
 
     public Area subArea(int x, int y, int width, int height) {

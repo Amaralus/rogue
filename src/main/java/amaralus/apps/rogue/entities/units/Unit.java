@@ -1,17 +1,24 @@
 package amaralus.apps.rogue.entities.units;
 
+import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
-public class Unit {
+public class Unit implements Destroyable {
 
     private GraphicsComponent graphicsComponent;
     protected Cell currentCell;
 
     public Unit(GraphicsComponent graphicsComponent) {
         this.graphicsComponent = graphicsComponent;
+    }
+
+    @Override
+    public void destroy() {
+        currentCell = null;
+        graphicsComponent = null;
     }
 
     public void move(Direction direction) {

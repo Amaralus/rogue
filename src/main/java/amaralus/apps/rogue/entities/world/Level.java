@@ -1,11 +1,14 @@
 package amaralus.apps.rogue.entities.world;
 
+import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.units.Unit;
 
 import java.util.List;
 
-public class Level {
+import static amaralus.apps.rogue.generators.RandomGenerator.randElement;
+
+public class Level implements Destroyable {
 
     private Area gameField;
     private List<Area> areas;
@@ -15,13 +18,23 @@ public class Level {
         this.gameField = gameField;
     }
 
-    public void addUnit(Unit entity, Position position) {
+    @Override
+    public void destroy() {
+        gameField.destroy();
+    }
+
+    public void setUpUnit(Unit unit, Position position) {
         Cell cell = gameField.getCell(position);
         if (cell.isCanWalk() && cell.notContainsUnit()) {
-            cell.setUnit(entity);
-            entity.setCurrentCell(cell);
+            cell.setUnit(unit);
+            unit.setCurrentCell(cell);
         }
     }
+
+    public void setUpUnitToRandRoom(Unit unit) {
+        setUpUnit(unit, randElement(rooms).getRandCellPosition());
+    }
+
 
     public Area getGameField() {
         return gameField;

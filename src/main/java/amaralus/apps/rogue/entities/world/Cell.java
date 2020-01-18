@@ -1,11 +1,12 @@
 package amaralus.apps.rogue.entities.world;
 
+import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.graphics.DefaultComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
-public class Cell {
+public class Cell implements Destroyable {
 
     private Position position;
     private Cell topCell;
@@ -23,6 +24,17 @@ public class Cell {
         this.position = position;
         graphicsComponent = DefaultComponentsPool.EMPTY_CELL;
         type = CellType.EMPTY;
+    }
+
+    @Override
+    public void destroy() {
+        topCell = null;
+        bottomCell = null;
+        rightCell = null;
+        leftCell = null;
+        position = null;
+        graphicsComponent = null;
+        unit = null;
     }
 
     public Position getPosition() {

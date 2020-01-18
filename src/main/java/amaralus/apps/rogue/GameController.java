@@ -3,7 +3,6 @@ package amaralus.apps.rogue;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.generators.LevelGenerator;
-import amaralus.apps.rogue.generators.RandomGenerator;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.GraphicsController;
 import javafx.scene.input.KeyCode;
@@ -19,6 +18,7 @@ public class GameController {
 
     private final MainApplication application;
     private final GraphicsController graphicsController;
+    private final LevelGenerator levelGenerator;
 
     private Unit player;
 
@@ -29,14 +29,15 @@ public class GameController {
     public GameController(MainApplication application) {
         this.application = application;
         graphicsController = new GraphicsController(this);
+        levelGenerator = new LevelGenerator();
         application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
 
         try {
-            level = new LevelGenerator().generateLevel();
+            level = levelGenerator.generateLevel();
 
             player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 
-            level.addUnit(player, RandomGenerator.randElement(level.getRooms()).getRandCellPosition());
+            level.setUpUnitToRandRoom(player);
 
             graphicsController.draw();
         } catch (Exception e) {
@@ -61,6 +62,11 @@ public class GameController {
                     break;
                 case LEFT:
                     player.move(LEFT);
+                    break;
+                case SPACE:
+                    level.destroy();
+                    level = levelGenerator.generateLevel();
+                    level.setUpUnitToRandRoom(player);
                     break;
             }
 
