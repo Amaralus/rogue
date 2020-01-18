@@ -12,8 +12,6 @@ import static amaralus.apps.rogue.entities.world.CellType.FLOOR;
 import static amaralus.apps.rogue.entities.world.CellType.WALL;
 import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
 import static amaralus.apps.rogue.graphics.DefaultComponentsPool.*;
-import static amaralus.apps.rogue.graphics.DefaultComponentsPool.BL_CORNER;
-import static amaralus.apps.rogue.graphics.DefaultComponentsPool.BR_CORNER;
 
 public class RoomGenerator {
 
