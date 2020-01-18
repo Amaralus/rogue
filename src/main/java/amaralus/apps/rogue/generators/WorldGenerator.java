@@ -1,6 +1,6 @@
 package amaralus.apps.rogue.generators;
 
-import amaralus.apps.rogue.entities.world.FieldArea;
+import amaralus.apps.rogue.entities.world.Area;
 import amaralus.apps.rogue.entities.world.Room;
 import amaralus.apps.rogue.entities.world.GameField;
 
@@ -24,18 +24,18 @@ public class WorldGenerator {
     }
 
     public Room generateDungeon() {
-        List<FieldArea> areaList = areaGenerator.generateArea(gameField);
+        List<Area> areaList = areaGenerator.generateArea(gameField);
 
         int roomCount = randInt(4, areaList.size());
         areaList = randUniqueElements(areaList, roomCount);
 
         List<Room> roomList = new ArrayList<>(roomCount);
-        for (FieldArea area : areaList) {
+        for (Area area : areaList) {
             roomList.add(roomGenerator.generateRoom(area));
         }
 
         for (Room room : roomList) {
-            corridorGenerator.generateCorridor(gameField, randPositionFromRoom(room), randPositionFromRoom(randElement(roomList)));
+            corridorGenerator.generateCorridor(gameField, room.getRandCellPosition(), randElement(roomList).getRandCellPosition());
         }
 
         return randElement(roomList);

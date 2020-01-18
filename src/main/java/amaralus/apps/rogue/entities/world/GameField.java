@@ -8,14 +8,14 @@ import java.util.List;
 
 public class GameField {
 
-    private final List<List<Cell>> cellLines;
+    private final Area area;
 
     public GameField(int width, int height) {
         if (width <= 0 || height <= 0)
             throw new IllegalArgumentException(
                     String.format("width or height must be greater than zero, but was: width=%d height=%d", width, height));
 
-        cellLines = new ArrayList<>(height);
+        List<List<Cell>> cellLines = new ArrayList<>(height);
 
         for (int y = 0; y < height; y++) {
             List<Cell> cellLine = createCellLine(y, width);
@@ -23,6 +23,7 @@ public class GameField {
 
             if (y > 0) connectCellLines(cellLines.get(y - 1), cellLine);
         }
+        area = new Area(cellLines);
     }
 
     private List<Cell> createCellLine(int y, int width) {
@@ -53,15 +54,15 @@ public class GameField {
     }
 
     public Cell getCell(int x, int y) {
-        return cellLines.get(y).get(x);
+        return area.getCell(x, y);
     }
 
     public List<List<Cell>> getCellLines() {
-        return cellLines;
+        return area.getCells();
     }
 
     public void addUnit(Unit entity, Position position) {
-        Cell cell = getCell(position.x(), position.y());
+        Cell cell = area.getCell(position);
         if (cell.isCanWalk() && cell.notContainsUnit()) {
             cell.setUnit(entity);
             entity.setCurrentCell(cell);

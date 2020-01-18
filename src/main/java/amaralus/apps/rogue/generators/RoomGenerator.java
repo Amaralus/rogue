@@ -1,13 +1,12 @@
 package amaralus.apps.rogue.generators;
 
 import amaralus.apps.rogue.entities.world.Cell;
-import amaralus.apps.rogue.entities.world.FieldArea;
+import amaralus.apps.rogue.entities.world.Area;
 import amaralus.apps.rogue.entities.world.Room;
 import amaralus.apps.rogue.graphics.DefaultComponentsPool;
 
 import java.util.List;
 
-import static amaralus.apps.rogue.Utils.subField;
 import static amaralus.apps.rogue.entities.world.CellType.FLOOR;
 import static amaralus.apps.rogue.entities.world.CellType.WALL;
 import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
@@ -15,18 +14,18 @@ import static amaralus.apps.rogue.graphics.DefaultComponentsPool.*;
 
 public class RoomGenerator {
 
-    public Room generateRoom(FieldArea area) {
+    public Room generateRoom(Area area) {
         int roomHeight = randInt(5, area.getHeight());
         int roomWidth = randInt(5, area.getWidth());
 
         if (roomWidth > 20) roomWidth = 20;
 
-        return generateRoom(subField(
-                area.getAreaCells(),
+        return generateRoom(area.subArea(
                 randInt(area.getWidth() - roomWidth),
                 randInt(area.getHeight() - roomHeight),
                 roomWidth,
-                roomHeight));
+                roomHeight)
+                .getCells());
     }
 
     public Room generateRoom(List<List<Cell>> roomCells) {
@@ -59,6 +58,6 @@ public class RoomGenerator {
         roomCells.get(height - 1).get(0).setGraphicsComponent(BL_CORNER);
         roomCells.get(height - 1).get(width - 1).setGraphicsComponent(BR_CORNER);
 
-        return new Room(roomCells, roomCells.get(0).get(0).getPosition());
+        return new Room(roomCells);
     }
 }

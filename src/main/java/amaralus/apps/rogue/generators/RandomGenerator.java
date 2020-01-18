@@ -1,8 +1,5 @@
 package amaralus.apps.rogue.generators;
 
-import amaralus.apps.rogue.entities.Position;
-import amaralus.apps.rogue.entities.world.Room;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -61,13 +58,6 @@ public final class RandomGenerator {
         }
 
         return randomElements;
-    }
-
-    public static Position randPositionFromRoom(Room room) {
-        int x = excRandInt(0, room.getWidth() - 1);
-        int y = excRandInt(0, room.getHeight() - 1);
-
-        return room.getRoomCells().get(y).get(x).getPosition();
     }
 
     public long getSeed() {

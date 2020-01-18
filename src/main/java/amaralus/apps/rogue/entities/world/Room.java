@@ -1,36 +1,17 @@
 package amaralus.apps.rogue.entities.world;
 
-import amaralus.apps.rogue.entities.Position;
-
 import java.util.List;
 
-public class Room {
+import static amaralus.apps.rogue.generators.RandomGenerator.excRandInt;
 
-    private final List<List<Cell>> roomCells;
-    private final Position position;
-    private final int width;
-    private final int height;
+public class Room extends Area {
 
-    public Room(List<List<Cell>> roomCells, Position position) {
-        this.position = position;
-        this.roomCells = roomCells;
-        this.width = roomCells.get(0).size();
-        this.height = roomCells.size();
+    public Room(List<List<Cell>> cells) {
+        super(cells);
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public List<List<Cell>> getRoomCells() {
-        return roomCells;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
+    @Override
+    public Cell getRandCell() {
+        return getCell(excRandInt(0, getWidth() - 1), excRandInt(0, getHeight() - 1));
     }
 }

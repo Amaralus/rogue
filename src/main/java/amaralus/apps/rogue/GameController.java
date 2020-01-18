@@ -3,7 +3,6 @@ package amaralus.apps.rogue;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.GameField;
 import amaralus.apps.rogue.entities.world.Room;
-import amaralus.apps.rogue.generators.RandomGenerator;
 import amaralus.apps.rogue.generators.WorldGenerator;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.GraphicsController;
@@ -41,7 +40,7 @@ public class GameController {
 
             player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 
-            gameField.addUnit(player, RandomGenerator.randPositionFromRoom(room));
+            gameField.addUnit(player, room.getRandCellPosition());
 
             graphicsController.draw();
         } catch (Exception e) {
