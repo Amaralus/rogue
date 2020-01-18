@@ -1,28 +1,69 @@
 package amaralus.apps.rogue.generators;
 
+import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Area;
-import amaralus.apps.rogue.entities.world.GameField;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static amaralus.apps.rogue.generators.RandomGenerator.excRandInt;
-
-public class BspAreaGenerator {
+public class AreaGenerator {
 
     private static final int MIN_AREA_SIZE = 4;
     private static final int MIN_X_AREA_SIZE = MIN_AREA_SIZE * 4;
     private static final int MIN_Y_AREA_SIZE = MIN_AREA_SIZE * 2;
 
-    public List<Area> generateArea(GameField gameField) {
+    public Area generateArea(int width, int height) {
+        if (width <= 0 || height <= 0)
+            throw new IllegalArgumentException(
+                    String.format("width or height must be greater than zero, but was: width=%d height=%d", width, height));
+
+        List<List<Cell>> cells = new ArrayList<>(height);
+
+        for (int y = 0; y < height; y++) {
+            List<Cell> cellLine = createCellLine(y, width);
+            cells.add(cellLine);
+
+            if (y > 0) connectCellLines(cells.get(y - 1), cellLine);
+        }
+        return new Area(cells);
+    }
+
+    public List<Area> bspSplitArea(Area area) {
         List<Area> areas = new ArrayList<>();
 
-        for (Area area : splitByY(gameField.getCellLines(), 2))
-            areas.addAll(splitByX(area.getCells(), 2));
+        for (Area subArea : splitByY(area.getCells(), 2))
+            areas.addAll(splitByX(subArea.getCells(), 2));
 
         return areas;
+    }
+
+    private List<Cell> createCellLine(int y, int width) {
+        List<Cell> cellLine = new ArrayList<>(width);
+
+        for (int x = 0; x < width; x++) {
+            Cell cell = new Cell(Position.of(x, y));
+            cellLine.add(cell);
+
+            if (x > 0) {
+                Cell prevCell = cellLine.get(x - 1);
+                prevCell.setRightCell(cell);
+                cell.setLeftCell(prevCell);
+            }
+        }
+
+        return cellLine;
+    }
+
+    private void connectCellLines(List<Cell> topLine, List<Cell> bottomLine) {
+        for (int i = 0; i < topLine.size(); i++) {
+            Cell topCell = topLine.get(i);
+            Cell bottomCell = bottomLine.get(i);
+
+            topCell.setBottomCell(bottomCell);
+            bottomCell.setTopCell(topCell);
+        }
     }
 
     private List<Area> splitByY(List<List<Cell>> fieldList, int deepCount) {

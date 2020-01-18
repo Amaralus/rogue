@@ -22,7 +22,7 @@ public class GraphicsController {
     public void draw() {
         List<Text> textList = new ArrayList<>(30);
 
-        for (List<Cell> cellLine : gameController.getGameField().getCellLines()) {
+        for (List<Cell> cellLine : gameController.getLevel().getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
 
             // текущий цвет для определения новых цветов

@@ -19,7 +19,7 @@ public class Cell {
     private Unit unit;
     private boolean canWalk = false;
 
-    Cell(Position position) {
+    public Cell(Position position) {
         this.position = position;
         graphicsComponent = DefaultComponentsPool.EMPTY_CELL;
         type = CellType.EMPTY;
@@ -57,19 +57,19 @@ public class Cell {
         return leftCell;
     }
 
-    void setTopCell(Cell topCell) {
+    public void setTopCell(Cell topCell) {
         this.topCell = topCell;
     }
 
-    void setBottomCell(Cell bottomCell) {
+    public void setBottomCell(Cell bottomCell) {
         this.bottomCell = bottomCell;
     }
 
-    void setRightCell(Cell rightCell) {
+    public void setRightCell(Cell rightCell) {
         this.rightCell = rightCell;
     }
 
-    void setLeftCell(Cell leftCell) {
+    public void setLeftCell(Cell leftCell) {
         this.leftCell = leftCell;
     }
     

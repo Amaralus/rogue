@@ -1,9 +1,9 @@
 package amaralus.apps.rogue;
 
 import amaralus.apps.rogue.entities.units.Unit;
-import amaralus.apps.rogue.entities.world.GameField;
-import amaralus.apps.rogue.entities.world.Room;
-import amaralus.apps.rogue.generators.WorldGenerator;
+import amaralus.apps.rogue.entities.world.Level;
+import amaralus.apps.rogue.generators.LevelGenerator;
+import amaralus.apps.rogue.generators.RandomGenerator;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.GraphicsController;
 import javafx.scene.input.KeyCode;
@@ -24,7 +24,7 @@ public class GameController {
 
     private boolean handleEvents = true;
 
-    private GameField gameField;
+    private Level level;
 
     public GameController(MainApplication application) {
         this.application = application;
@@ -32,15 +32,11 @@ public class GameController {
         application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
 
         try {
-            gameField = new GameField(120, 30);
-
-            WorldGenerator worldGenerator = new WorldGenerator(gameField);
-
-            Room room = worldGenerator.generateDungeon();
+            level = new LevelGenerator().generateLevel();
 
             player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 
-            gameField.addUnit(player, room.getRandCellPosition());
+            level.addUnit(player, RandomGenerator.randElement(level.getRooms()).getRandCellPosition());
 
             graphicsController.draw();
         } catch (Exception e) {
@@ -93,7 +89,7 @@ public class GameController {
         }
     }
 
-    public GameField getGameField() {
-        return gameField;
+    public Level getLevel() {
+        return level;
     }
 }

@@ -1,8 +1,8 @@
 package amaralus.apps.rogue.generators;
 
 import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.world.Area;
 import amaralus.apps.rogue.entities.world.Cell;
-import amaralus.apps.rogue.entities.world.GameField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +15,13 @@ import static amaralus.apps.rogue.graphics.DefaultComponentsPool.DOOR;
 
 public class CorridorGenerator {
 
-    public void generateCorridor(GameField gameField, Position from, Position to) {
+    public void generateCorridor(Area area, Position from, Position to) {
         boolean altWay = randBoolean();
 
         List<UnaryOperator<Cell>> movementList = getFuncList(from, to, altWay);
         movementList.addAll(getFuncList(from, to, !altWay));
 
-        Cell currentCell = gameField.getCell(from.x(), from.y());
+        Cell currentCell = area.getCell(from);
         updateCell(currentCell);
 
         for (UnaryOperator<Cell> next : movementList) {
