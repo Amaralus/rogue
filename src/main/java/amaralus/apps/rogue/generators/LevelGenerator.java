@@ -13,6 +13,7 @@ public class LevelGenerator {
 
     private static final int LEVEL_WIDTH = 120;
     private static final int LEVEL_HEIGHT = 29;
+    private static final int MIN_ROOM_COUNT = 6;
 
     private RoomGenerator roomGenerator;
     private CorridorGenerator corridorGenerator;
@@ -39,17 +40,19 @@ public class LevelGenerator {
                 index = excRandInt(rooms.size());
             } while (index == i);
 
-            corridorGenerator.generateCorridor(
-                    level.getGameField(),
-                    rooms.get(i).getRandCellPosition(),
-                    rooms.get(index).getRandCellPosition());
+            corridorGenerator.generateCorridor(rooms.get(i), rooms.get(index));
         }
+
+        Room first = rooms.get(0);
+        Room last = rooms.get(rooms.size() - 1);
+
+        corridorGenerator.generateCorridor(first, last);
 
         return level;
     }
 
     private void generateRooms(Level level) {
-        int roomCount = randInt(4, level.getAreas().size());
+        int roomCount = randInt(MIN_ROOM_COUNT, level.getAreas().size());
         List<Area> randomAreas = randUniqueElements(level.getAreas(), roomCount);
 
         List<Room> rooms = new ArrayList<>(roomCount);

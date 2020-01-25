@@ -19,4 +19,14 @@ public enum Direction {
     public Cell nextCell(Cell cell) {
         return nextCellOperator.apply(cell);
     }
+
+    public Direction reverse() {
+        switch (this) {
+            case TOP: return BOTTOM;
+            case BOTTOM: return TOP;
+            case RIGHT: return LEFT;
+            case LEFT: return RIGHT;
+            default: throw new UnsupportedOperationException("no reverse direction for: " + this);
+        }
+    }
 }
