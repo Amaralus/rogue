@@ -43,11 +43,6 @@ public class LevelGenerator {
             corridorGenerator.generateCorridor(rooms.get(i), rooms.get(index));
         }
 
-        Room first = rooms.get(0);
-        Room last = rooms.get(rooms.size() - 1);
-
-        corridorGenerator.generateCorridor(first, last);
-
         return level;
     }
 

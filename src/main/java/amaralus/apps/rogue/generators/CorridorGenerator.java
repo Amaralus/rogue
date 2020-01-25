@@ -3,6 +3,7 @@ package amaralus.apps.rogue.generators;
 import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.world.Cell;
+import amaralus.apps.rogue.entities.world.Corridor;
 import amaralus.apps.rogue.entities.world.Room;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import static amaralus.apps.rogue.graphics.DefaultComponentsPool.DOOR;
 
 public class CorridorGenerator {
 
-    public void generateCorridor(Room startRoom, Room finishRoom) {
+    public Corridor generateCorridor(Room startRoom, Room finishRoom) {
 
         List<Cell> corridorCells;
         boolean validCorridor;
@@ -37,9 +38,16 @@ public class CorridorGenerator {
 
         corridorCells.forEach(this::updateCell);
 
-        corridorCells = corridorCells.stream()
+        Corridor corridor = new Corridor(corridorCells.stream()
                 .filter(cell -> CORRIDOR == cell.getType() || WALL == cell.getType())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+
+        corridor.addRoom(startRoom);
+        corridor.addRoom(finishRoom);
+        startRoom.addCorridor(corridor);
+        finishRoom.addCorridor(corridor);
+
+        return corridor;
     }
 
     private boolean tryGenerate(Cell from, Cell to, List<Direction> directions, List<Cell> corridorCells) {
