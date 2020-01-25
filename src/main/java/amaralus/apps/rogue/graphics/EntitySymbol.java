@@ -10,7 +10,7 @@ public enum EntitySymbol {
     WALL_TOP_RIGHT('\u2557'),
     WALL_BOTTOM_LEFT('\u255a'),
     WALL_BOTTOM_RIGHT('\u255d'),
-    CENTRAL_DOT('\u2219'),
+    COLON(':'),
     SHADE('\u2591'),
     LINE_VERTICAL('\u2502'),
     LINE_HORIZONTAL('\u2500'),
