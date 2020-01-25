@@ -4,6 +4,7 @@ import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
@@ -22,11 +23,14 @@ public class Area implements Destroyable {
 
     @Override
     public void destroy() {
+        forEachCell(Cell::destroy);
+    }
+
+    public void forEachCell(Consumer<? super Cell> action) {
         for (List<Cell> cellList : cells) {
             for (Cell cell : cellList) {
-                cell.destroy();
+                action.accept(cell);
             }
-            cellList.clear();
         }
     }
 

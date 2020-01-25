@@ -11,6 +11,9 @@ import static amaralus.apps.rogue.generators.RandomGenerator.*;
 
 public class LevelGenerator {
 
+    private static final int LEVEL_WIDTH = 120;
+    private static final int LEVEL_HEIGHT = 29;
+
     private RoomGenerator roomGenerator;
     private CorridorGenerator corridorGenerator;
     private AreaGenerator areaGenerator;
@@ -22,17 +25,24 @@ public class LevelGenerator {
     }
 
     public Level generateLevel() {
-        Level level = new Level(areaGenerator.generateArea(120, 30));
+        Level level = new Level(areaGenerator.generateArea(LEVEL_WIDTH, LEVEL_HEIGHT));
 
         level.setAreas(areaGenerator.bspSplitArea(level.getGameField()));
 
         generateRooms(level);
 
-        for (Room room : level.getRooms()) {
+        List<Room> rooms = level.getRooms();
+
+        for (int i = 0; i < rooms.size(); i++) {
+            int index;
+            do {
+                index = excRandInt(rooms.size());
+            } while (index == i);
+
             corridorGenerator.generateCorridor(
                     level.getGameField(),
-                    room.getRandCellPosition(),
-                    randElement(level.getRooms()).getRandCellPosition());
+                    rooms.get(i).getRandCellPosition(),
+                    rooms.get(index).getRandCellPosition());
         }
 
         return level;

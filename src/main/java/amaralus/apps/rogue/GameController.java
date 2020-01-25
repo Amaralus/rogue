@@ -51,6 +51,9 @@ public class GameController {
 
         try {
             switch (key) {
+                case ESCAPE:
+                    exitGame();
+                    break;
                 case UP:
                     player.move(TOP);
                     break;
