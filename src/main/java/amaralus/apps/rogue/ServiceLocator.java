@@ -23,15 +23,15 @@ public final class ServiceLocator {
         ServiceLocator.levelGenerator = levelGenerator;
     }
 
-    public static GameController getGameController() {
+    public static GameController gameController() {
         return gameController;
     }
 
-    public static GraphicsController getGraphicsController() {
+    public static GraphicsController graphicsController() {
         return graphicsController;
     }
 
-    public static LevelGenerator getLevelGenerator() {
+    public static LevelGenerator levelGenerator() {
         return levelGenerator;
     }
 }

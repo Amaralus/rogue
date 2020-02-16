@@ -1,22 +1,23 @@
 package amaralus.apps.rogue.graphics.screens;
 
-import amaralus.apps.rogue.ServiceLocator;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import javafx.scene.input.KeyCode;
 
+import static amaralus.apps.rogue.ServiceLocator.*;
 import static amaralus.apps.rogue.entities.Direction.*;
 import static amaralus.apps.rogue.graphics.EntitySymbol.SMILING_FACE;
 import static amaralus.apps.rogue.graphics.Palette.YELLOW;
 
 public class GameScreen extends Screen {
 
+    private Screen testScreen;
     private Level level;
     private Unit player;
 
     public GameScreen() {
-        level = ServiceLocator.getLevelGenerator().generateLevel();
+        level = levelGenerator().generateLevel();
 
         player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 
@@ -27,7 +28,7 @@ public class GameScreen extends Screen {
     public void handleKey(KeyCode key) {
         switch (key) {
             case ESCAPE:
-                ServiceLocator.getGameController().exitGame();
+                gameController().exitGame();
                 break;
             case UP:
                 player.move(TOP);
@@ -43,14 +44,21 @@ public class GameScreen extends Screen {
                 break;
             case SPACE:
                 level.destroy();
-                level = ServiceLocator.getLevelGenerator().generateLevel();
+                level = levelGenerator().generateLevel();
                 level.setUpUnitToRandRoom(player);
+                break;
+            case T:
+                setActive(testScreen);
                 break;
         }
     }
 
     @Override
     public void draw() {
-        ServiceLocator.getGraphicsController().draw(level);
+        graphicsController().draw(level);
+    }
+
+    public void setTestScreen(Screen testScreen) {
+        this.testScreen = testScreen;
     }
 }

@@ -4,6 +4,7 @@ import amaralus.apps.rogue.generators.LevelGenerator;
 import amaralus.apps.rogue.graphics.GraphicsController;
 import amaralus.apps.rogue.graphics.screens.GameScreen;
 import amaralus.apps.rogue.graphics.screens.Screen;
+import amaralus.apps.rogue.graphics.screens.TestScreen;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
@@ -23,7 +24,12 @@ public class GameController extends KeyHandler {
         application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
 
         try {
-            Screen gameScreen = new GameScreen();
+            GameScreen gameScreen = new GameScreen();
+            TestScreen testScreen = new TestScreen();
+
+            gameScreen.setTestScreen(testScreen);
+            testScreen.setGameScreen(gameScreen);
+
             Screen.setActive(gameScreen);
 
             Screen.getActive().draw();

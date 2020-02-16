@@ -17,7 +17,7 @@ public class GraphicsController {
     public void draw(Level level) {
         List<Text> textList = new ArrayList<>(30);
 
-        textList.add(createText("TEST! TOP PANEL! TEST!\n", Palette.WHITE_GRAY));
+        textList.add(createText("TEST! TOP PANEL! TEST! PRESS T TO CHANGE SCREEN!\n", Palette.WHITE_GRAY));
         for (List<Cell> cellLine : level.getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
 
@@ -42,12 +42,12 @@ public class GraphicsController {
             textList.add(createText(builder.toString(), currentColor));
         }
 
-        textList.add(createText("TEST! BOTTOM PANEL! TEST!\n", Palette.WHITE_GRAY));
+        textList.add(createText("TEST! BOTTOM PANEL! TEST! PRESS T TO CHANGE SCREEN!\n", Palette.WHITE_GRAY));
 
-        ServiceLocator.getGameController().updateTexts(textList);
+        ServiceLocator.gameController().updateTexts(textList);
     }
 
-    private Text createText(String string, Color color) {
+    public Text createText(String string, Color color) {
         Text text = new Text(string);
         text.setFont(font);
         text.setFill(color);
