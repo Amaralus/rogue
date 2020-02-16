@@ -4,10 +4,14 @@ rogue-like game
 
 Java 1.8 + JavaFX
 
-### How to run application and controls
+### How to run application
 
 Build: `mvn clean package`
 
 Double click to jar file
 
-`Arrow keys` to move, `space` to regenerate dungeon
+### Controls
+
+- `Arrow keys` to move
+- `Space` to regenerate dungeon
+- `Esc` to exit
