@@ -1,6 +1,6 @@
 package amaralus.apps.rogue.graphics;
 
-import amaralus.apps.rogue.GameController;
+import amaralus.apps.rogue.ServiceLocator;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Level;
 import javafx.scene.paint.Color;
@@ -12,13 +12,7 @@ import java.util.List;
 
 public class GraphicsController {
 
-    private final GameController gameController;
-
     private final Font font = new Font("Courier New", 16);
-
-    public GraphicsController(GameController gameController) {
-        this.gameController = gameController;
-    }
 
     public void draw(Level level) {
         List<Text> textList = new ArrayList<>(30);
@@ -50,7 +44,7 @@ public class GraphicsController {
 
         textList.add(createText("TEST! BOTTOM PANEL! TEST!\n", Palette.WHITE_GRAY));
 
-        gameController.updateTexts(textList);
+        ServiceLocator.getGameController().updateTexts(textList);
     }
 
     private Text createText(String string, Color color) {

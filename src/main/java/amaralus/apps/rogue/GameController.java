@@ -12,21 +12,20 @@ import java.util.List;
 public class GameController {
 
     private final MainApplication application;
-    private final GraphicsController graphicsController;
-    private final LevelGenerator levelGenerator;
-
-    private Screen gameScreen;
 
     private boolean handleEvents = true;
 
     public GameController(MainApplication application) {
         this.application = application;
-        graphicsController = new GraphicsController(this);
-        levelGenerator = new LevelGenerator();
+
+        ServiceLocator.provide(this);
+        ServiceLocator.provide(new GraphicsController());
+        ServiceLocator.provide(new LevelGenerator());
+
         application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
 
         try {
-            gameScreen = new GameScreen(this, graphicsController);
+            Screen gameScreen = new GameScreen();
             Screen.setActive(gameScreen);
 
             Screen.getActive().draw();
@@ -67,7 +66,4 @@ public class GameController {
         }
     }
 
-    public LevelGenerator getLevelGenerator() {
-        return levelGenerator;
-    }
 }

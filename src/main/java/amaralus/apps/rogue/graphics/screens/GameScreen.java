@@ -1,10 +1,9 @@
 package amaralus.apps.rogue.graphics.screens;
 
-import amaralus.apps.rogue.GameController;
+import amaralus.apps.rogue.ServiceLocator;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
-import amaralus.apps.rogue.graphics.GraphicsController;
 import javafx.scene.input.KeyCode;
 
 import static amaralus.apps.rogue.entities.Direction.*;
@@ -13,15 +12,11 @@ import static amaralus.apps.rogue.graphics.Palette.YELLOW;
 
 public class GameScreen extends Screen {
 
-    private GameController gameController;
-    private GraphicsController graphicsController;
     private Level level;
     private Unit player;
 
-    public GameScreen(GameController gameController, GraphicsController graphicsController) {
-        this.gameController = gameController;
-        this.graphicsController = graphicsController;
-        level = gameController.getLevelGenerator().generateLevel();
+    public GameScreen() {
+        level = ServiceLocator.getLevelGenerator().generateLevel();
 
         player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
 
@@ -32,7 +27,7 @@ public class GameScreen extends Screen {
     public void handleEvent(KeyCode key) {
         switch (key) {
             case ESCAPE:
-                gameController.exitGame();
+                ServiceLocator.getGameController().exitGame();
                 break;
             case UP:
                 player.move(TOP);
@@ -48,7 +43,7 @@ public class GameScreen extends Screen {
                 break;
             case SPACE:
                 level.destroy();
-                level = gameController.getLevelGenerator().generateLevel();
+                level = ServiceLocator.getLevelGenerator().generateLevel();
                 level.setUpUnitToRandRoom(player);
                 break;
         }
@@ -56,6 +51,6 @@ public class GameScreen extends Screen {
 
     @Override
     public void draw() {
-        graphicsController.draw(level);
+        ServiceLocator.getGraphicsController().draw(level);
     }
 }
