@@ -1,5 +1,6 @@
-package amaralus.apps.rogue;
+package amaralus.apps.rogue.services;
 
+import amaralus.apps.rogue.MainApplication;
 import amaralus.apps.rogue.generators.LevelGenerator;
 import amaralus.apps.rogue.graphics.GraphicsController;
 import amaralus.apps.rogue.graphics.screens.GameScreen;
@@ -21,7 +22,7 @@ public class GameController extends KeyHandler {
         ServiceLocator.provide(new GraphicsController());
         ServiceLocator.provide(new LevelGenerator());
 
-        application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
+        application.getScene().setOnKeyPressed(event -> handleKey(event.getCode()));
 
         try {
             GameScreen gameScreen = new GameScreen();
@@ -38,8 +39,9 @@ public class GameController extends KeyHandler {
         }
     }
 
-    @Override
-    protected void handleKey(KeyCode key) {
+    public void handleKey(KeyCode key) {
+        if (!keyHandlingEnabled()) return;
+
         try {
             Screen.getActive().handleKey(key);
 

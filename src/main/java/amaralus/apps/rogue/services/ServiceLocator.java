@@ -1,4 +1,4 @@
-package amaralus.apps.rogue;
+package amaralus.apps.rogue.services;
 
 import amaralus.apps.rogue.generators.LevelGenerator;
 import amaralus.apps.rogue.graphics.GraphicsController;

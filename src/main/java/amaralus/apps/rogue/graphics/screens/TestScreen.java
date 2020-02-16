@@ -6,21 +6,20 @@ import javafx.scene.text.Text;
 
 import java.util.Collections;
 
-import static amaralus.apps.rogue.ServiceLocator.*;
+import static amaralus.apps.rogue.services.ServiceLocator.*;
 
 public class TestScreen extends Screen {
 
     private Screen gameScreen;
 
+    public TestScreen() {
+        addKeyAction(KeyCode.ESCAPE, () -> setActive(gameScreen));
+    }
+
     @Override
     public void draw() {
         Text text = graphicsController().createText("TEST SCREEN! PRESS ESC TO RETURN!", Palette.WHITE_GRAY);
         gameController().updateTexts(Collections.singletonList(text));
-    }
-
-    @Override
-    protected void handleKey(KeyCode key) {
-        if (key == KeyCode.ESCAPE) setActive(gameScreen);
     }
 
     public void setGameScreen(Screen gameScreen) {

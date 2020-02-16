@@ -1,6 +1,6 @@
 package amaralus.apps.rogue.graphics.screens;
 
-import amaralus.apps.rogue.KeyHandler;
+import amaralus.apps.rogue.services.KeyHandler;
 
 public abstract class Screen extends KeyHandler {
 

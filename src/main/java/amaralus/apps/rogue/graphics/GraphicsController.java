@@ -1,6 +1,6 @@
 package amaralus.apps.rogue.graphics;
 
-import amaralus.apps.rogue.ServiceLocator;
+import amaralus.apps.rogue.services.ServiceLocator;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Level;
 import javafx.scene.paint.Color;
