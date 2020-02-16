@@ -1,18 +1,13 @@
 package amaralus.apps.rogue;
 
-import amaralus.apps.rogue.entities.units.Unit;
-import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.generators.LevelGenerator;
-import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.GraphicsController;
+import amaralus.apps.rogue.graphics.screens.GameScreen;
+import amaralus.apps.rogue.graphics.screens.Screen;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
 import java.util.List;
-
-import static amaralus.apps.rogue.entities.Direction.*;
-import static amaralus.apps.rogue.graphics.EntitySymbol.SMILING_FACE;
-import static amaralus.apps.rogue.graphics.Palette.YELLOW;
 
 public class GameController {
 
@@ -20,11 +15,9 @@ public class GameController {
     private final GraphicsController graphicsController;
     private final LevelGenerator levelGenerator;
 
-    private Unit player;
+    private Screen gameScreen;
 
     private boolean handleEvents = true;
-
-    private Level level;
 
     public GameController(MainApplication application) {
         this.application = application;
@@ -33,13 +26,10 @@ public class GameController {
         application.getScene().setOnKeyPressed(event -> handleKeyEvent(event.getCode()));
 
         try {
-            level = levelGenerator.generateLevel();
+            gameScreen = new GameScreen(this, graphicsController);
+            Screen.setActive(gameScreen);
 
-            player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
-
-            level.setUpUnitToRandRoom(player);
-
-            graphicsController.draw();
+            Screen.getActive().draw();
         } catch (Exception e) {
             showErrorAndExit(e);
         }
@@ -50,30 +40,9 @@ public class GameController {
             return;
 
         try {
-            switch (key) {
-                case ESCAPE:
-                    exitGame();
-                    break;
-                case UP:
-                    player.move(TOP);
-                    break;
-                case DOWN:
-                    player.move(BOTTOM);
-                    break;
-                case RIGHT:
-                    player.move(RIGHT);
-                    break;
-                case LEFT:
-                    player.move(LEFT);
-                    break;
-                case SPACE:
-                    level.destroy();
-                    level = levelGenerator.generateLevel();
-                    level.setUpUnitToRandRoom(player);
-                    break;
-            }
+            Screen.getActive().handleEvent(key);
 
-            graphicsController.draw();
+            Screen.getActive().draw();
         } catch (Exception e) {
             showErrorAndExit(e);
         }
@@ -98,7 +67,7 @@ public class GameController {
         }
     }
 
-    public Level getLevel() {
-        return level;
+    public LevelGenerator getLevelGenerator() {
+        return levelGenerator;
     }
 }

@@ -2,6 +2,7 @@ package amaralus.apps.rogue.graphics;
 
 import amaralus.apps.rogue.GameController;
 import amaralus.apps.rogue.entities.world.Cell;
+import amaralus.apps.rogue.entities.world.Level;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -19,10 +20,11 @@ public class GraphicsController {
         this.gameController = gameController;
     }
 
-    public void draw() {
+    public void draw(Level level) {
         List<Text> textList = new ArrayList<>(30);
 
-        for (List<Cell> cellLine : gameController.getLevel().getGameField().getCells()) {
+        textList.add(createText("TEST! TOP PANEL! TEST!\n", Palette.WHITE_GRAY));
+        for (List<Cell> cellLine : level.getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
 
             // текущий цвет для определения новых цветов
@@ -45,6 +47,8 @@ public class GraphicsController {
 
             textList.add(createText(builder.toString(), currentColor));
         }
+
+        textList.add(createText("TEST! BOTTOM PANEL! TEST!\n", Palette.WHITE_GRAY));
 
         gameController.updateTexts(textList);
     }

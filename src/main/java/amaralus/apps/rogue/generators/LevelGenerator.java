@@ -12,7 +12,7 @@ import static amaralus.apps.rogue.generators.RandomGenerator.*;
 public class LevelGenerator {
 
     private static final int LEVEL_WIDTH = 120;
-    private static final int LEVEL_HEIGHT = 29;
+    private static final int LEVEL_HEIGHT = 28;
     private static final int MIN_ROOM_COUNT = 6;
 
     private RoomGenerator roomGenerator;
