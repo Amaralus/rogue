@@ -24,7 +24,7 @@ public class GameScreen extends Screen {
     }
 
     @Override
-    public void handleEvent(KeyCode key) {
+    public void handleKey(KeyCode key) {
         switch (key) {
             case ESCAPE:
                 ServiceLocator.getGameController().exitGame();

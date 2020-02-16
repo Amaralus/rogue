@@ -9,11 +9,9 @@ import javafx.scene.text.Text;
 
 import java.util.List;
 
-public class GameController {
+public class GameController extends KeyHandler {
 
     private final MainApplication application;
-
-    private boolean handleEvents = true;
 
     public GameController(MainApplication application) {
         this.application = application;
@@ -34,12 +32,10 @@ public class GameController {
         }
     }
 
-    public void handleKeyEvent(KeyCode key) {
-        if (!handleEvents)
-            return;
-
+    @Override
+    protected void handleKey(KeyCode key) {
         try {
-            Screen.getActive().handleEvent(key);
+            Screen.getActive().handleKey(key);
 
             Screen.getActive().draw();
         } catch (Exception e) {
@@ -53,7 +49,7 @@ public class GameController {
     }
 
     public void showErrorAndExit(Exception e) {
-        handleEvents = false;
+        enableKeyHandling(false);
         application.showAlert(e);
         exitGame();
     }

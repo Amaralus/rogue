@@ -1,8 +1,8 @@
 package amaralus.apps.rogue.graphics.screens;
 
-import javafx.scene.input.KeyCode;
+import amaralus.apps.rogue.KeyHandler;
 
-public abstract class Screen {
+public abstract class Screen extends KeyHandler {
 
     private static Screen activeScreen;
 
@@ -13,8 +13,6 @@ public abstract class Screen {
     public static void setActive(Screen activeScreen) {
         Screen.activeScreen = activeScreen;
     }
-
-    public abstract void handleEvent(KeyCode key);
 
     public abstract void draw();
 }
