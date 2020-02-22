@@ -4,6 +4,8 @@ import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
@@ -11,23 +13,35 @@ import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
 public class Area implements Destroyable {
 
     private final List<List<Cell>> cells;
+    private final Position position;
     private final int height;
     private final int width;
 
     public Area(List<List<Cell>> cells) {
         this.cells = cells;
+        position = cells.get(0).get(0).getPosition();
         height = cells.size();
         width = cells.get(0).size();
     }
 
     @Override
     public void destroy() {
+        forEachCell(Cell::destroy);
+    }
+
+    public void forEachCell(Consumer<? super Cell> action) {
         for (List<Cell> cellList : cells) {
             for (Cell cell : cellList) {
-                cell.destroy();
+                action.accept(cell);
             }
-            cellList.clear();
         }
+    }
+
+    public boolean contains(Cell cell) {
+        for (List<Cell> cellList : cells)
+            if (cellList.contains(cell))
+                return true;
+        return false;
     }
 
     public Area subArea(int x, int y, int width, int height) {
@@ -61,7 +75,7 @@ public class Area implements Destroyable {
     }
 
     public Position getPosition() {
-        return cells.get(0).get(0).getPosition();
+        return position;
     }
 
     public int getHeight() {
@@ -70,5 +84,18 @@ public class Area implements Destroyable {
 
     public int getWidth() {
         return width;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Area area = (Area) o;
+        return Objects.equals(position, area.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position);
     }
 }

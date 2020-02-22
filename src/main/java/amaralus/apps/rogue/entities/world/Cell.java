@@ -6,9 +6,11 @@ import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.graphics.DefaultComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
+import java.util.Objects;
+
 public class Cell implements Destroyable {
 
-    private Position position;
+    private final Position position;
     private Cell topCell;
     private Cell bottomCell;
     private Cell rightCell;
@@ -32,7 +34,6 @@ public class Cell implements Destroyable {
         bottomCell = null;
         rightCell = null;
         leftCell = null;
-        position = null;
         graphicsComponent = null;
         unit = null;
     }
@@ -127,13 +128,6 @@ public class Cell implements Destroyable {
         return graphicsComponent;
     }
 
-    public GraphicsComponent getActualGraphicsComponent() {
-        if (containsUnit())
-            return unit.getGraphicsComponent();
-        else
-            return graphicsComponent;
-    }
-
     // сущность
 
     public Unit getUnit() {
@@ -160,5 +154,18 @@ public class Cell implements Destroyable {
 
     public boolean isCanWalk() {
         return canWalk;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cell cell = (Cell) o;
+        return Objects.equals(position, cell.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position);
     }
 }

@@ -1,33 +1,138 @@
 package amaralus.apps.rogue.generators;
 
+import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.Position;
-import amaralus.apps.rogue.entities.world.Area;
 import amaralus.apps.rogue.entities.world.Cell;
+import amaralus.apps.rogue.entities.world.Corridor;
+import amaralus.apps.rogue.entities.world.Room;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.UnaryOperator;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
-import static amaralus.apps.rogue.entities.world.CellType.*;
-import static amaralus.apps.rogue.generators.RandomGenerator.randBoolean;
+import static amaralus.apps.rogue.entities.Direction.*;
+import static amaralus.apps.rogue.entities.world.CellType.CORRIDOR;
+import static amaralus.apps.rogue.entities.world.CellType.EMPTY;
+import static amaralus.apps.rogue.entities.world.CellType.WALL;
+import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.DefaultComponentsPool.CORRIDOR_FLOR;
 import static amaralus.apps.rogue.graphics.DefaultComponentsPool.DOOR;
 
 public class CorridorGenerator {
 
-    public void generateCorridor(Area area, Position from, Position to) {
-        boolean altWay = randBoolean();
+    public Corridor generateCorridor(Room startRoom, Room finishRoom) {
 
-        List<UnaryOperator<Cell>> movementList = getFuncList(from, to, altWay);
-        movementList.addAll(getFuncList(from, to, !altWay));
+        List<Cell> corridorCells;
+        boolean validCorridor;
+        do {
+            Cell from = startRoom.getRandCell();
+            Cell to = finishRoom.getRandCell();
 
-        Cell currentCell = area.getCell(from);
-        updateCell(currentCell);
+            List<Direction> directions = corridorDirections(from, to, randBoolean());
 
-        for (UnaryOperator<Cell> next : movementList) {
-            currentCell = next.apply(currentCell);
-            updateCell(currentCell);
+            corridorCells = new ArrayList<>();
+            validCorridor = tryGenerate(from, to, directions, corridorCells);
+        } while (!validCorridor);
+
+        corridorCells.forEach(this::updateCell);
+
+        Corridor corridor = new Corridor(corridorCells.stream()
+                .filter(cell -> CORRIDOR == cell.getType() || WALL == cell.getType())
+                .collect(Collectors.toList()));
+
+        corridor.addRoom(startRoom);
+        corridor.addRoom(finishRoom);
+        startRoom.addCorridor(corridor);
+        finishRoom.addCorridor(corridor);
+
+        return corridor;
+    }
+
+    private boolean tryGenerate(Cell from, Cell to, List<Direction> directions, List<Cell> corridorCells) {
+        Cell startCell = from;
+        for (Direction direction : directions) {
+
+            List<Cell> cells = cellsByDirection(startCell, direction, countCells(from, to, direction));
+            startCell = cells.get(cells.size() - 1);
+
+            if (!validateCells(cells, direction))
+                return false;
+
+            corridorCells.addAll(cells);
         }
+        return true;
+    }
+
+    private boolean validateCells(List<Cell> cells, Direction direction) {
+        // конечная клетка не может быть стеной
+        if (WALL == cells.get(cells.size() - 1).getType())
+            return false;
+
+        // 3 стены подряд это плохо, 2 подряд могут быть 2 комнатами в упор
+        for (Cell cell : cells)
+            if (WALL == cell.getType()
+                    && WALL == direction.nextCell(cell).getType()
+                    && WALL == direction.nextCell(direction.nextCell(cell)).getType())
+                return false;
+
+        return true;
+    }
+
+    private List<Direction> corridorDirections(Cell from, Cell to, boolean altWay) {
+        List<Direction> directions = new ArrayList<>();
+        directions.add(directionByX(from, to));
+        directions.add(directionByY(from, to));
+
+        if (altWay) Collections.reverse(directions);
+
+        directions.remove(null);
+
+        return directions;
+    }
+
+    private Direction directionByX(Cell from, Cell to) {
+        if (from.getPosition().x() == to.getPosition().x())
+            return null;
+        else if (from.getPosition().x() < to.getPosition().x())
+            return RIGHT;
+        else
+            return LEFT;
+    }
+
+    private Direction directionByY(Cell from, Cell to) {
+        if (from.getPosition().y() == to.getPosition().y())
+            return null;
+        else if (from.getPosition().y() < to.getPosition().y())
+            return BOTTOM;
+        else
+            return TOP;
+    }
+
+    private int countCells(Cell from, Cell to, Direction direction) {
+        if (direction == LEFT || direction == RIGHT)
+            return countCells(from, to, Position::x);
+        else
+            return countCells(from, to, Position::y);
+    }
+
+    private int countCells(Cell from, Cell to, ToIntFunction<Position> axis) {
+        int count = axis.applyAsInt(to.getPosition()) - axis.applyAsInt(from.getPosition());
+        if (count < 0) count *= -1;
+        return ++count;
+    }
+
+    private List<Cell> cellsByDirection(Cell startCell, Direction direction, int count) {
+        List<Cell> cells = new ArrayList<>(count);
+
+        Cell current = startCell;
+        for (int i = 0; i < count; i++) {
+            cells.add(current);
+            current = direction.nextCell(current);
+        }
+
+        return cells;
     }
 
     private void updateCell(Cell cell) {
@@ -38,44 +143,5 @@ public class CorridorGenerator {
         }
         if (WALL == cell.getType())
             cell.setGraphicsComponent(DOOR);
-    }
-
-    private List<UnaryOperator<Cell>> getFuncList(Position from, Position to, boolean altWay) {
-        if (altWay)
-            return getFuncList(getXNextCellFunction(from, to), to.x() - from.x());
-        else
-            return getFuncList(getYNextCellFunction(from, to), to.y() - from.y());
-    }
-
-    private List<UnaryOperator<Cell>> getFuncList(UnaryOperator<Cell> func, int count) {
-        if (count < 0)
-            count *= -1;
-
-        List<UnaryOperator<Cell>> funcList = new ArrayList<>(count);
-
-        if (func == null) return funcList;
-
-        for (int i = 0; i < count; i++)
-            funcList.add(func);
-
-        return funcList;
-    }
-
-    private UnaryOperator<Cell> getXNextCellFunction(Position from, Position to) {
-        if (from.x() == to.x())
-            return null;
-        else if (from.x() < to.x())
-            return Cell::getRightCell;
-        else
-            return Cell::getLeftCell;
-    }
-
-    private UnaryOperator<Cell> getYNextCellFunction(Position from, Position to) {
-        if (from.y() == to.y())
-            return null;
-        else if (from.y() < to.y())
-            return Cell::getBottomCell;
-        else
-            return Cell::getTopCell;
     }
 }
