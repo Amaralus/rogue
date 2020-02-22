@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static amaralus.apps.rogue.graphics.Palette.WHITE_GRAY;
 import static amaralus.apps.rogue.services.ServiceLocator.*;
 import static javafx.scene.input.KeyCode.*;
 
@@ -33,11 +32,11 @@ public class MenuScreen extends Screen {
     public void draw() {
         List<Text> menuTexts = new ArrayList<>(menuList.getElementList().size() + 1);
 
-        menuTexts.add(graphicsController().createText("Пауза, используй [\u2191] и [\u2193] для смещения, [Enter] для выбора\n\n", WHITE_GRAY));
+        menuTexts.add(createPlainText("Пауза, используй [\u2191] и [\u2193] для смещения, [Enter] для выбора\n\n"));
 
         menuTexts.addAll(menuList.getElementList().stream()
                 .map(menuElement -> menuElement.equals(menuList.current()) ? " -> " + menuElement.getText() : "    " + menuElement.getText())
-                .map(menuText -> graphicsController().createText(menuText + "\n", WHITE_GRAY))
+                .map(menuText -> createPlainText(menuText + "\n"))
                 .collect(Collectors.toList()));
 
         gameController().updateTexts(menuTexts);
