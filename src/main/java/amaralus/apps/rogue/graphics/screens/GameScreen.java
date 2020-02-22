@@ -53,9 +53,9 @@ public class GameScreen extends Screen {
             StringBuilder builder = new StringBuilder();
 
             // текущий цвет для определения новых цветов
-            Color currentColor = cellLine.get(0).getActualGraphicsComponent().getColor();
+            Color currentColor = actualGraphicsComponent(cellLine.get(0)).getColor();
             for (Cell cell : cellLine) {
-                GraphicsComponent grComponent = cell.getActualGraphicsComponent();
+                GraphicsComponent grComponent = actualGraphicsComponent(cell);
 
                 // если новый цвет отличается
                 if (currentColor != grComponent.getColor()) {
@@ -76,6 +76,13 @@ public class GameScreen extends Screen {
         textList.add(createPlainText("Нижняя панель, нажми [Esc] для паузы\n"));
 
         gameController().updateTexts(textList);
+    }
+
+    private GraphicsComponent actualGraphicsComponent(Cell cell) {
+        if (cell.containsUnit())
+            return cell.getUnit().getGraphicsComponent();
+        else
+            return cell.getGraphicsComponent();
     }
 
     public void setGameMenuScreen(Screen gameMenuScreen) {

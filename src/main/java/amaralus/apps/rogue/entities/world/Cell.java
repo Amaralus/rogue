@@ -128,13 +128,6 @@ public class Cell implements Destroyable {
         return graphicsComponent;
     }
 
-    public GraphicsComponent getActualGraphicsComponent() {
-        if (containsUnit())
-            return unit.getGraphicsComponent();
-        else
-            return graphicsComponent;
-    }
-
     // сущность
 
     public Unit getUnit() {
