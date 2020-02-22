@@ -14,4 +14,4 @@ Double click to jar file
 
 - `Arrow keys` to move
 - `Space` to regenerate dungeon
-- `Esc` to exit
+- `Esc` to open menu

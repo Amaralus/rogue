@@ -17,7 +17,7 @@ public class GraphicsController {
     public void draw(Level level) {
         List<Text> textList = new ArrayList<>(30);
 
-        textList.add(createText("TEST! TOP PANEL! TEST! PRESS T TO CHANGE SCREEN!\n", Palette.WHITE_GRAY));
+        textList.add(createText("Верхняя панель, нажми [Esc] для паузы\n", Palette.WHITE_GRAY));
         for (List<Cell> cellLine : level.getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
 
@@ -42,7 +42,7 @@ public class GraphicsController {
             textList.add(createText(builder.toString(), currentColor));
         }
 
-        textList.add(createText("TEST! BOTTOM PANEL! TEST! PRESS T TO CHANGE SCREEN!\n", Palette.WHITE_GRAY));
+        textList.add(createText("Нижняя панель, нажми [Esc] для паузы\n", Palette.WHITE_GRAY));
 
         ServiceLocator.gameController().updateTexts(textList);
     }

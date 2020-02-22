@@ -12,7 +12,7 @@ import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
 
-    private Screen testScreen;
+    private Screen gameMenuScreen;
     private Level level;
     private Unit player;
 
@@ -25,8 +25,7 @@ public class GameScreen extends Screen {
     }
 
     private void setUpKeyAction() {
-        addKeyAction(ESCAPE, () -> gameController().exitGame());
-        addKeyAction(T, () -> setActive(testScreen));
+        addKeyAction(ESCAPE, () -> setActive(gameMenuScreen));
         addKeyAction(UP, () -> player.move(Direction.TOP));
         addKeyAction(DOWN, () -> player.move(Direction.BOTTOM));
         addKeyAction(RIGHT, () -> player.move(Direction.RIGHT));
@@ -43,7 +42,7 @@ public class GameScreen extends Screen {
         graphicsController().draw(level);
     }
 
-    public void setTestScreen(Screen testScreen) {
-        this.testScreen = testScreen;
+    public void setGameMenuScreen(Screen gameMenuScreen) {
+        this.gameMenuScreen = gameMenuScreen;
     }
 }
