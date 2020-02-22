@@ -2,9 +2,12 @@ package amaralus.apps.rogue.graphics.screens;
 
 import amaralus.apps.rogue.graphics.Palette;
 import amaralus.apps.rogue.services.KeyHandler;
+import amaralus.apps.rogue.services.ServiceLocator;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+
+import java.util.List;
 
 public abstract class Screen extends KeyHandler {
 
@@ -31,5 +34,9 @@ public abstract class Screen extends KeyHandler {
 
     protected Text createPlainText(String string) {
         return  createText(string, Palette.WHITE_GRAY);
+    }
+
+    protected void updateTexts(List<Text> textList) {
+        ServiceLocator.gameController().updateTexts(textList);
     }
 }

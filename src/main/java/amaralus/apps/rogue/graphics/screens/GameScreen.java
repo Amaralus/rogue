@@ -5,13 +5,13 @@ import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
+import amaralus.apps.rogue.services.ServiceLocator;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static amaralus.apps.rogue.services.ServiceLocator.*;
 import static amaralus.apps.rogue.graphics.EntitySymbol.SMILING_FACE;
 import static amaralus.apps.rogue.graphics.Palette.YELLOW;
 import static javafx.scene.input.KeyCode.*;
@@ -25,7 +25,7 @@ public class GameScreen extends Screen {
     public GameScreen() {
         setUpKeyAction();
 
-        level = levelGenerator().generateLevel();
+        level = ServiceLocator.levelGenerator().generateLevel();
         player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
         level.setUpUnitToRandRoom(player);
     }
@@ -38,7 +38,7 @@ public class GameScreen extends Screen {
         addKeyAction(LEFT, () -> player.move(Direction.LEFT));
         addKeyAction(SPACE, () -> {
             level.destroy();
-            level = levelGenerator().generateLevel();
+            level = ServiceLocator.levelGenerator().generateLevel();
             level.setUpUnitToRandRoom(player);
         });
     }
@@ -75,7 +75,7 @@ public class GameScreen extends Screen {
 
         textList.add(createPlainText("Нижняя панель, нажми [Esc] для паузы\n"));
 
-        gameController().updateTexts(textList);
+        updateTexts(textList);
     }
 
     private GraphicsComponent actualGraphicsComponent(Cell cell) {

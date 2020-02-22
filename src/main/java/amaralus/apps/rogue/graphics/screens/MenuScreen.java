@@ -1,5 +1,6 @@
 package amaralus.apps.rogue.graphics.screens;
 
+import amaralus.apps.rogue.services.ServiceLocator;
 import amaralus.apps.rogue.services.menu.MenuElement;
 import amaralus.apps.rogue.services.menu.MenuList;
 import javafx.scene.text.Text;
@@ -8,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static amaralus.apps.rogue.services.ServiceLocator.*;
 import static javafx.scene.input.KeyCode.*;
 
 public class MenuScreen extends Screen {
@@ -19,7 +19,7 @@ public class MenuScreen extends Screen {
     public MenuScreen() {
         menuList = new MenuList(
                 new MenuElement("Продолжить", () -> setActive(gameScreen)),
-                new MenuElement("Выйти на рабочий стол", () -> gameController().exitGame())
+                new MenuElement("Выйти на рабочий стол", () -> ServiceLocator.gameController().exitGame())
         );
 
         addKeyAction(ESCAPE, () -> setActive(gameScreen));
@@ -39,7 +39,7 @@ public class MenuScreen extends Screen {
                 .map(menuText -> createPlainText(menuText + "\n"))
                 .collect(Collectors.toList()));
 
-        gameController().updateTexts(menuTexts);
+        updateTexts(menuTexts);
     }
 
     public void setGameScreen(Screen gameScreen) {
