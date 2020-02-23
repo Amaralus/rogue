@@ -11,9 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.entities.world.CellType.EMPTY;
@@ -30,7 +28,7 @@ public class GameScreen extends Screen {
     private Unit player;
 
     private boolean warFogEnabled = true;
-    private Set<Cell> exploredCells = new HashSet<>();
+    private List<Cell> exploredCells = new ArrayList<>();
 
     public GameScreen() {
         setUpKeyAction();
@@ -58,7 +56,7 @@ public class GameScreen extends Screen {
     @Override
     public void draw() {
         resetVisibleForPlayer();
-        exploredCells = exploreCells();
+        exploreCells();
         List<Text> textList = new ArrayList<>(30);
 
         textList.add(createPlainText("[Esc] - Меню игры, [Space] - Перегенерировать уровень\n"));
@@ -116,7 +114,7 @@ public class GameScreen extends Screen {
         return color == null ? graphicsComponent.getColor() : color;
     }
 
-    private Set<Cell> exploreCells() {
+    private void exploreCells() {
         int x = player.getPosition().x() - (EXPLORE_RADIUS - 1);
         int y = player.getPosition().y() - (EXPLORE_RADIUS - 1);
         int width = EXPLORE_RADIUS * 2 - 1;
@@ -137,18 +135,16 @@ public class GameScreen extends Screen {
         if (y + height > level.getGameField().getHeight())
             height -= ((y + height) - level.getGameField().getHeight());
 
-        Set<Cell> cellSet = level.getGameField().subArea(x, y, width, height).getCells().stream()
+        exploredCells = level.getGameField().subArea(x, y, width, height).getCells().stream()
                 .flatMap(List::stream)
                 .filter(cell -> cell.getType() != EMPTY)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
-        for (Cell cell : cellSet) {
+        for (Cell cell : exploredCells) {
             if (!cell.isExplored())
                 cell.setExplored(true);
             cell.setVisibleForPlayer(true);
         }
-        return cellSet;
-
     }
 
     private void resetVisibleForPlayer() {
