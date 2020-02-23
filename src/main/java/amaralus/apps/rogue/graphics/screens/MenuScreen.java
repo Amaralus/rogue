@@ -32,7 +32,7 @@ public class MenuScreen extends Screen {
     public void draw() {
         List<Text> menuTexts = new ArrayList<>(menuList.getElementList().size() + 1);
 
-        menuTexts.add(createPlainText("Пауза, используй [\u2191] и [\u2193] для смещения, [Enter] для выбора\n\n"));
+        menuTexts.add(createPlainText("Меню, используй [\u2191] и [\u2193] для смещения, [Enter] для выбора\n\n"));
 
         menuTexts.addAll(menuList.getElementList().stream()
                 .map(menuElement -> menuElement.equals(menuList.current()) ? " -> " + menuElement.getText() : "    " + menuElement.getText())

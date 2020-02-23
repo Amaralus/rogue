@@ -21,6 +21,8 @@ public class Cell implements Destroyable {
 
     private Unit unit;
     private boolean canWalk = false;
+    private boolean explored = false;
+    private boolean visibleForPlayer = false;
 
     public Cell(Position position) {
         this.position = position;
@@ -126,6 +128,22 @@ public class Cell implements Destroyable {
 
     public GraphicsComponent getGraphicsComponent() {
         return graphicsComponent;
+    }
+
+    public boolean isExplored() {
+        return explored;
+    }
+
+    public void setExplored(boolean explored) {
+        this.explored = explored;
+    }
+
+    public boolean isVisibleForPlayer() {
+        return visibleForPlayer;
+    }
+
+    public void setVisibleForPlayer(boolean visibleForPlayer) {
+        this.visibleForPlayer = visibleForPlayer;
     }
 
     // сущность
