@@ -1,4 +1,4 @@
-package amaralus.apps.rogue.services;
+package amaralus.apps.rogue.utils;
 
 @FunctionalInterface
 public interface Action {

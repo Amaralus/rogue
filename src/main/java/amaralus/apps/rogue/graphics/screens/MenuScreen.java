@@ -19,7 +19,7 @@ public class MenuScreen extends Screen {
     public MenuScreen() {
         menuList = new MenuList(
                 new MenuElement("Продолжить", () -> setActive(gameScreen)),
-                new MenuElement("Выйти на рабочий стол", () -> ServiceLocator.gameController().exitGame())
+                new MenuElement("Выйти из игры", () -> ServiceLocator.gameController().exitGame())
         );
 
         addKeyAction(ESCAPE, () -> setActive(gameScreen));

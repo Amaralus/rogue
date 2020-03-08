@@ -1,6 +1,6 @@
 package amaralus.apps.rogue.services.menu;
 
-import amaralus.apps.rogue.services.Action;
+import amaralus.apps.rogue.utils.Action;
 
 import java.util.Objects;
 

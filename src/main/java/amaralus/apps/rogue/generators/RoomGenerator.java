@@ -9,6 +9,7 @@ import java.util.List;
 
 import static amaralus.apps.rogue.entities.world.CellType.FLOOR;
 import static amaralus.apps.rogue.entities.world.CellType.WALL;
+import static amaralus.apps.rogue.entities.world.CellType.WALL_CORNER;
 import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
 import static amaralus.apps.rogue.graphics.DefaultComponentsPool.*;
 
@@ -54,9 +55,13 @@ public class RoomGenerator {
         int width = roomCells.get(0).size();
 
         roomCells.get(0).get(0).setGraphicsComponent(TL_CORNER);
+        roomCells.get(0).get(0).setType(WALL_CORNER);
         roomCells.get(0).get(width - 1).setGraphicsComponent(TR_CORNER);
+        roomCells.get(0).get(width - 1).setType(WALL_CORNER);
         roomCells.get(height - 1).get(0).setGraphicsComponent(BL_CORNER);
+        roomCells.get(height - 1).get(0).setType(WALL_CORNER);
         roomCells.get(height - 1).get(width - 1).setGraphicsComponent(BR_CORNER);
+        roomCells.get(height - 1).get(width - 1).setType(WALL_CORNER);
 
         return new Room(roomCells);
     }

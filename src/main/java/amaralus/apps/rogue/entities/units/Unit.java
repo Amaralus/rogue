@@ -10,6 +10,7 @@ public class Unit implements Destroyable {
 
     private GraphicsComponent graphicsComponent;
     protected Cell currentCell;
+    private int visibleRadius = 1;
 
     public Unit(GraphicsComponent graphicsComponent) {
         this.graphicsComponent = graphicsComponent;
@@ -48,5 +49,13 @@ public class Unit implements Destroyable {
 
     public Position getPosition() {
         return currentCell.getPosition();
+    }
+
+    public int getVisibleRadius() {
+        return visibleRadius;
+    }
+
+    public void setVisibleRadius(int visibleRadius) {
+        this.visibleRadius = visibleRadius;
     }
 }

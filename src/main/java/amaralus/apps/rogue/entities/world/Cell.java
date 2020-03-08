@@ -179,11 +179,16 @@ public class Cell implements Destroyable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cell cell = (Cell) o;
-        return Objects.equals(position, cell.position);
+        return canWalk == cell.canWalk &&
+                explored == cell.explored &&
+                visibleForPlayer == cell.visibleForPlayer &&
+                Objects.equals(position, cell.position) &&
+                Objects.equals(graphicsComponent, cell.graphicsComponent) &&
+                type == cell.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position);
+        return Objects.hash(position, graphicsComponent, type, canWalk, explored, visibleForPlayer);
     }
 }

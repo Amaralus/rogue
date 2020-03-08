@@ -6,35 +6,37 @@ import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.DefaultComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
+import amaralus.apps.rogue.services.ExplorationService;
 import amaralus.apps.rogue.services.ServiceLocator;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static amaralus.apps.rogue.entities.world.CellType.EMPTY;
 import static amaralus.apps.rogue.graphics.EntitySymbol.SMILING_FACE;
 import static amaralus.apps.rogue.graphics.Palette.YELLOW;
 import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
 
-    private static final int EXPLORE_RADIUS = 4;
-
     private Screen gameMenuScreen;
+    private ExplorationService explorationService;
+
     private Level level;
     private Unit player;
 
     private boolean warFogEnabled = true;
-    private List<Cell> exploredCells = new ArrayList<>();
+    private List<Cell> visibleCells = new ArrayList<>();
 
     public GameScreen() {
         setUpKeyAction();
 
+        explorationService = new ExplorationService();
+
         level = ServiceLocator.levelGenerator().generateLevel();
         player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
+        player.setVisibleRadius(3);
         level.setUpUnitToRandRoom(player);
     }
 
@@ -55,8 +57,8 @@ public class GameScreen extends Screen {
 
     @Override
     public void draw() {
-        resetVisibleForPlayer();
-        exploreCells();
+        updateVisibleCells();
+
         List<Text> textList = new ArrayList<>(30);
 
         textList.add(createPlainText("[Esc] - Меню игры, [Space] - Перегенерировать уровень\n"));
@@ -114,41 +116,16 @@ public class GameScreen extends Screen {
         return color == null ? graphicsComponent.getColor() : color;
     }
 
-    private void exploreCells() {
-        int x = player.getPosition().x() - (EXPLORE_RADIUS - 1);
-        int y = player.getPosition().y() - (EXPLORE_RADIUS - 1);
-        int width = EXPLORE_RADIUS * 2 - 1;
-        int height = EXPLORE_RADIUS * 2 - 1;
+    private void updateVisibleCells() {
+        for (Cell cell : visibleCells) cell.setVisibleForPlayer(false);
 
-        if (x < 0) {
-            width += x;
-            x = 0;
-        }
-        if (y < 0) {
-            height += y;
-            y = 0;
-        }
+        visibleCells = explorationService.getVisibleCells(player);
 
-        if (x + width > level.getGameField().getWidth())
-            width -= ((x + width) - level.getGameField().getWidth());
-
-        if (y + height > level.getGameField().getHeight())
-            height -= ((y + height) - level.getGameField().getHeight());
-
-        exploredCells = level.getGameField().subArea(x, y, width, height).getCells().stream()
-                .flatMap(List::stream)
-                .filter(cell -> cell.getType() != EMPTY)
-                .collect(Collectors.toList());
-
-        for (Cell cell : exploredCells) {
+        for (Cell cell : visibleCells) {
             if (!cell.isExplored())
                 cell.setExplored(true);
             cell.setVisibleForPlayer(true);
         }
-    }
-
-    private void resetVisibleForPlayer() {
-        for (Cell cell : exploredCells) cell.setVisibleForPlayer(false);
     }
 
     public void setGameMenuScreen(Screen gameMenuScreen) {
