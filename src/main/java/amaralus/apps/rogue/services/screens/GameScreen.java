@@ -1,21 +1,19 @@
 package amaralus.apps.rogue.services.screens;
 
-import amaralus.apps.rogue.entities.Direction;
+import amaralus.apps.rogue.commands.Command;
+import amaralus.apps.rogue.commands.UnitCommand;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
-import amaralus.apps.rogue.services.KeyHandler;
 import amaralus.apps.rogue.services.ServiceLocator;
-import javafx.scene.input.KeyCode;
 
+import static amaralus.apps.rogue.commands.UnitCommand.*;
 import static amaralus.apps.rogue.graphics.EntitySymbol.SMILING_FACE;
 import static amaralus.apps.rogue.graphics.Palette.YELLOW;
 import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
-
-    private KeyHandler keyHandler = new KeyHandler();
 
     private MenuScreen gameMenuScreen;
 
@@ -34,28 +32,28 @@ public class GameScreen extends Screen {
     }
 
     private void setUpKeyAction() {
-        keyHandler.addKeyAction(F, ((GameScreenDrawer) screenDrawer)::swapWarFogEnabled);
+        commandPool.put(F, new Command<>(((GameScreenDrawer) screenDrawer)::swapWarFogEnabled));
 
-        keyHandler.addKeyAction(ESCAPE, () -> setActiveScreen(gameMenuScreen));
-        keyHandler.addKeyAction(UP, () -> player.move(Direction.TOP));
-        keyHandler.addKeyAction(DOWN, () -> player.move(Direction.BOTTOM));
-        keyHandler.addKeyAction(RIGHT, () -> player.move(Direction.RIGHT));
-        keyHandler.addKeyAction(LEFT, () -> player.move(Direction.LEFT));
-        keyHandler.addKeyAction(SPACE, () -> {
+        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(gameMenuScreen)));
+        commandPool.put(UP, UNIT_MOVE_UP_COM);
+        commandPool.put(DOWN, UNIT_MOVE_DOWN_COM);
+        commandPool.put(RIGHT, UNIT_MOVE_RIGHT_COM);
+        commandPool.put(LEFT, UNIT_MOVE_LEFT_COM);
+        commandPool.put(SPACE, new Command<>(() -> {
             level.destroy();
             level = ServiceLocator.levelGenerator().generateLevel();
             level.setUpUnitToRandRoom(player);
-        });
-    }
-
-    @Override
-    public void handleInput(KeyCode keyCode) {
-        keyHandler.handleKey(keyCode);
+        }));
     }
 
     @Override
     public void update() {
-        return;
+        if (inputCommand instanceof UnitCommand)
+            ((UnitCommand) inputCommand).execute(player);
+        else
+            inputCommand.execute();
+
+        inputCommand = Command.NULLABLE_COM;
     }
 
     public void setGameMenuScreen(MenuScreen gameMenuScreen) {

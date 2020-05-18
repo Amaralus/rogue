@@ -15,7 +15,7 @@ import static amaralus.apps.rogue.services.screens.Screen.activeScreen;
 public class GameController {
 
     private final MainApplication application;
-    private KeyHandler keyHandler = new KeyHandler();
+    private boolean keyHandling = true;
 
     public GameController(MainApplication application) {
         this.application = application;
@@ -41,7 +41,7 @@ public class GameController {
     }
 
     public void gameLoop(KeyCode key) {
-        if (!keyHandler.keyHandlingEnabled()) return;
+        if (!keyHandling) return;
 
         try {
             activeScreen().handleInput(key);
@@ -60,7 +60,8 @@ public class GameController {
     }
 
     public void showErrorAndExit(Exception e) {
-        keyHandler.enableKeyHandling(false);
+        keyHandling = false;
+        e.printStackTrace();
         application.showAlert(e);
         exitGame();
     }

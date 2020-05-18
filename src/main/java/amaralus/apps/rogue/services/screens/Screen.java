@@ -1,13 +1,19 @@
 package amaralus.apps.rogue.services.screens;
 
+import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.graphics.drawers.ScreenDrawer;
 import javafx.scene.input.KeyCode;
+
+import java.util.EnumMap;
 
 public abstract class Screen {
 
     private static Screen activeScreen;
 
     protected ScreenDrawer screenDrawer;
+    protected Command<?> inputCommand = Command.NULLABLE_COM;
+
+    protected EnumMap<KeyCode, Command<?>> commandPool = new EnumMap<>(KeyCode.class);
 
     public static Screen activeScreen() {
         return activeScreen;
@@ -17,7 +23,9 @@ public abstract class Screen {
         Screen.activeScreen = activeScreen;
     }
 
-    public abstract void handleInput(KeyCode keyCode);
+    public void handleInput(KeyCode keyCode) {
+        inputCommand = commandPool.getOrDefault(keyCode, Command.NULLABLE_COM);
+    }
 
     public abstract void update();
 
