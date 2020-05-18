@@ -4,13 +4,11 @@ import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.commands.UnitCommand;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Level;
-import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
 import amaralus.apps.rogue.services.ServiceLocator;
 
 import static amaralus.apps.rogue.commands.UnitCommand.*;
-import static amaralus.apps.rogue.graphics.EntitySymbol.SMILING_FACE;
-import static amaralus.apps.rogue.graphics.Palette.YELLOW;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.PLAYER;
 import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
@@ -26,7 +24,7 @@ public class GameScreen extends Screen {
         setUpKeyAction();
 
         level = ServiceLocator.levelGenerator().generateLevel();
-        player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
+        player = new Unit(PLAYER);
         player.setVisibleRadius(3);
         level.setUpUnitToRandRoom(player);
     }

@@ -18,5 +18,7 @@ public final class GraphicsComponentsPool {
     public static final GraphicsComponent BR_CORNER = new GraphicsComponent(WALL_BOTTOM_RIGHT, WHITE_GRAY, DARK_GRAY);
     public static final GraphicsComponent BL_CORNER = new GraphicsComponent(WALL_BOTTOM_LEFT, WHITE_GRAY, DARK_GRAY);
 
+    public static final GraphicsComponent PLAYER = new GraphicsComponent(SMILING_FACE, YELLOW);
+
     private GraphicsComponentsPool() {}
 }
