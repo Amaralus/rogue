@@ -11,22 +11,33 @@ import static javafx.scene.input.KeyCode.*;
 
 public class MenuScreen extends Screen {
 
-    private GameScreen gameScreen;
+    protected GameScreen gameScreen;
 
-    private final MenuList menuList;
+    protected MenuList menuList = new MenuList();
+    private String menuTitle = "Меню, используй [\u2191] и [\u2193] для смещения, [Enter] для выбора";
 
     public MenuScreen() {
+        this(null);
+    }
+
+    public MenuScreen(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
+
         screenDrawer = new MenuScreenDrawer(this);
 
-        menuList = new MenuList(
-                new MenuElement("Продолжить", () -> setActiveScreen(gameScreen)),
-                new MenuElement("Выйти из игры", () -> ServiceLocator.gameController().exitGame())
-        );
+        createMenuList();
 
-        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(gameScreen)));
+        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(this.gameScreen)));
         commandPool.put(UP, new Command<>(menuList::shiftToPrevious));
         commandPool.put(DOWN, new Command<>(menuList::shiftToNext));
         commandPool.put(ENTER, new Command<>(() -> menuList.current().executeComand()));
+    }
+
+    protected void createMenuList() {
+        menuList.setUpMenuList(
+                new MenuElement("Продолжить", () -> setActiveScreen(gameScreen)),
+                new MenuElement("Выйти из игры", () -> ServiceLocator.gameController().exitGame())
+        );
     }
 
     @Override
@@ -41,5 +52,13 @@ public class MenuScreen extends Screen {
 
     public MenuList getMenuList() {
         return menuList;
+    }
+
+    public String getMenuTitle() {
+        return menuTitle;
+    }
+
+    public void setMenuTitle(String menuTitle) {
+        this.menuTitle = menuTitle;
     }
 }

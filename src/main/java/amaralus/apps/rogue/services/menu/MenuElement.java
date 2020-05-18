@@ -13,8 +13,12 @@ public class MenuElement {
     private final Command<Object> command;
 
     public MenuElement(String text, Runnable runnable) {
+        this(text, new Command<>(runnable));
+    }
+
+    public MenuElement(String text, Command<Object> command) {
         this.text = text;
-        command = new Command<>(runnable);
+        this.command = command;
     }
 
     public MenuElement getNext() {

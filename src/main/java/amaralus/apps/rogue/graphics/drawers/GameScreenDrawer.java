@@ -56,7 +56,7 @@ public class GameScreenDrawer extends ScreenDrawer {
             textList.add(createText(builder.toString(), currentColor));
         }
 
-        textList.add(createPlainText("[F] - Включить/выключить туман войны\n"));
+        textList.add(createPlainText("[F] - Включить/выключить туман войны, [I] - Открыть инвентарь\n"));
 
         updateTexts(textList);
     }
