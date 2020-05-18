@@ -1,68 +1,27 @@
-package amaralus.apps.rogue.graphics.screens;
+package amaralus.apps.rogue.graphics.drawers;
 
-import amaralus.apps.rogue.entities.Direction;
-import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;
-import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.services.ExplorationService;
-import amaralus.apps.rogue.services.KeyHandler;
-import amaralus.apps.rogue.services.ServiceLocator;
-import javafx.scene.input.KeyCode;
+import amaralus.apps.rogue.services.screens.GameScreen;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static amaralus.apps.rogue.graphics.EntitySymbol.SMILING_FACE;
-import static amaralus.apps.rogue.graphics.Palette.YELLOW;
-import static javafx.scene.input.KeyCode.*;
+public class GameScreenDrawer extends ScreenDrawer {
 
-public class GameScreen extends Screen {
-
-    private Screen gameMenuScreen;
+    GameScreen gameScreen;
     private ExplorationService explorationService;
-
-    private KeyHandler keyHandler;
-
-    private Level level;
-    private Unit player;
 
     private boolean warFogEnabled = true;
     private List<Cell> visibleCells = new ArrayList<>();
 
-    public GameScreen() {
-        keyHandler = new KeyHandler();
-        setUpKeyAction();
-
+    public GameScreenDrawer(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
         explorationService = new ExplorationService();
-
-        level = ServiceLocator.levelGenerator().generateLevel();
-        player = new Unit(new GraphicsComponent(SMILING_FACE, YELLOW));
-        player.setVisibleRadius(3);
-        level.setUpUnitToRandRoom(player);
-    }
-
-    private void setUpKeyAction() {
-        keyHandler.addKeyAction(F, () -> warFogEnabled = !warFogEnabled);
-
-        keyHandler.addKeyAction(ESCAPE, () -> setActive(gameMenuScreen));
-        keyHandler.addKeyAction(UP, () -> player.move(Direction.TOP));
-        keyHandler.addKeyAction(DOWN, () -> player.move(Direction.BOTTOM));
-        keyHandler.addKeyAction(RIGHT, () -> player.move(Direction.RIGHT));
-        keyHandler.addKeyAction(LEFT, () -> player.move(Direction.LEFT));
-        keyHandler.addKeyAction(SPACE, () -> {
-            level.destroy();
-            level = ServiceLocator.levelGenerator().generateLevel();
-            level.setUpUnitToRandRoom(player);
-        });
-    }
-
-    @Override
-    public void handleKey(KeyCode keyCode) {
-        keyHandler.handleKey(keyCode);
     }
 
     @Override
@@ -73,7 +32,7 @@ public class GameScreen extends Screen {
 
         textList.add(createPlainText("[Esc] - Меню игры, [Space] - Перегенерировать уровень\n"));
 
-        for (List<Cell> cellLine : level.getGameField().getCells()) {
+        for (List<Cell> cellLine : gameScreen.getLevel().getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
 
             // текущий цвет для определения новых цветов
@@ -129,7 +88,7 @@ public class GameScreen extends Screen {
     private void updateVisibleCells() {
         for (Cell cell : visibleCells) cell.setVisibleForPlayer(false);
 
-        visibleCells = explorationService.getVisibleCells(player);
+        visibleCells = explorationService.getVisibleCells(gameScreen.getPlayer());
 
         for (Cell cell : visibleCells) {
             if (!cell.isExplored())
@@ -138,7 +97,7 @@ public class GameScreen extends Screen {
         }
     }
 
-    public void setGameMenuScreen(Screen gameMenuScreen) {
-        this.gameMenuScreen = gameMenuScreen;
+    public void swapWarFogEnabled() {
+        warFogEnabled = !warFogEnabled;
     }
 }

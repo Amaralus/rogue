@@ -2,17 +2,20 @@ package amaralus.apps.rogue.services;
 
 import amaralus.apps.rogue.MainApplication;
 import amaralus.apps.rogue.generators.LevelGenerator;
-import amaralus.apps.rogue.graphics.screens.GameScreen;
-import amaralus.apps.rogue.graphics.screens.Screen;
-import amaralus.apps.rogue.graphics.screens.MenuScreen;
+import amaralus.apps.rogue.services.screens.GameScreen;
+import amaralus.apps.rogue.services.screens.MenuScreen;
+import amaralus.apps.rogue.services.screens.Screen;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
 import java.util.List;
 
-public class GameController extends KeyHandler {
+import static amaralus.apps.rogue.services.screens.Screen.activeScreen;
+
+public class GameController {
 
     private final MainApplication application;
+    private KeyHandler keyHandler = new KeyHandler();
 
     public GameController(MainApplication application) {
         this.application = application;
@@ -20,7 +23,7 @@ public class GameController extends KeyHandler {
         ServiceLocator.provide(this);
         ServiceLocator.provide(new LevelGenerator());
 
-        application.getScene().setOnKeyPressed(event -> handleKey(event.getCode()));
+        application.getScene().setOnKeyPressed(event -> gameLoop(event.getCode()));
 
         try {
             GameScreen gameScreen = new GameScreen();
@@ -29,21 +32,23 @@ public class GameController extends KeyHandler {
             gameScreen.setGameMenuScreen(gameMenuScreen);
             gameMenuScreen.setGameScreen(gameScreen);
 
-            Screen.setActive(gameScreen);
+            Screen.setActiveScreen(gameScreen);
 
-            Screen.getActive().draw();
+            activeScreen().getScreenDrawer().draw();
         } catch (Exception e) {
             showErrorAndExit(e);
         }
     }
 
-    public void handleKey(KeyCode key) {
-        if (!keyHandlingEnabled()) return;
+    public void gameLoop(KeyCode key) {
+        if (!keyHandler.keyHandlingEnabled()) return;
 
         try {
-            Screen.getActive().handleKey(key);
+            activeScreen().handleInput(key);
 
-            Screen.getActive().draw();
+            activeScreen().update();
+
+            activeScreen().draw();
         } catch (Exception e) {
             showErrorAndExit(e);
         }
@@ -55,7 +60,7 @@ public class GameController extends KeyHandler {
     }
 
     public void showErrorAndExit(Exception e) {
-        enableKeyHandling(false);
+        keyHandler.enableKeyHandling(false);
         application.showAlert(e);
         exitGame();
     }
