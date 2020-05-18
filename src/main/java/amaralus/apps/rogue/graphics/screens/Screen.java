@@ -1,15 +1,15 @@
 package amaralus.apps.rogue.graphics.screens;
 
 import amaralus.apps.rogue.graphics.Palette;
-import amaralus.apps.rogue.services.KeyHandler;
 import amaralus.apps.rogue.services.ServiceLocator;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.List;
 
-public abstract class Screen extends KeyHandler {
+public abstract class Screen {
 
     private static Screen activeScreen;
 
@@ -24,6 +24,8 @@ public abstract class Screen extends KeyHandler {
     }
 
     public abstract void draw();
+
+    public abstract void handleKey(KeyCode keyCode);
 
     protected Text createText(String string, Color color) {
         Text text = new Text(string);

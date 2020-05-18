@@ -3,7 +3,7 @@ package amaralus.apps.rogue.entities.world;
 import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.units.Unit;
-import amaralus.apps.rogue.graphics.DefaultComponentsPool;
+import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
 import java.util.Objects;
@@ -26,7 +26,7 @@ public class Cell implements Destroyable {
 
     public Cell(Position position) {
         this.position = position;
-        graphicsComponent = DefaultComponentsPool.EMPTY_CELL;
+        graphicsComponent = GraphicsComponentsPool.EMPTY_CELL;
         type = CellType.EMPTY;
     }
 

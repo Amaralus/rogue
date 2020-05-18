@@ -3,7 +3,7 @@ package amaralus.apps.rogue.graphics;
 import static amaralus.apps.rogue.graphics.EntitySymbol.*;
 import static amaralus.apps.rogue.graphics.Palette.*;
 
-public final class DefaultComponentsPool {
+public final class GraphicsComponentsPool {
 
     public static final GraphicsComponent EMPTY_CELL = new GraphicsComponent(SPACE, BLACK_BLUE);
     public static final GraphicsComponent ROOM_FLOOR = new GraphicsComponent(COLON, GRAY, BLACK_BLUE);
@@ -18,5 +18,5 @@ public final class DefaultComponentsPool {
     public static final GraphicsComponent BR_CORNER = new GraphicsComponent(WALL_BOTTOM_RIGHT, WHITE_GRAY, DARK_GRAY);
     public static final GraphicsComponent BL_CORNER = new GraphicsComponent(WALL_BOTTOM_LEFT, WHITE_GRAY, DARK_GRAY);
 
-    private DefaultComponentsPool() {}
+    private GraphicsComponentsPool() {}
 }

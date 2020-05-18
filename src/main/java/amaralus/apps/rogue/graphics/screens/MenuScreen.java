@@ -1,8 +1,10 @@
 package amaralus.apps.rogue.graphics.screens;
 
+import amaralus.apps.rogue.services.KeyHandler;
 import amaralus.apps.rogue.services.ServiceLocator;
 import amaralus.apps.rogue.services.menu.MenuElement;
 import amaralus.apps.rogue.services.menu.MenuList;
+import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -16,16 +18,25 @@ public class MenuScreen extends Screen {
     private Screen gameScreen;
     private final MenuList menuList;
 
+    private KeyHandler keyHandler;
+
     public MenuScreen() {
+        keyHandler = new KeyHandler();
+
         menuList = new MenuList(
                 new MenuElement("Продолжить", () -> setActive(gameScreen)),
                 new MenuElement("Выйти из игры", () -> ServiceLocator.gameController().exitGame())
         );
 
-        addKeyAction(ESCAPE, () -> setActive(gameScreen));
-        addKeyAction(UP, menuList::shiftToPrevious);
-        addKeyAction(DOWN, menuList::shiftToNext);
-        addKeyAction(ENTER, () -> menuList.current().performAction());
+        keyHandler.addKeyAction(ESCAPE, () -> setActive(gameScreen));
+        keyHandler.addKeyAction(UP, menuList::shiftToPrevious);
+        keyHandler.addKeyAction(DOWN, menuList::shiftToNext);
+        keyHandler.addKeyAction(ENTER, () -> menuList.current().performAction());
+    }
+
+    @Override
+    public void handleKey(KeyCode keyCode) {
+        keyHandler.handleKey(keyCode);
     }
 
     @Override
@@ -44,5 +55,9 @@ public class MenuScreen extends Screen {
 
     public void setGameScreen(Screen gameScreen) {
         this.gameScreen = gameScreen;
+    }
+
+    public KeyHandler getKeyHandler() {
+        return keyHandler;
     }
 }

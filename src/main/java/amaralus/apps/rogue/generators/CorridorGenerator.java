@@ -18,8 +18,8 @@ import static amaralus.apps.rogue.entities.world.CellType.CORRIDOR;
 import static amaralus.apps.rogue.entities.world.CellType.EMPTY;
 import static amaralus.apps.rogue.entities.world.CellType.WALL;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
-import static amaralus.apps.rogue.graphics.DefaultComponentsPool.CORRIDOR_FLOR;
-import static amaralus.apps.rogue.graphics.DefaultComponentsPool.DOOR;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.CORRIDOR_FLOR;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.DOOR;
 
 public class CorridorGenerator {
 

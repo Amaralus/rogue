@@ -4,10 +4,12 @@ import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Level;
-import amaralus.apps.rogue.graphics.DefaultComponentsPool;
+import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.services.ExplorationService;
+import amaralus.apps.rogue.services.KeyHandler;
 import amaralus.apps.rogue.services.ServiceLocator;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
@@ -23,6 +25,8 @@ public class GameScreen extends Screen {
     private Screen gameMenuScreen;
     private ExplorationService explorationService;
 
+    private KeyHandler keyHandler;
+
     private Level level;
     private Unit player;
 
@@ -30,6 +34,7 @@ public class GameScreen extends Screen {
     private List<Cell> visibleCells = new ArrayList<>();
 
     public GameScreen() {
+        keyHandler = new KeyHandler();
         setUpKeyAction();
 
         explorationService = new ExplorationService();
@@ -41,18 +46,23 @@ public class GameScreen extends Screen {
     }
 
     private void setUpKeyAction() {
-        addKeyAction(F, () -> warFogEnabled = !warFogEnabled);
+        keyHandler.addKeyAction(F, () -> warFogEnabled = !warFogEnabled);
 
-        addKeyAction(ESCAPE, () -> setActive(gameMenuScreen));
-        addKeyAction(UP, () -> player.move(Direction.TOP));
-        addKeyAction(DOWN, () -> player.move(Direction.BOTTOM));
-        addKeyAction(RIGHT, () -> player.move(Direction.RIGHT));
-        addKeyAction(LEFT, () -> player.move(Direction.LEFT));
-        addKeyAction(SPACE, () -> {
+        keyHandler.addKeyAction(ESCAPE, () -> setActive(gameMenuScreen));
+        keyHandler.addKeyAction(UP, () -> player.move(Direction.TOP));
+        keyHandler.addKeyAction(DOWN, () -> player.move(Direction.BOTTOM));
+        keyHandler.addKeyAction(RIGHT, () -> player.move(Direction.RIGHT));
+        keyHandler.addKeyAction(LEFT, () -> player.move(Direction.LEFT));
+        keyHandler.addKeyAction(SPACE, () -> {
             level.destroy();
             level = ServiceLocator.levelGenerator().generateLevel();
             level.setUpUnitToRandRoom(player);
         });
+    }
+
+    @Override
+    public void handleKey(KeyCode keyCode) {
+        keyHandler.handleKey(keyCode);
     }
 
     @Override
@@ -94,7 +104,7 @@ public class GameScreen extends Screen {
 
     private GraphicsComponent actualGraphicsComponent(Cell cell) {
         if (!cell.isExplored() && warFogEnabled) {
-            return DefaultComponentsPool.EMPTY_CELL;
+            return GraphicsComponentsPool.EMPTY_CELL;
         }
 
         if (cell.containsUnit())

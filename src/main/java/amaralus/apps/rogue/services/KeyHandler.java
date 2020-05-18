@@ -3,12 +3,11 @@ package amaralus.apps.rogue.services;
 import amaralus.apps.rogue.utils.Action;
 import javafx.scene.input.KeyCode;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 
-public abstract class KeyHandler {
+public class KeyHandler {
 
-    private Map<KeyCode, Action> keyActions = new HashMap<>();
+    private EnumMap<KeyCode, Action> keyActions = new EnumMap<>(KeyCode.class);
     private boolean keyHandling = true;
 
     public void handleKey(KeyCode key) {

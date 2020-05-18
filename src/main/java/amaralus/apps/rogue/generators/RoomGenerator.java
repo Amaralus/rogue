@@ -3,7 +3,7 @@ package amaralus.apps.rogue.generators;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Area;
 import amaralus.apps.rogue.entities.world.Room;
-import amaralus.apps.rogue.graphics.DefaultComponentsPool;
+import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import static amaralus.apps.rogue.entities.world.CellType.FLOOR;
 import static amaralus.apps.rogue.entities.world.CellType.WALL;
 import static amaralus.apps.rogue.entities.world.CellType.WALL_CORNER;
 import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
-import static amaralus.apps.rogue.graphics.DefaultComponentsPool.*;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.*;
 
 public class RoomGenerator {
 
@@ -44,7 +44,7 @@ public class RoomGenerator {
                 else if (j == 0 || j == cellList.size() - 1)
                     cell.setGraphicsComponent(VERTICAL_WALL);
                 else {
-                    cell.setGraphicsComponent(DefaultComponentsPool.ROOM_FLOOR);
+                    cell.setGraphicsComponent(GraphicsComponentsPool.ROOM_FLOOR);
                     cell.setType(FLOOR);
                     cell.setCanWalk(true);
                 }
