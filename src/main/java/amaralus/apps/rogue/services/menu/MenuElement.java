@@ -1,6 +1,6 @@
 package amaralus.apps.rogue.services.menu;
 
-import amaralus.apps.rogue.services.Action;
+import amaralus.apps.rogue.commands.Command;
 
 import java.util.Objects;
 
@@ -10,11 +10,15 @@ public class MenuElement {
     private MenuElement previous;
 
     private final String text;
-    private final Action action;
+    private final Command<Object> command;
 
-    public MenuElement(String text, Action action) {
+    public MenuElement(String text, Runnable runnable) {
+        this(text, new Command<>(runnable));
+    }
+
+    public MenuElement(String text, Command<Object> command) {
         this.text = text;
-        this.action = action;
+        this.command = command;
     }
 
     public MenuElement getNext() {
@@ -37,12 +41,12 @@ public class MenuElement {
         return text;
     }
 
-    public Action getAction() {
-        return action;
+    public Command<Object> getCommand() {
+        return command;
     }
 
-    public void performAction() {
-        action.perform();
+    public void executeComand() {
+        command.execute();
     }
 
     @Override
@@ -51,11 +55,11 @@ public class MenuElement {
         if (o == null || getClass() != o.getClass()) return false;
         MenuElement that = (MenuElement) o;
         return Objects.equals(text, that.text) &&
-                Objects.equals(action, that.action);
+                Objects.equals(command, that.command);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, action);
+        return Objects.hash(text, command);
     }
 }

@@ -2,8 +2,9 @@ package amaralus.apps.rogue.entities.world;
 
 import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.Unit;
-import amaralus.apps.rogue.graphics.DefaultComponentsPool;
+import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
 import java.util.Objects;
@@ -20,11 +21,15 @@ public class Cell implements Destroyable {
     private CellType type;
 
     private Unit unit;
+    private Item item;
+
     private boolean canWalk = false;
+    private boolean explored = false;
+    private boolean visibleForPlayer = false;
 
     public Cell(Position position) {
         this.position = position;
-        graphicsComponent = DefaultComponentsPool.EMPTY_CELL;
+        graphicsComponent = GraphicsComponentsPool.EMPTY_CELL;
         type = CellType.EMPTY;
     }
 
@@ -128,6 +133,22 @@ public class Cell implements Destroyable {
         return graphicsComponent;
     }
 
+    public boolean isExplored() {
+        return explored;
+    }
+
+    public void setExplored(boolean explored) {
+        this.explored = explored;
+    }
+
+    public boolean isVisibleForPlayer() {
+        return visibleForPlayer;
+    }
+
+    public void setVisibleForPlayer(boolean visibleForPlayer) {
+        this.visibleForPlayer = visibleForPlayer;
+    }
+
     // сущность
 
     public Unit getUnit() {
@@ -146,6 +167,24 @@ public class Cell implements Destroyable {
         return !containsUnit();
     }
 
+    // Предметы
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public boolean containsItem() {
+        return item != null;
+    }
+
+    public boolean notContainsItem() {
+        return !containsItem();
+    }
+
     // возможность пройти
 
     public void setCanWalk(boolean canWalk) {
@@ -161,11 +200,16 @@ public class Cell implements Destroyable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cell cell = (Cell) o;
-        return Objects.equals(position, cell.position);
+        return canWalk == cell.canWalk &&
+                explored == cell.explored &&
+                visibleForPlayer == cell.visibleForPlayer &&
+                Objects.equals(position, cell.position) &&
+                Objects.equals(graphicsComponent, cell.graphicsComponent) &&
+                type == cell.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position);
+        return Objects.hash(position, graphicsComponent, type, canWalk, explored, visibleForPlayer);
     }
 }

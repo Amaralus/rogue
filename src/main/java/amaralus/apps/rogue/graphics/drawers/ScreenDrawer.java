@@ -1,7 +1,6 @@
-package amaralus.apps.rogue.graphics.screens;
+package amaralus.apps.rogue.graphics.drawers;
 
 import amaralus.apps.rogue.graphics.Palette;
-import amaralus.apps.rogue.services.KeyHandler;
 import amaralus.apps.rogue.services.ServiceLocator;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -9,19 +8,9 @@ import javafx.scene.text.Text;
 
 import java.util.List;
 
-public abstract class Screen extends KeyHandler {
-
-    private static Screen activeScreen;
+public abstract class ScreenDrawer {
 
     private final Font font = new Font("Courier New", 16);
-
-    public static Screen getActive() {
-        return activeScreen;
-    }
-
-    public static void setActive(Screen activeScreen) {
-        Screen.activeScreen = activeScreen;
-    }
 
     public abstract void draw();
 

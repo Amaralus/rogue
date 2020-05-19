@@ -15,7 +15,8 @@ public enum EntitySymbol {
     LINE_VERTICAL('\u2502'),
     LINE_HORIZONTAL('\u2500'),
     LINE_VERTICAL_HORIZONTAL('\u253c'),
-    SPACE(' ');
+    SPACE(' '),
+    ASTERISK('*');
 
     private char symbol;
 

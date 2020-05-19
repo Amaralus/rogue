@@ -3,6 +3,7 @@ package amaralus.apps.rogue.generators;
 import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.world.Cell;
+import amaralus.apps.rogue.entities.world.CellType;
 import amaralus.apps.rogue.entities.world.Corridor;
 import amaralus.apps.rogue.entities.world.Room;
 
@@ -17,8 +18,8 @@ import static amaralus.apps.rogue.entities.world.CellType.CORRIDOR;
 import static amaralus.apps.rogue.entities.world.CellType.EMPTY;
 import static amaralus.apps.rogue.entities.world.CellType.WALL;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
-import static amaralus.apps.rogue.graphics.DefaultComponentsPool.CORRIDOR_FLOR;
-import static amaralus.apps.rogue.graphics.DefaultComponentsPool.DOOR;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.CORRIDOR_FLOR;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.DOOR;
 
 public class CorridorGenerator {
 
@@ -39,7 +40,7 @@ public class CorridorGenerator {
         corridorCells.forEach(this::updateCell);
 
         Corridor corridor = new Corridor(corridorCells.stream()
-                .filter(cell -> CORRIDOR == cell.getType() || WALL == cell.getType())
+                .filter(cell -> CORRIDOR == cell.getType() || CellType.DOOR == cell.getType())
                 .collect(Collectors.toList()));
 
         corridor.addRoom(startRoom);
@@ -141,7 +142,9 @@ public class CorridorGenerator {
             cell.setGraphicsComponent(CORRIDOR_FLOR);
             cell.setType(CORRIDOR);
         }
-        if (WALL == cell.getType())
+        if (WALL == cell.getType()) {
             cell.setGraphicsComponent(DOOR);
+            cell.setType(CellType.DOOR);
+        }
     }
 }

@@ -1,15 +1,36 @@
 package amaralus.apps.rogue.services.menu;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MenuList {
 
-    private final List<MenuElement> elementList;
+    private List<MenuElement> elementList = new ArrayList<>();
     private MenuElement current;
+    private boolean emptyMenu = false;
 
     public MenuList(MenuElement... elements) {
-        elementList = Arrays.asList(elements);
+        this(Arrays.asList(elements));
+    }
+
+    public MenuList(List<MenuElement> elements) {
+        setUpMenuList(elements);
+    }
+
+    public void setUpMenuList(MenuElement... elements) {
+        setUpMenuList(Arrays.asList(elements));
+    }
+
+    public void setUpMenuList(List<MenuElement> elements) {
+        if (elements == null || elements.isEmpty()) {
+            elementList.clear();
+            emptyMenu = true;
+            return;
+        }
+
+        emptyMenu = false;
+        elementList = elements;
 
         for (int i = 0; i < elementList.size() - 1; i++) {
             MenuElement currentElement = elementList.get(i);
@@ -25,23 +46,23 @@ public class MenuList {
     }
 
     public MenuElement first() {
-        return elementList.get(0);
+        return emptyMenu ? null : elementList.get(0);
     }
 
     public MenuElement last() {
-        return elementList.get(elementList.size() - 1);
+        return emptyMenu ? null :  elementList.get(elementList.size() - 1);
     }
 
     public MenuElement current() {
-        return current;
+        return emptyMenu ? null :  current;
     }
 
     public MenuElement next() {
-        return current.getNext();
+        return emptyMenu ? null :  current.getNext();
     }
 
     public MenuElement previous() {
-        return current.getPrevious();
+        return emptyMenu ? null :  current.getPrevious();
     }
 
     public void shiftToNext() {

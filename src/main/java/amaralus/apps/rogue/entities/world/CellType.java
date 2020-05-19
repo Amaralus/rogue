@@ -4,6 +4,8 @@ public enum CellType {
 
     EMPTY,
     WALL,
+    WALL_CORNER,
+    DOOR,
     FLOOR,
     CORRIDOR
 }
