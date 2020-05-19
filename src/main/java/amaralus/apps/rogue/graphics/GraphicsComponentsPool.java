@@ -20,5 +20,7 @@ public final class GraphicsComponentsPool {
 
     public static final GraphicsComponent PLAYER = new GraphicsComponent(SMILING_FACE, YELLOW);
 
+    public static final GraphicsComponent GOLD = new GraphicsComponent(ASTERISK, YELLOW, BLACK_BLUE);
+
     private GraphicsComponentsPool() {}
 }

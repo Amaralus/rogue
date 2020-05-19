@@ -2,6 +2,7 @@ package amaralus.apps.rogue.entities.world;
 
 import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
@@ -20,6 +21,8 @@ public class Cell implements Destroyable {
     private CellType type;
 
     private Unit unit;
+    private Item item;
+
     private boolean canWalk = false;
     private boolean explored = false;
     private boolean visibleForPlayer = false;
@@ -162,6 +165,24 @@ public class Cell implements Destroyable {
 
     public boolean notContainsUnit() {
         return !containsUnit();
+    }
+
+    // Предметы
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public boolean containsItem() {
+        return item != null;
+    }
+
+    public boolean notContainsItem() {
+        return !containsItem();
     }
 
     // возможность пройти

@@ -68,6 +68,8 @@ public class GameScreenDrawer extends ScreenDrawer {
 
         if (cell.containsUnit())
             return cell.getUnit().getGraphicsComponent();
+        else if (cell.containsItem())
+            return cell.getItem().getGraphicsComponent();
         else
             return cell.getGraphicsComponent();
     }

@@ -20,17 +20,14 @@ public class GameController {
     public GameController(MainApplication application) {
         this.application = application;
 
-        ServiceLocator.provide(this);
-        ServiceLocator.provide(new LevelGenerator());
+        ServiceLocator.register(this);
+        ServiceLocator.register(new LevelGenerator());
 
         application.getScene().setOnKeyPressed(event -> gameLoop(event.getCode()));
 
         try {
             GameScreen gameScreen = new GameScreen();
-            MenuScreen gameMenuScreen = new MenuScreen();
-
-            gameScreen.setGameMenuScreen(gameMenuScreen);
-            gameMenuScreen.setGameScreen(gameScreen);
+            ServiceLocator.registerMenu(new MenuScreen());
 
             Screen.setActiveScreen(gameScreen);
 

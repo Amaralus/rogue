@@ -24,6 +24,7 @@ public class MenuList {
 
     public void setUpMenuList(List<MenuElement> elements) {
         if (elements == null || elements.isEmpty()) {
+            elementList.clear();
             emptyMenu = true;
             return;
         }

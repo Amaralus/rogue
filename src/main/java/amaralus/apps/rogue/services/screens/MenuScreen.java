@@ -6,28 +6,21 @@ import amaralus.apps.rogue.services.ServiceLocator;
 import amaralus.apps.rogue.services.menu.MenuElement;
 import amaralus.apps.rogue.services.menu.MenuList;
 
+import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 import static javafx.scene.input.KeyCode.*;
 
 
 public class MenuScreen extends Screen {
 
-    protected GameScreen gameScreen;
-
     protected MenuList menuList = new MenuList();
     private String menuTitle = "Меню, используй [\u2191] и [\u2193] для смещения, [Enter] для выбора";
 
     public MenuScreen() {
-        this(null);
-    }
-
-    public MenuScreen(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
-
         screenDrawer = new MenuScreenDrawer(this);
 
         createMenuList();
 
-        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(this.gameScreen)));
+        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(gameScreen())));
         commandPool.put(UP, new Command<>(menuList::shiftToPrevious));
         commandPool.put(DOWN, new Command<>(menuList::shiftToNext));
         commandPool.put(ENTER, new Command<>(() -> menuList.current().executeComand()));
@@ -35,7 +28,7 @@ public class MenuScreen extends Screen {
 
     protected void createMenuList() {
         menuList.setUpMenuList(
-                new MenuElement("Продолжить", () -> setActiveScreen(gameScreen)),
+                new MenuElement("Продолжить", () -> setActiveScreen(gameScreen())),
                 new MenuElement("Выйти из игры", () -> ServiceLocator.gameController().exitGame())
         );
     }
@@ -44,10 +37,6 @@ public class MenuScreen extends Screen {
     public void update() {
         inputCommand.execute();
         inputCommand = Command.NULLABLE_COM;
-    }
-
-    public void setGameScreen(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
     }
 
     public MenuList getMenuList() {
