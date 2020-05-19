@@ -2,6 +2,7 @@ package amaralus.apps.rogue.entities.world;
 
 import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.Unit;
 
 import java.util.List;
@@ -35,6 +36,15 @@ public class Level implements Destroyable {
         setUpUnit(unit, randElement(rooms).getRandCellPosition());
     }
 
+    public void setUpItem(Item item, Position position) {
+        Cell cell = gameField.getCell(position);
+        if (cell.notContainsItem())
+            cell.setItem(item);
+    }
+
+    public void setUpItemToRandRoom(Item item) {
+        setUpItem(item, randElement(rooms).getRandCellPosition());
+    }
 
     public Area getGameField() {
         return gameField;

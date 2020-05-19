@@ -25,8 +25,8 @@ public class InventoryScreen extends MenuScreen {
 
     @Override
     protected void setUpMenuList() {
-        menuList.setUpMenuList(gameScreen().getPlayer().getInventory().stream()
-                .map(item -> new MenuElement(item.getGraphicsComponent().getEntitySymbol().getChar() + " " + item.getName(), NULLABLE_COM))
+        menuList.setUpMenuList(gameScreen().getPlayer().getInventory().getItemList().stream()
+                .map(item -> new MenuElement(getItemInfo(item), NULLABLE_COM))
                 .collect(Collectors.toList()));
     }
 
@@ -35,13 +35,18 @@ public class InventoryScreen extends MenuScreen {
         return new Command<>(() -> setActiveScreen(gameScreen()));
     }
 
+    private String getItemInfo(Item item) {
+        String itemInfo = item.getGraphicsComponent().getEntitySymbol().getChar() + " " + item.getName();
+        return item.count() == 1 ? itemInfo : itemInfo + " (" + item.count() + ")";
+    }
+
     private void dropItem() {
         if (menuList.getElementList().isEmpty()) return;
 
         Unit player = gameScreen().getPlayer();
         int itemIndex = menuList.getElementList().indexOf(menuList.current());
 
-        Item item = player.getInventory().get(itemIndex);
+        Item item = player.getInventory().getItemList().get(itemIndex);
         player.removeItemFromInventory(item);
         player.getCurrentCell().setItem(item);
 

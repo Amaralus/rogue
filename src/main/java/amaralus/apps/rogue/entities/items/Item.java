@@ -6,27 +6,57 @@ import java.util.Objects;
 
 public class Item {
 
-    private static long itemIdGlobal = 0;
-
-    private final long itemId;
     private String name;
+    private boolean stackable;
+    private int count;
+
     private GraphicsComponent graphicsComponent;
 
     public Item(String name, GraphicsComponent graphicsComponent) {
-        itemId = ++itemIdGlobal;
-        this.name = name;
-        this.graphicsComponent = graphicsComponent;
+        this(name, graphicsComponent, true, 1);
     }
 
-    public long getItemId() {
-        return itemId;
+    public Item(String name, GraphicsComponent graphicsComponent, int count) {
+        this(name, graphicsComponent, true, count);
+    }
+
+    public Item(String name, GraphicsComponent graphicsComponent, boolean stackable) {
+        this(name, graphicsComponent, stackable, 1);
+    }
+
+    public Item(String name, GraphicsComponent graphicsComponent, boolean stackable, int count) {
+        this.name = name;
+        this.stackable = stackable;
+        this.graphicsComponent = graphicsComponent;
+        setCount(count);
     }
 
     public String getName() {
         return name;
     }
 
-    public GraphicsComponent getGraphicsComponent() {
+    public boolean isStackable() {
+        return stackable;
+    }
+
+    public int count() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        if (count < 1) throw new IllegalArgumentException();
+        this.count = count;
+    }
+
+    public void addCount(int count) {
+        this.count += count;
+    }
+
+    public void removeCount(int count) {
+        this.count -= count;
+    }
+
+        public GraphicsComponent getGraphicsComponent() {
         return graphicsComponent;
     }
 
@@ -35,13 +65,12 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return itemId == item.itemId &&
-                Objects.equals(name, item.name) &&
+        return Objects.equals(name, item.name) &&
                 Objects.equals(graphicsComponent, item.graphicsComponent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(itemId, name, graphicsComponent);
+        return Objects.hash(name, graphicsComponent);
     }
 }

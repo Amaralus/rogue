@@ -30,6 +30,7 @@ public class GameScreen extends Screen {
 
         level = ServiceLocator.levelGenerator().generateLevel();
         level.setUpUnitToRandRoom(player);
+        level.setUpItemToRandRoom(new Item("Золото", GOLD, 13));
     }
 
     @Override
