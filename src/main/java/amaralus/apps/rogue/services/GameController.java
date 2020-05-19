@@ -3,7 +3,7 @@ package amaralus.apps.rogue.services;
 import amaralus.apps.rogue.MainApplication;
 import amaralus.apps.rogue.generators.LevelGenerator;
 import amaralus.apps.rogue.services.screens.GameScreen;
-import amaralus.apps.rogue.services.screens.MenuScreen;
+import amaralus.apps.rogue.services.screens.GameMenuScreen;
 import amaralus.apps.rogue.services.screens.Screen;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
@@ -26,10 +26,8 @@ public class GameController {
         application.getScene().setOnKeyPressed(event -> gameLoop(event.getCode()));
 
         try {
-            GameScreen gameScreen = new GameScreen();
-            ServiceLocator.registerMenu(new MenuScreen());
-
-            Screen.setActiveScreen(gameScreen);
+            Screen.setActiveScreen(new GameScreen());
+            new GameMenuScreen();
 
             activeScreen().getScreenDrawer().draw();
         } catch (Exception e) {

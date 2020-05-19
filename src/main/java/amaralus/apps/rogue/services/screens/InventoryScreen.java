@@ -15,18 +15,24 @@ import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 public class InventoryScreen extends MenuScreen {
 
     public InventoryScreen() {
-        super();
-        ServiceLocator.registerInv(this);
-        setMenuTitle("Инвентарь");
+        super("Инвентарь");
+        ServiceLocator.register(this);
+
+        setUpMenuList();
 
         commandPool.put(KeyCode.D, new Command<>(this::dropItem));
     }
 
     @Override
-    protected void createMenuList() {
+    protected void setUpMenuList() {
         menuList.setUpMenuList(gameScreen().getPlayer().getInventory().stream()
                 .map(item -> new MenuElement(item.getGraphicsComponent().getEntitySymbol().getChar() + " " + item.getName(), NULLABLE_COM))
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    protected Command<Object> returnToPreviousScreenCommand() {
+        return new Command<>(() -> setActiveScreen(gameScreen()));
     }
 
     private void dropItem() {
@@ -39,6 +45,6 @@ public class InventoryScreen extends MenuScreen {
         player.removeItemFromInventory(item);
         player.getCurrentCell().setItem(item);
 
-        createMenuList();
+        setUpMenuList();
     }
 }

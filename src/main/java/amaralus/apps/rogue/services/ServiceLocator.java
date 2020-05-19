@@ -3,14 +3,14 @@ package amaralus.apps.rogue.services;
 import amaralus.apps.rogue.generators.LevelGenerator;
 import amaralus.apps.rogue.services.screens.GameScreen;
 import amaralus.apps.rogue.services.screens.InventoryScreen;
-import amaralus.apps.rogue.services.screens.MenuScreen;
+import amaralus.apps.rogue.services.screens.GameMenuScreen;
 
 public final class ServiceLocator {
 
     private static GameController gameController;
     private static LevelGenerator levelGenerator;
     private static GameScreen gameScreen;
-    private static MenuScreen menuScreen;
+    private static GameMenuScreen gameMenuScreen;
     private static InventoryScreen inventoryScreen;
 
     private ServiceLocator() {}
@@ -27,11 +27,11 @@ public final class ServiceLocator {
         ServiceLocator.gameScreen = gameScreen;
     }
 
-    public static void registerMenu(MenuScreen menuScreen) {
-        ServiceLocator.menuScreen = menuScreen;
+    public static void register(GameMenuScreen menuScreen) {
+        ServiceLocator.gameMenuScreen = menuScreen;
     }
 
-    public static void registerInv(InventoryScreen inventoryScreen) {
+    public static void register(InventoryScreen inventoryScreen) {
         ServiceLocator.inventoryScreen = inventoryScreen;
     }
 
@@ -47,8 +47,8 @@ public final class ServiceLocator {
         return gameScreen;
     }
 
-    public static MenuScreen menuScreen() {
-        return menuScreen;
+    public static GameMenuScreen gameMenuScreen() {
+        return gameMenuScreen;
     }
 
     public static InventoryScreen inventoryScreen() {

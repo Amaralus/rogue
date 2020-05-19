@@ -47,10 +47,10 @@ public class GameScreen extends Screen {
 
         commandPool.put(F, new Command<>(((GameScreenDrawer) screenDrawer)::swapWarFogEnabled));
         commandPool.put(I, new Command<>(() -> {
-            inventoryScreen().createMenuList();
+            inventoryScreen().setUpMenuList();
             setActiveScreen(inventoryScreen());
         }));
-        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(ServiceLocator.menuScreen())));
+        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(ServiceLocator.gameMenuScreen())));
         commandPool.put(SPACE, new Command<>(() -> {
             level.destroy();
             level = ServiceLocator.levelGenerator().generateLevel();
