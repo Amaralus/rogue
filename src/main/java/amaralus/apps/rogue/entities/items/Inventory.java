@@ -18,6 +18,15 @@ public class Inventory {
         itemList.remove(item);
     }
 
+    public Item getItemByName(String itemName) {
+        for (Item item : itemList) {
+            if (item.getName().equals(itemName))
+                return item;
+        }
+
+        return null;
+    }
+
     public int itemCount() {
         return itemList.stream()
                 .mapToInt(Item::count)

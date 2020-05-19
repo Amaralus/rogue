@@ -1,5 +1,6 @@
 package amaralus.apps.rogue.graphics.drawers;
 
+import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
@@ -30,7 +31,7 @@ public class GameScreenDrawer extends ScreenDrawer {
 
         List<Text> textList = new ArrayList<>(30);
 
-        textList.add(createPlainText("[Esc] - Меню игры, [Space] - Перегенерировать уровень\n"));
+        textList.add(createPlainText(" [Esc] - Меню игры, [Space] - Перегенерировать уровень, [I] - Открыть инвентарь\n"));
 
         for (List<Cell> cellLine : gameScreen.getLevel().getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
@@ -56,9 +57,14 @@ public class GameScreenDrawer extends ScreenDrawer {
             textList.add(createText(builder.toString(), currentColor));
         }
 
-        textList.add(createPlainText("[F] - Включить/выключить туман войны, [I] - Открыть инвентарь\n"));
+        textList.add(createPlainText(" Золото: " + getGoldCount() + "\n"));
 
         updateTexts(textList);
+    }
+
+    private int getGoldCount() {
+        Item gold = gameScreen.getPlayer().getInventory().getItemByName("Золото");
+        return gold == null ? 0 : gold.count();
     }
 
     private GraphicsComponent actualGraphicsComponent(Cell cell) {

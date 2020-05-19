@@ -21,7 +21,7 @@ public class MenuScreenDrawer extends ScreenDrawer {
         MenuList menuList = menuScreen.getMenuList();
         List<Text> menuTexts = new ArrayList<>(menuList.getElementList().size() + 1);
 
-        menuTexts.add(createPlainText(menuScreen.getMenuTitle() + "\n\n"));
+        menuTexts.add(createPlainText(" " + menuScreen.getMenuTitle() + "\n\n"));
 
         menuTexts.addAll(menuList.getElementList().stream()
                 .map(menuElement -> menuElement.equals(menuList.current()) ? " -> " + menuElement.getText() : "    " + menuElement.getText())

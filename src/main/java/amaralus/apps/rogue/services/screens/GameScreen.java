@@ -5,6 +5,7 @@ import amaralus.apps.rogue.commands.UnitCommand;
 import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Level;
+import amaralus.apps.rogue.generators.RandomGenerator;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
 import amaralus.apps.rogue.services.ServiceLocator;
 
@@ -28,9 +29,7 @@ public class GameScreen extends Screen {
         initPlayer();
         new InventoryScreen();
 
-        level = ServiceLocator.levelGenerator().generateLevel();
-        level.setUpUnitToRandRoom(player);
-        level.setUpItemToRandRoom(new Item("Золото", GOLD, 13));
+        generateLevel();
     }
 
     @Override
@@ -52,11 +51,7 @@ public class GameScreen extends Screen {
             setActiveScreen(inventoryScreen());
         }));
         commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(ServiceLocator.gameMenuScreen())));
-        commandPool.put(SPACE, new Command<>(() -> {
-            level.destroy();
-            level = ServiceLocator.levelGenerator().generateLevel();
-            level.setUpUnitToRandRoom(player);
-        }));
+        commandPool.put(SPACE, new Command<>(this::generateLevel));
     }
 
     private void setUpPlayerKeys() {
@@ -70,7 +65,18 @@ public class GameScreen extends Screen {
     private void initPlayer() {
         player = new Unit(PLAYER);
         player.setVisibleRadius(3);
-        player.addItemToInventory(new Item("Золото", GOLD));
+    }
+
+    private void generateLevel() {
+        if (level != null) level.destroy();
+        level = ServiceLocator.levelGenerator().generateLevel();
+        level.setUpUnitToRandRoom(player);
+        initGoldOnTheLevel();
+    }
+
+    private void initGoldOnTheLevel() {
+        for (int i = 0; i < RandomGenerator.randInt(3, 15); i++)
+            level.setUpItemToRandRoom(new Item("Золото", GOLD, RandomGenerator.excRandInt(0, 50)));
     }
 
     public Level getLevel() {
