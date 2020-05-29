@@ -13,5 +13,7 @@ Double click to jar file
 ### Controls
 
 - `Arrow keys` to move
-- `Space` to regenerate dungeon
+- `E` to interact
+- `T` to take items
+- `I` to open inventory
 - `Esc` to open menu
