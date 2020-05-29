@@ -1,5 +1,6 @@
 package amaralus.apps.rogue.services;
 
+import amaralus.apps.rogue.entities.items.ItemFactory;
 import amaralus.apps.rogue.generators.LevelGenerator;
 import amaralus.apps.rogue.services.screens.GameScreen;
 import amaralus.apps.rogue.services.screens.InventoryScreen;
@@ -12,6 +13,7 @@ public final class ServiceLocator {
     private static GameScreen gameScreen;
     private static GameMenuScreen gameMenuScreen;
     private static InventoryScreen inventoryScreen;
+    private static ItemFactory itemFactory;
 
     private ServiceLocator() {}
 
@@ -35,6 +37,10 @@ public final class ServiceLocator {
         ServiceLocator.inventoryScreen = inventoryScreen;
     }
 
+    public static void register(ItemFactory itemFactory) {
+        ServiceLocator.itemFactory = itemFactory;
+    }
+
     public static GameController gameController() {
         return gameController;
     }
@@ -53,5 +59,9 @@ public final class ServiceLocator {
 
     public static InventoryScreen inventoryScreen() {
         return inventoryScreen;
+    }
+
+    public static ItemFactory itemFactory() {
+        return itemFactory;
     }
 }

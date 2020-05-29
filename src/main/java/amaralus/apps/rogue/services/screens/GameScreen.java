@@ -2,17 +2,18 @@ package amaralus.apps.rogue.services.screens;
 
 import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.commands.UnitCommand;
-import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Level;
-import amaralus.apps.rogue.generators.RandomGenerator;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
 import amaralus.apps.rogue.services.ServiceLocator;
 
 import static amaralus.apps.rogue.commands.UnitCommand.*;
-import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.GOLD;
+import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.GOLD_PROTOTYPE;
+import static amaralus.apps.rogue.generators.RandomGenerator.excRandInt;
+import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.PLAYER;
 import static amaralus.apps.rogue.services.ServiceLocator.inventoryScreen;
+import static amaralus.apps.rogue.services.ServiceLocator.itemFactory;
 import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
@@ -75,8 +76,8 @@ public class GameScreen extends Screen {
     }
 
     private void initGoldOnTheLevel() {
-        for (int i = 0; i < RandomGenerator.randInt(3, 15); i++)
-            level.setUpItemToRandRoom(new Item(1, "Золото", GOLD, RandomGenerator.excRandInt(0, 50)));
+        for (int i = 0; i < randInt(3, 15); i++)
+            level.setUpItemToRandRoom(itemFactory().produce(GOLD_PROTOTYPE, excRandInt(0, 50)));
     }
 
     public Level getLevel() {
