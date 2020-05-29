@@ -14,7 +14,7 @@ import java.util.List;
 
 public class GameScreenDrawer extends ScreenDrawer {
 
-    GameScreen gameScreen;
+    private GameScreen gameScreen;
     private ExplorationService explorationService;
 
     private boolean warFogEnabled = true;
@@ -31,7 +31,7 @@ public class GameScreenDrawer extends ScreenDrawer {
 
         List<Text> textList = new ArrayList<>(30);
 
-        textList.add(createPlainText(" [Esc] - Меню игры, [Space] - Перегенерировать уровень, [I] - Открыть инвентарь\n"));
+        textList.add(createPlainText(" [Esc] - Меню\n"));
 
         for (List<Cell> cellLine : gameScreen.getLevel().getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();

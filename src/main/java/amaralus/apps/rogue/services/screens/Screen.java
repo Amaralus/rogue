@@ -27,7 +27,10 @@ public abstract class Screen {
         inputCommand = commandPool.getOrDefault(keyCode, Command.NULLABLE_COM);
     }
 
-    public abstract void update();
+    public void update() {
+        inputCommand.execute();
+        inputCommand = Command.NULLABLE_COM;
+    }
 
     public void draw() {
         screenDrawer.draw();

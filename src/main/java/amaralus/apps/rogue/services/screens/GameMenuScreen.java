@@ -9,9 +9,24 @@ import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 
 public class GameMenuScreen extends MenuScreen {
 
+    private TextScreen controlsScreen;
+
     public GameMenuScreen() {
-        super("Меню, используй [\u2191] и [\u2193] для смещения, [Enter] для выбора");
+        super("Меню: [\u2191], [\u2193] - смещение [Enter] - выбор");
         ServiceLocator.register(this);
+
+        controlsScreen = new TextScreen(
+                this,
+                "Управление\n",
+                "Игра:",
+                "[\u2190] [\u2191] [\u2192] [\u2193] - Перемещение",
+                "[E] - Подобрать предмет (стоя на нём)",
+                "[I] - Инвентарь",
+                "[F] - Переключить туман войны",
+                "[SPACE] - Перегенерировать уровень\n",
+                "Инвентарь:",
+                "[D] - Выкинуть предмет"
+        );
 
         setUpMenuList();
     }
@@ -20,6 +35,7 @@ public class GameMenuScreen extends MenuScreen {
     protected void setUpMenuList() {
         menuList.setUpMenuList(
                 new MenuElement("Продолжить", () -> setActiveScreen(gameScreen())),
+                new MenuElement("Управление", () -> setActiveScreen(controlsScreen)),
                 new MenuElement("Выйти из игры", () -> ServiceLocator.gameController().exitGame())
         );
     }

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class MenuScreenDrawer extends ScreenDrawer {
 
-    MenuScreen menuScreen;
+    private MenuScreen menuScreen;
 
     public MenuScreenDrawer(MenuScreen menuScreen) {
         this.menuScreen = menuScreen;

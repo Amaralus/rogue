@@ -22,12 +22,6 @@ public abstract class MenuScreen extends Screen {
         commandPool.put(ENTER, new Command<>(() -> menuList.current().executeCommand()));
     }
 
-    @Override
-    public void update() {
-        inputCommand.execute();
-        inputCommand = Command.NULLABLE_COM;
-    }
-
     protected abstract void setUpMenuList();
 
     protected abstract Command<Object> returnToPreviousScreenCommand();

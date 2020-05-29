@@ -22,7 +22,7 @@ public abstract class ScreenDrawer {
     }
 
     protected Text createPlainText(String string) {
-        return  createText(string, Palette.WHITE_GRAY);
+        return createText(string, Palette.WHITE_GRAY);
     }
 
     protected void updateTexts(List<Text> textList) {
