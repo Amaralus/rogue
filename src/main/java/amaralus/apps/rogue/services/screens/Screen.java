@@ -39,4 +39,8 @@ public abstract class Screen {
     public ScreenDrawer getScreenDrawer() {
         return screenDrawer;
     }
+
+    public Command<?> getInputCommand() {
+        return inputCommand;
+    }
 }

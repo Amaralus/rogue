@@ -1,11 +1,18 @@
 package amaralus.apps.rogue.entities.items;
 
+import amaralus.apps.rogue.entities.Destroyable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Inventory {
+public class Inventory implements Destroyable {
 
     List<Item> itemList = new ArrayList<>();
+
+    @Override
+    public void destroy() {
+        itemList.clear();
+    }
 
     public void addItem(Item item) {
         if (itemList.contains(item) && item.isStackable())

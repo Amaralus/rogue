@@ -2,16 +2,20 @@ package amaralus.apps.rogue.services.screens;
 
 import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.commands.UnitCommand;
+import amaralus.apps.rogue.entities.UpdatedEntity;
+import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
 import amaralus.apps.rogue.services.ServiceLocator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static amaralus.apps.rogue.commands.UnitCommand.*;
 import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.GOLD_PROTOTYPE;
 import static amaralus.apps.rogue.generators.RandomGenerator.excRandInt;
 import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
-import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.PLAYER;
 import static amaralus.apps.rogue.services.ServiceLocator.inventoryScreen;
 import static amaralus.apps.rogue.services.ServiceLocator.itemFactory;
 import static javafx.scene.input.KeyCode.*;
@@ -20,6 +24,8 @@ public class GameScreen extends Screen {
 
     private Level level;
     private Unit player;
+
+    List<UpdatedEntity> updatedEntityList = new ArrayList<>();
 
     public GameScreen() {
         ServiceLocator.register(this);
@@ -36,7 +42,8 @@ public class GameScreen extends Screen {
     @Override
     public void update() {
         if (inputCommand instanceof UnitCommand)
-            ((UnitCommand) inputCommand).execute(player);
+            for (UpdatedEntity updatedEntity : updatedEntityList)
+                updatedEntity.update();
         else
             inputCommand.execute();
 
@@ -64,8 +71,9 @@ public class GameScreen extends Screen {
     }
 
     private void initPlayer() {
-        player = new Unit(PLAYER);
+        player = new PlayerUnit();
         player.setVisibleRadius(3);
+        updatedEntityList.add(player);
     }
 
     private void generateLevel() {

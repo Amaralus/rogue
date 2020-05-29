@@ -3,18 +3,19 @@ package amaralus.apps.rogue.entities.units;
 import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.Position;
+import amaralus.apps.rogue.entities.UpdatedEntity;
 import amaralus.apps.rogue.entities.items.Inventory;
 import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
-public class Unit implements Destroyable {
+public abstract class Unit implements Destroyable, UpdatedEntity {
 
     private GraphicsComponent graphicsComponent;
     protected Cell currentCell;
-    private int visibleRadius = 1;
+    protected int visibleRadius = 1;
 
-    Inventory inventory = new Inventory();
+    protected Inventory inventory = new Inventory();
 
     public Unit(GraphicsComponent graphicsComponent) {
         this.graphicsComponent = graphicsComponent;
@@ -24,6 +25,7 @@ public class Unit implements Destroyable {
     public void destroy() {
         currentCell = null;
         graphicsComponent = null;
+        inventory.destroy();
     }
 
     public void addItemToInventory(Item item) {
