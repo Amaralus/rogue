@@ -38,7 +38,7 @@ public class Level implements Destroyable {
 
     public void setUpItem(Item item, Position position) {
         Cell cell = gameField.getCell(position);
-        if (cell.notContainsItem())
+        if (cell.isCanPutItem() && cell.notContainsItem())
             cell.setItem(item);
     }
 

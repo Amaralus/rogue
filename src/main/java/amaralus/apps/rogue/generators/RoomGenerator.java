@@ -47,6 +47,7 @@ public class RoomGenerator {
                     cell.setGraphicsComponent(GraphicsComponentsPool.ROOM_FLOOR);
                     cell.setType(FLOOR);
                     cell.setCanWalk(true);
+                    cell.setCanPutItem(true);
                 }
             }
         }

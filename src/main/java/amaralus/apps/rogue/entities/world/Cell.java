@@ -26,6 +26,7 @@ public class Cell implements Destroyable {
     private boolean canWalk = false;
     private boolean explored = false;
     private boolean visibleForPlayer = false;
+    private boolean canPutItem = false;
 
     public Cell(Position position) {
         this.position = position;
@@ -183,6 +184,14 @@ public class Cell implements Destroyable {
 
     public boolean notContainsItem() {
         return !containsItem();
+    }
+
+    public boolean isCanPutItem() {
+        return canPutItem;
+    }
+
+    public void setCanPutItem(boolean canPutItem) {
+        this.canPutItem = canPutItem;
     }
 
     // возможность пройти

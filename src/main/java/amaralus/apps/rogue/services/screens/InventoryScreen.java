@@ -44,6 +44,10 @@ public class InventoryScreen extends MenuScreen {
         if (menuList.getElementList().isEmpty()) return;
 
         Unit player = gameScreen().getPlayer();
+
+        // todo если предмет тот же - то увеличить кол-во на клетке и выкинуть из инвентаря
+        if (!player.getCurrentCell().isCanPutItem() || player.getCurrentCell().containsItem()) return;
+
         int itemIndex = menuList.getElementList().indexOf(menuList.current());
 
         Item item = player.getInventory().getItemList().get(itemIndex);
