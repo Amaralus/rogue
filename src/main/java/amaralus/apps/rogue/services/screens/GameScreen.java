@@ -76,7 +76,7 @@ public class GameScreen extends Screen {
 
     private void initGoldOnTheLevel() {
         for (int i = 0; i < RandomGenerator.randInt(3, 15); i++)
-            level.setUpItemToRandRoom(new Item("Золото", GOLD, RandomGenerator.excRandInt(0, 50)));
+            level.setUpItemToRandRoom(new Item(1, "Золото", GOLD, RandomGenerator.excRandInt(0, 50)));
     }
 
     public Level getLevel() {

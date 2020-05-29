@@ -4,13 +4,14 @@ import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.services.ServiceLocator;
-import amaralus.apps.rogue.services.menu.MenuElement;
+import amaralus.apps.rogue.services.menu.ItemMenuElement;
 import javafx.scene.input.KeyCode;
 
 import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.commands.Command.NULLABLE_COM;
 import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
+import static javafx.scene.input.KeyCode.ENTER;
 
 public class InventoryScreen extends MenuScreen {
 
@@ -20,13 +21,17 @@ public class InventoryScreen extends MenuScreen {
 
         setUpMenuList();
 
-        commandPool.put(KeyCode.D, new Command<>(this::dropItem));
+        commandPool.put(KeyCode.D, new Command<>(() -> {
+            if (menuList.current() != null)
+                menuList.current().executeCommandWithObject();
+        }));
+        commandPool.put(ENTER, NULLABLE_COM);
     }
 
     @Override
     protected void setUpMenuList() {
         menuList.setUpMenuList(gameScreen().getPlayer().getInventory().getItemList().stream()
-                .map(item -> new MenuElement(getItemInfo(item), NULLABLE_COM))
+                .map(item -> new ItemMenuElement(item, new Command<Object>(this::dropItem)))
                 .collect(Collectors.toList()));
     }
 
@@ -35,12 +40,8 @@ public class InventoryScreen extends MenuScreen {
         return new Command<>(() -> setActiveScreen(gameScreen()));
     }
 
-    private String getItemInfo(Item item) {
-        String itemInfo = item.getGraphicsComponent().getEntitySymbol().getChar() + " " + item.getName();
-        return item.count() == 1 ? itemInfo : itemInfo + " (" + item.count() + ")";
-    }
+    private void dropItem(Object item) {
 
-    private void dropItem() {
         if (menuList.getElementList().isEmpty()) return;
 
         Unit player = gameScreen().getPlayer();
@@ -48,11 +49,8 @@ public class InventoryScreen extends MenuScreen {
         // todo если предмет тот же - то увеличить кол-во на клетке и выкинуть из инвентаря
         if (!player.getCurrentCell().isCanPutItem() || player.getCurrentCell().containsItem()) return;
 
-        int itemIndex = menuList.getElementList().indexOf(menuList.current());
-
-        Item item = player.getInventory().getItemList().get(itemIndex);
-        player.removeItemFromInventory(item);
-        player.getCurrentCell().setItem(item);
+        player.removeItemFromInventory((Item) item);
+        player.getCurrentCell().setItem((Item) item);
 
         setUpMenuList();
     }

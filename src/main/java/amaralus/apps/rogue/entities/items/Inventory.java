@@ -18,9 +18,9 @@ public class Inventory {
         itemList.remove(item);
     }
 
-    public Item getItemByName(String itemName) {
+    public Item getItemById(int itemId) {
         for (Item item : itemList) {
-            if (item.getName().equals(itemName))
+            if (item.getId() == itemId)
                 return item;
         }
 

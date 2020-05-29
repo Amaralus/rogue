@@ -63,7 +63,7 @@ public class GameScreenDrawer extends ScreenDrawer {
     }
 
     private int getGoldCount() {
-        Item gold = gameScreen.getPlayer().getInventory().getItemByName("Золото");
+        Item gold = gameScreen.getPlayer().getInventory().getItemById(1);
         return gold == null ? 0 : gold.count();
     }
 

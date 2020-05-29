@@ -19,7 +19,7 @@ public abstract class MenuScreen extends Screen {
         commandPool.put(ESCAPE, returnToPreviousScreenCommand());
         commandPool.put(UP, new Command<>(menuList::shiftToPrevious));
         commandPool.put(DOWN, new Command<>(menuList::shiftToNext));
-        commandPool.put(ENTER, new Command<>(() -> menuList.current().executeComand()));
+        commandPool.put(ENTER, new Command<>(() -> menuList.current().executeCommand()));
     }
 
     @Override
