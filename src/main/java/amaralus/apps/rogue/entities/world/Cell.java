@@ -1,5 +1,6 @@
 package amaralus.apps.rogue.entities.world;
 
+import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.items.Item;
@@ -22,6 +23,8 @@ public class Cell implements Destroyable {
 
     private Unit unit;
     private Item item;
+
+    private Command<Object> cellInteractCommand;
 
     private boolean canWalk = false;
     private boolean explored = false;
@@ -91,7 +94,7 @@ public class Cell implements Destroyable {
     public void setLeftCell(Cell leftCell) {
         this.leftCell = leftCell;
     }
-    
+
     public boolean topCellExist() {
         return topCell != null;
     }
@@ -202,6 +205,22 @@ public class Cell implements Destroyable {
 
     public boolean isCanWalk() {
         return canWalk;
+    }
+
+    // Взаимодействие с клеткой
+
+
+    public Command<Object> getCellInteractCommand() {
+        return cellInteractCommand;
+    }
+
+    public void setCellInteractCommand(Command<Object> cellInteractCommand) {
+        this.cellInteractCommand = cellInteractCommand;
+    }
+
+    public void interact() {
+        if (cellInteractCommand != null)
+            cellInteractCommand.execute();
     }
 
     @Override

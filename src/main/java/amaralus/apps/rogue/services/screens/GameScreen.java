@@ -67,7 +67,8 @@ public class GameScreen extends Screen {
         commandPool.put(DOWN, UNIT_MOVE_DOWN_COM);
         commandPool.put(RIGHT, UNIT_MOVE_RIGHT_COM);
         commandPool.put(LEFT, UNIT_MOVE_LEFT_COM);
-        commandPool.put(E, UNIT_PICK_UP_ITEM_COM);
+        commandPool.put(E, UNIT_INTERACT_WITH_CELL_COM);
+        commandPool.put(G, UNIT_PICK_UP_ITEM_COM);
     }
 
     private void initPlayer() {
@@ -76,7 +77,7 @@ public class GameScreen extends Screen {
         updatedEntityList.add(player);
     }
 
-    private void generateLevel() {
+    public void generateLevel() {
         if (level != null) level.destroy();
         level = ServiceLocator.levelGenerator().generateLevel();
         level.setUpUnitToRandRoom(player);
