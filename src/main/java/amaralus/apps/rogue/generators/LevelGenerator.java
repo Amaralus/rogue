@@ -69,6 +69,6 @@ public class LevelGenerator {
 
         stairsCell.setGraphicsComponent(STAIRS);
         stairsCell.setCanPutItem(false);
-        stairsCell.setCellInteractCommand(new Command<>(gameScreen()::generateLevel));
+        stairsCell.setCellInteractCommand(new Command<>(() -> gameScreen().setRegenerateLevel(true)));
     }
 }

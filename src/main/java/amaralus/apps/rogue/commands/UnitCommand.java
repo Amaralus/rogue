@@ -20,6 +20,7 @@ public class UnitCommand extends Command<Unit> {
         }
     });
     public static final UnitCommand UNIT_INTERACT_WITH_CELL_COM = new UnitCommand(unit -> unit.getCurrentCell().interact());
+    public static final UnitCommand UNIT_NULLABLE_COM = new UnitCommand(unit -> NULLABLE_COM.execute());
 
     UnitCommand(Consumer<Unit> unitConsumer) {
         super(unitConsumer);

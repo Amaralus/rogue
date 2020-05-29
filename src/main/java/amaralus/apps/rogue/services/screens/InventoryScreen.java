@@ -7,6 +7,7 @@ import amaralus.apps.rogue.services.ServiceLocator;
 import amaralus.apps.rogue.services.menu.ItemMenuElement;
 import javafx.scene.input.KeyCode;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.commands.Command.NULLABLE_COM;
@@ -30,9 +31,12 @@ public class InventoryScreen extends MenuScreen {
 
     @Override
     protected void setUpMenuList() {
-        menuList.setUpMenuList(gameScreen().getPlayer().getInventory().getItemList().stream()
-                .map(item -> new ItemMenuElement(item, new Command<Object>(this::dropItem)))
-                .collect(Collectors.toList()));
+        if (gameScreen().getPlayer() == null)
+            menuList.setUpMenuList(new ArrayList<>());
+        else
+            menuList.setUpMenuList(gameScreen().getPlayer().getInventory().getItemList().stream()
+                    .map(item -> new ItemMenuElement(item, new Command<Object>(this::dropItem)))
+                    .collect(Collectors.toList()));
     }
 
     @Override

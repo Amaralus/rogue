@@ -21,6 +21,7 @@ public final class GraphicsComponentsPool {
     public static final GraphicsComponent STAIRS = new GraphicsComponent(IDENTICAL_TO, WHITE_GRAY, DARK_GRAY);
 
     public static final GraphicsComponent PLAYER = new GraphicsComponent(SMILING_FACE, YELLOW);
+    public static final GraphicsComponent ZOMBIE = new GraphicsComponent(Z, WHITE_GREEN);
 
     public static final GraphicsComponent GOLD = new GraphicsComponent(ASTERISK, YELLOW, BLACK_BLUE);
 

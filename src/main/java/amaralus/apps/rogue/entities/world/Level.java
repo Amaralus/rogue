@@ -24,26 +24,31 @@ public class Level implements Destroyable {
         gameField.destroy();
     }
 
-    public void setUpUnit(Unit unit, Position position) {
+    public boolean setUpUnit(Unit unit, Position position) {
         Cell cell = gameField.getCell(position);
         if (cell.isCanWalk() && cell.notContainsUnit()) {
             cell.setUnit(unit);
             unit.setCurrentCell(cell);
-        }
+            return true;
+        } else
+            return false;
     }
 
-    public void setUpUnitToRandRoom(Unit unit) {
-        setUpUnit(unit, randElement(rooms).getRandCellPosition());
+    public boolean setUpUnitToRandRoom(Unit unit) {
+        return setUpUnit(unit, randElement(rooms).getRandCellPosition());
     }
 
-    public void setUpItem(Item item, Position position) {
+    public boolean setUpItem(Item item, Position position) {
         Cell cell = gameField.getCell(position);
-        if (cell.isCanPutItem() && cell.notContainsItem())
+        if (cell.isCanPutItem() && cell.notContainsItem()) {
             cell.setItem(item);
+            return true;
+        } else
+            return false;
     }
 
-    public void setUpItemToRandRoom(Item item) {
-        setUpItem(item, randElement(rooms).getRandCellPosition());
+    public boolean setUpItemToRandRoom(Item item) {
+        return setUpItem(item, randElement(rooms).getRandCellPosition());
     }
 
     public Area getGameField() {

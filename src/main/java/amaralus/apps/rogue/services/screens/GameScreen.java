@@ -5,6 +5,7 @@ import amaralus.apps.rogue.commands.UnitCommand;
 import amaralus.apps.rogue.entities.UpdatedEntity;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Unit;
+import amaralus.apps.rogue.entities.units.Zombie;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
 import amaralus.apps.rogue.services.ServiceLocator;
@@ -25,26 +26,33 @@ public class GameScreen extends Screen {
     private Level level;
     private Unit player;
 
-    List<UpdatedEntity> updatedEntityList = new ArrayList<>();
+    private List<UpdatedEntity> updatedEntityList = new ArrayList<>();
+
+    private boolean regenerateLevel = false;
 
     public GameScreen() {
         ServiceLocator.register(this);
         screenDrawer = new GameScreenDrawer(this);
-
-        setUpKeyAction();
-
-        initPlayer();
         new InventoryScreen();
 
+        setUpKeyAction();
+        initPlayer();
         generateLevel();
     }
 
     @Override
     public void update() {
-        if (inputCommand instanceof UnitCommand)
-            for (UpdatedEntity updatedEntity : updatedEntityList)
+        if (inputCommand instanceof UnitCommand) {
+            for (int i = 0; i < updatedEntityList.size() && !regenerateLevel; i++) {
+                UpdatedEntity updatedEntity = updatedEntityList.get(i);
                 updatedEntity.update();
-        else
+            }
+
+            if (regenerateLevel) {
+                regenerateLevel = false;
+                generateLevel();
+            }
+        } else
             inputCommand.execute();
 
         inputCommand = Command.NULLABLE_COM;
@@ -68,7 +76,7 @@ public class GameScreen extends Screen {
         commandPool.put(RIGHT, UNIT_MOVE_RIGHT_COM);
         commandPool.put(LEFT, UNIT_MOVE_LEFT_COM);
         commandPool.put(E, UNIT_INTERACT_WITH_CELL_COM);
-        commandPool.put(G, UNIT_PICK_UP_ITEM_COM);
+        commandPool.put(T, UNIT_PICK_UP_ITEM_COM);
     }
 
     private void initPlayer() {
@@ -77,10 +85,20 @@ public class GameScreen extends Screen {
         updatedEntityList.add(player);
     }
 
-    public void generateLevel() {
+    private void generateLevel() {
         if (level != null) level.destroy();
+        updatedEntityList.clear();
+
         level = ServiceLocator.levelGenerator().generateLevel();
         level.setUpUnitToRandRoom(player);
+        updatedEntityList.add(player);
+
+        for (int i = 0; i < excRandInt(0, 10); i++) {
+            Zombie zombie = new Zombie();
+            if (level.setUpUnitToRandRoom(zombie))
+                updatedEntityList.add(zombie);
+        }
+
         initGoldOnTheLevel();
     }
 
@@ -95,5 +113,9 @@ public class GameScreen extends Screen {
 
     public Unit getPlayer() {
         return player;
+    }
+
+    public void setRegenerateLevel(boolean regenerateLevel) {
+        this.regenerateLevel = regenerateLevel;
     }
 }
