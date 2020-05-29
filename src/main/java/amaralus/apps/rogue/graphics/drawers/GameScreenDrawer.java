@@ -14,7 +14,7 @@ import java.util.List;
 
 public class GameScreenDrawer extends ScreenDrawer {
 
-    GameScreen gameScreen;
+    private GameScreen gameScreen;
     private ExplorationService explorationService;
 
     private boolean warFogEnabled = true;
@@ -31,7 +31,7 @@ public class GameScreenDrawer extends ScreenDrawer {
 
         List<Text> textList = new ArrayList<>(30);
 
-        textList.add(createPlainText(" [Esc] - Меню игры, [Space] - Перегенерировать уровень, [I] - Открыть инвентарь\n"));
+        textList.add(createPlainText(" [Esc] - Меню\n"));
 
         for (List<Cell> cellLine : gameScreen.getLevel().getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
@@ -63,7 +63,7 @@ public class GameScreenDrawer extends ScreenDrawer {
     }
 
     private int getGoldCount() {
-        Item gold = gameScreen.getPlayer().getInventory().getItemByName("Золото");
+        Item gold = gameScreen.getPlayer().getInventory().getItemById(1);
         return gold == null ? 0 : gold.count();
     }
 
@@ -72,9 +72,16 @@ public class GameScreenDrawer extends ScreenDrawer {
             return GraphicsComponentsPool.EMPTY_CELL;
         }
 
-        if (cell.containsUnit())
-            return cell.getUnit().getGraphicsComponent();
-        else if (cell.containsItem())
+        if (cell.containsUnit()) {
+            if (cell.getUnit().equals(gameScreen.getPlayer()))
+                return cell.getUnit().getGraphicsComponent();
+            else if (cell.isVisibleForPlayer() || !warFogEnabled)
+                return cell.getUnit().getGraphicsComponent();
+            else return cell.getGraphicsComponent();
+        }
+
+
+        if (cell.containsItem())
             return cell.getItem().getGraphicsComponent();
         else
             return cell.getGraphicsComponent();

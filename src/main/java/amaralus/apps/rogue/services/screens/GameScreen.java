@@ -2,17 +2,23 @@ package amaralus.apps.rogue.services.screens;
 
 import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.commands.UnitCommand;
-import amaralus.apps.rogue.entities.items.Item;
+import amaralus.apps.rogue.entities.UpdatedEntity;
+import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Unit;
+import amaralus.apps.rogue.entities.units.Zombie;
 import amaralus.apps.rogue.entities.world.Level;
-import amaralus.apps.rogue.generators.RandomGenerator;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
 import amaralus.apps.rogue.services.ServiceLocator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static amaralus.apps.rogue.commands.UnitCommand.*;
-import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.GOLD;
-import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.PLAYER;
+import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.GOLD_PROTOTYPE;
+import static amaralus.apps.rogue.generators.RandomGenerator.excRandInt;
+import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
 import static amaralus.apps.rogue.services.ServiceLocator.inventoryScreen;
+import static amaralus.apps.rogue.services.ServiceLocator.itemFactory;
 import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
@@ -20,23 +26,33 @@ public class GameScreen extends Screen {
     private Level level;
     private Unit player;
 
+    private List<UpdatedEntity> updatedEntityList = new ArrayList<>();
+
+    private boolean regenerateLevel = false;
+
     public GameScreen() {
         ServiceLocator.register(this);
         screenDrawer = new GameScreenDrawer(this);
-
-        setUpKeyAction();
-
-        initPlayer();
         new InventoryScreen();
 
+        setUpKeyAction();
+        initPlayer();
         generateLevel();
     }
 
     @Override
     public void update() {
-        if (inputCommand instanceof UnitCommand)
-            ((UnitCommand) inputCommand).execute(player);
-        else
+        if (inputCommand instanceof UnitCommand) {
+            for (int i = 0; i < updatedEntityList.size() && !regenerateLevel; i++) {
+                UpdatedEntity updatedEntity = updatedEntityList.get(i);
+                updatedEntity.update();
+            }
+
+            if (regenerateLevel) {
+                regenerateLevel = false;
+                generateLevel();
+            }
+        } else
             inputCommand.execute();
 
         inputCommand = Command.NULLABLE_COM;
@@ -59,24 +75,36 @@ public class GameScreen extends Screen {
         commandPool.put(DOWN, UNIT_MOVE_DOWN_COM);
         commandPool.put(RIGHT, UNIT_MOVE_RIGHT_COM);
         commandPool.put(LEFT, UNIT_MOVE_LEFT_COM);
-        commandPool.put(E, UNIT_PICK_UP_ITEM_COM);
+        commandPool.put(E, UNIT_INTERACT_WITH_CELL_COM);
+        commandPool.put(T, UNIT_PICK_UP_ITEM_COM);
     }
 
     private void initPlayer() {
-        player = new Unit(PLAYER);
+        player = new PlayerUnit();
         player.setVisibleRadius(3);
+        updatedEntityList.add(player);
     }
 
     private void generateLevel() {
         if (level != null) level.destroy();
+        updatedEntityList.clear();
+
         level = ServiceLocator.levelGenerator().generateLevel();
         level.setUpUnitToRandRoom(player);
+        updatedEntityList.add(player);
+
+        for (int i = 0; i < excRandInt(0, 10); i++) {
+            Zombie zombie = new Zombie();
+            if (level.setUpUnitToRandRoom(zombie))
+                updatedEntityList.add(zombie);
+        }
+
         initGoldOnTheLevel();
     }
 
     private void initGoldOnTheLevel() {
-        for (int i = 0; i < RandomGenerator.randInt(3, 15); i++)
-            level.setUpItemToRandRoom(new Item("Золото", GOLD, RandomGenerator.excRandInt(0, 50)));
+        for (int i = 0; i < randInt(3, 15); i++)
+            level.setUpItemToRandRoom(itemFactory().produce(GOLD_PROTOTYPE, excRandInt(0, 50)));
     }
 
     public Level getLevel() {
@@ -85,5 +113,9 @@ public class GameScreen extends Screen {
 
     public Unit getPlayer() {
         return player;
+    }
+
+    public void setRegenerateLevel(boolean regenerateLevel) {
+        this.regenerateLevel = regenerateLevel;
     }
 }

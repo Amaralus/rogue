@@ -18,7 +18,10 @@ public final class GraphicsComponentsPool {
     public static final GraphicsComponent BR_CORNER = new GraphicsComponent(WALL_BOTTOM_RIGHT, WHITE_GRAY, DARK_GRAY);
     public static final GraphicsComponent BL_CORNER = new GraphicsComponent(WALL_BOTTOM_LEFT, WHITE_GRAY, DARK_GRAY);
 
+    public static final GraphicsComponent STAIRS = new GraphicsComponent(IDENTICAL_TO, WHITE_GRAY, DARK_GRAY);
+
     public static final GraphicsComponent PLAYER = new GraphicsComponent(SMILING_FACE, YELLOW);
+    public static final GraphicsComponent ZOMBIE = new GraphicsComponent(Z, WHITE_GREEN);
 
     public static final GraphicsComponent GOLD = new GraphicsComponent(ASTERISK, YELLOW, BLACK_BLUE);
 

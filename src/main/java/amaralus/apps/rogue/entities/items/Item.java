@@ -6,29 +6,35 @@ import java.util.Objects;
 
 public class Item {
 
-    private String name;
+    private final int id;
+    private final String name;
     private boolean stackable;
     private int count;
 
     private GraphicsComponent graphicsComponent;
 
-    public Item(String name, GraphicsComponent graphicsComponent) {
-        this(name, graphicsComponent, true, 1);
+    public Item(int id, String name, GraphicsComponent graphicsComponent) {
+        this(id, name, graphicsComponent, true, 1);
     }
 
-    public Item(String name, GraphicsComponent graphicsComponent, int count) {
-        this(name, graphicsComponent, true, count);
+    public Item(int id, String name, GraphicsComponent graphicsComponent, int count) {
+        this(id, name, graphicsComponent, true, count);
     }
 
-    public Item(String name, GraphicsComponent graphicsComponent, boolean stackable) {
-        this(name, graphicsComponent, stackable, 1);
+    public Item(int id, String name, GraphicsComponent graphicsComponent, boolean stackable) {
+        this(id, name, graphicsComponent, stackable, 1);
     }
 
-    public Item(String name, GraphicsComponent graphicsComponent, boolean stackable, int count) {
+    public Item(int id, String name, GraphicsComponent graphicsComponent, boolean stackable, int count) {
+        this.id = id;
         this.name = name;
         this.stackable = stackable;
         this.graphicsComponent = graphicsComponent;
         setCount(count);
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

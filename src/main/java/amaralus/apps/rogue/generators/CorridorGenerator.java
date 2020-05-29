@@ -138,6 +138,7 @@ public class CorridorGenerator {
 
     private void updateCell(Cell cell) {
         cell.setCanWalk(true);
+        cell.setCanPutItem(true);
         if (EMPTY == cell.getType()) {
             cell.setGraphicsComponent(CORRIDOR_FLOR);
             cell.setType(CORRIDOR);

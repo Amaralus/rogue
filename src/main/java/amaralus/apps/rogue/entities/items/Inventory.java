@@ -1,11 +1,18 @@
 package amaralus.apps.rogue.entities.items;
 
+import amaralus.apps.rogue.entities.Destroyable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Inventory {
+public class Inventory implements Destroyable {
 
     List<Item> itemList = new ArrayList<>();
+
+    @Override
+    public void destroy() {
+        itemList.clear();
+    }
 
     public void addItem(Item item) {
         if (itemList.contains(item) && item.isStackable())
@@ -18,9 +25,9 @@ public class Inventory {
         itemList.remove(item);
     }
 
-    public Item getItemByName(String itemName) {
+    public Item getItemById(int itemId) {
         for (Item item : itemList) {
-            if (item.getName().equals(itemName))
+            if (item.getId() == itemId)
                 return item;
         }
 

@@ -1,6 +1,8 @@
 package amaralus.apps.rogue.generators;
 
+import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.entities.world.Area;
+import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.entities.world.Room;
 
@@ -8,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.STAIRS;
+import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 
 public class LevelGenerator {
 
@@ -43,6 +47,8 @@ public class LevelGenerator {
             corridorGenerator.generateCorridor(rooms.get(i), rooms.get(index));
         }
 
+        generateStairs(level);
+
         return level;
     }
 
@@ -56,5 +62,13 @@ public class LevelGenerator {
         }
 
         level.setRooms(rooms);
+    }
+
+    private void generateStairs(Level level) {
+        Cell stairsCell = RandomGenerator.randElement(level.getRooms()).getRandCell();
+
+        stairsCell.setGraphicsComponent(STAIRS);
+        stairsCell.setCanPutItem(false);
+        stairsCell.setCellInteractCommand(new Command<>(() -> gameScreen().setRegenerateLevel(true)));
     }
 }

@@ -9,8 +9,8 @@ public class MenuElement {
     private MenuElement next;
     private MenuElement previous;
 
-    private final String text;
-    private final Command<Object> command;
+    protected String text;
+    protected final Command<Object> command;
 
     public MenuElement(String text, Runnable runnable) {
         this(text, new Command<>(runnable));
@@ -45,8 +45,12 @@ public class MenuElement {
         return command;
     }
 
-    public void executeComand() {
+    public void executeCommand() {
         command.execute();
+    }
+
+    public void executeCommandWithObject() {
+        command.execute(null);
     }
 
     @Override
