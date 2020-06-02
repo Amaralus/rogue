@@ -3,6 +3,7 @@ package amaralus.apps.rogue.generators;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Area;
+import amaralus.apps.rogue.entities.world.LevelArea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +31,10 @@ public class AreaGenerator {
         return new Area(cells);
     }
 
-    public List<Area> bspSplitArea(Area area) {
-        List<Area> areas = new ArrayList<>();
+    public List<LevelArea> bspSplitArea(Area area) {
+        List<LevelArea> areas = new ArrayList<>();
 
-        for (Area subArea : splitByY(area.getCells(), 2))
+        for (LevelArea subArea : splitByY(area.getCells(), 2))
             areas.addAll(splitByX(subArea.getCells(), 2));
 
         return areas;
@@ -66,11 +67,11 @@ public class AreaGenerator {
         }
     }
 
-    private List<Area> splitByY(List<List<Cell>> fieldList, int deepCount) {
-        List<Area> areaList = new ArrayList<>();
+    private List<LevelArea> splitByY(List<List<Cell>> fieldList, int deepCount) {
+        List<LevelArea> areaList = new ArrayList<>();
 
         if (deepCount == 0 || fieldList.size() < (MIN_Y_AREA_SIZE * 2))
-            areaList.add(new Area(fieldList));
+            areaList.add(new LevelArea(fieldList));
         else {
             int splitVal = RandomGenerator.randInt(MIN_Y_AREA_SIZE, fieldList.size() - MIN_Y_AREA_SIZE);
             areaList.addAll(splitByY(fieldList.subList(0, splitVal), deepCount - 1));
@@ -80,11 +81,11 @@ public class AreaGenerator {
         return areaList;
     }
 
-    private List<Area> splitByX(List<List<Cell>> fieldList, int deepCount) {
-        List<Area> areaList = new ArrayList<>();
+    private List<LevelArea> splitByX(List<List<Cell>> fieldList, int deepCount) {
+        List<LevelArea> areaList = new ArrayList<>();
 
         if (deepCount == 0 || fieldList.get(0).size() < (MIN_X_AREA_SIZE * 2))
-            areaList.add(new Area(fieldList));
+            areaList.add(new LevelArea(fieldList));
         else {
             int splitVal = RandomGenerator.randInt(MIN_X_AREA_SIZE, fieldList.get(0).size() - MIN_X_AREA_SIZE);
             areaList.addAll(splitByX(innerSubList(fieldList, 0, splitVal), deepCount - 1));

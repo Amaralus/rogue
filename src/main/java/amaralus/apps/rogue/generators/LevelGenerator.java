@@ -29,7 +29,7 @@ public class LevelGenerator {
     public Level generateLevel() {
         Level level = new Level(areaGenerator.generateArea(LEVEL_WIDTH, LEVEL_HEIGHT));
 
-        level.setAreas(areaGenerator.bspSplitArea(level.getGameField()));
+        level.setLevelAreas(areaGenerator.bspSplitArea(level.getGameField()));
 
         generateRooms(level);
         generateCorridors(level);
@@ -56,12 +56,15 @@ public class LevelGenerator {
     }
 
     private void generateRooms(Level level) {
-        int roomCount = randInt(MIN_ROOM_COUNT, level.getAreas().size());
-        List<Area> randomAreas = randUniqueElements(level.getAreas(), roomCount);
+        int roomCount = randInt(MIN_ROOM_COUNT, level.getLevelAreas().size());
+        List<LevelArea> randomAreas = randUniqueElements(level.getLevelAreas(), roomCount);
 
         List<Room> rooms = new ArrayList<>(roomCount);
-        for (Area area : randomAreas) {
-            rooms.add(roomGenerator.generateRoom(area));
+        for (LevelArea area : randomAreas) {
+            Room room = roomGenerator.generateRoom(area);
+            room.setLevelArea(area);
+            area.setRoom(room);
+            rooms.add(room);
         }
 
         rooms.forEach(room -> room.setDarkRoom(randBoolean()));

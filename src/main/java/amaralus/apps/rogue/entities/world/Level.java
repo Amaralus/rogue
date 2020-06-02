@@ -12,7 +12,7 @@ import static amaralus.apps.rogue.generators.RandomGenerator.randElement;
 public class Level implements Destroyable {
 
     private Area gameField;
-    private List<Area> areas;
+    private List<LevelArea> levelAreas;
     private List<Room> rooms;
     private List<Corridor> corridors;
 
@@ -23,6 +23,11 @@ public class Level implements Destroyable {
     @Override
     public void destroy() {
         gameField.destroy();
+        levelAreas.forEach(Destroyable::destroy);
+        levelAreas.clear();
+        rooms.forEach(Destroyable::destroy);
+        rooms.clear();
+        corridors.forEach(Destroyable::destroy);
     }
 
     public boolean setUpUnit(Unit unit, Position position) {
@@ -73,12 +78,12 @@ public class Level implements Destroyable {
         return gameField;
     }
 
-    public List<Area> getAreas() {
-        return areas;
+    public List<LevelArea> getLevelAreas() {
+        return levelAreas;
     }
 
-    public void setAreas(List<Area> areas) {
-        this.areas = areas;
+    public void setLevelAreas(List<LevelArea> levelAreas) {
+        this.levelAreas = levelAreas;
     }
 
     public List<Room> getRooms() {

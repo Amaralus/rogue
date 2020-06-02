@@ -45,6 +45,7 @@ public class Cell implements Destroyable {
         leftCell = null;
         graphicsComponent = null;
         unit = null;
+        item = null;
     }
 
     public Position getPosition() {

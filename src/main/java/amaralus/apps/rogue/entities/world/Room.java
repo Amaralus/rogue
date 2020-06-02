@@ -8,6 +8,7 @@ import static amaralus.apps.rogue.generators.RandomGenerator.excRandInt;
 
 public class Room extends Area {
 
+    private LevelArea levelArea;
     private List<Corridor> corridors;
     private boolean darkRoom;
 
@@ -19,6 +20,20 @@ public class Room extends Area {
     @Override
     public Cell getRandCell() {
         return getCell(excRandInt(0, getWidth() - 1), excRandInt(0, getHeight() - 1));
+    }
+
+    @Override
+    public void destroy() {
+        levelArea = null;
+        corridors.clear();
+    }
+
+    public LevelArea getLevelArea() {
+        return levelArea;
+    }
+
+    public void setLevelArea(LevelArea levelArea) {
+        this.levelArea = levelArea;
     }
 
     public List<Corridor> getCorridors() {

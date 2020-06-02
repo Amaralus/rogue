@@ -12,6 +12,9 @@ import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
 
 public class Area implements Destroyable {
 
+    private static int idCounter = 0;
+
+    private final int id;
     private final List<List<Cell>> cells;
     private final Position position;
     private final int height;
@@ -19,6 +22,7 @@ public class Area implements Destroyable {
 
     public Area(List<List<Cell>> cells) {
         this.cells = cells;
+        id = ++idCounter;
         position = cells.get(0).get(0).getPosition();
         height = cells.size();
         width = cells.get(0).size();
@@ -70,6 +74,10 @@ public class Area implements Destroyable {
         return getRandCell().getPosition();
     }
 
+    public int getId() {
+        return id;
+    }
+
     public List<List<Cell>> getCells() {
         return cells;
     }
@@ -91,11 +99,11 @@ public class Area implements Destroyable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Area area = (Area) o;
-        return Objects.equals(position, area.position);
+        return id == area.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position);
+        return Objects.hash(id);
     }
 }
