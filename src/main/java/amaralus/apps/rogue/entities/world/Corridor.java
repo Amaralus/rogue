@@ -13,6 +13,10 @@ public class Corridor {
         rooms = new ArrayList<>(2);
     }
 
+    public boolean contains(Cell cell) {
+        return cells.contains(cell);
+    }
+
     public List<Cell> getCells() {
         return cells;
     }

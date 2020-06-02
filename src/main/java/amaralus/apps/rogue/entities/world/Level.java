@@ -14,6 +14,7 @@ public class Level implements Destroyable {
     private Area gameField;
     private List<Area> areas;
     private List<Room> rooms;
+    private List<Corridor> corridors;
 
     public Level(Area gameField) {
         this.gameField = gameField;
@@ -47,6 +48,23 @@ public class Level implements Destroyable {
             return false;
     }
 
+    public Room getRoomByCell(Cell cell) {
+        for (Room room : rooms) {
+            if (room.contains(cell))
+                return room;
+        }
+        return null;
+    }
+
+    public Corridor getCorridorByCell(Cell cell) {
+        for (Corridor corridor : corridors) {
+            if (corridor.contains(cell))
+                return corridor;
+        }
+        return null;
+    }
+
+
     public boolean setUpItemToRandRoom(Item item) {
         return setUpItem(item, randElement(rooms).getRandCellPosition());
     }
@@ -69,5 +87,13 @@ public class Level implements Destroyable {
 
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
+    }
+
+    public List<Corridor> getCorridors() {
+        return corridors;
+    }
+
+    public void setCorridors(List<Corridor> corridors) {
+        this.corridors = corridors;
     }
 }

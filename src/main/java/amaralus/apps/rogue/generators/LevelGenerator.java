@@ -1,10 +1,7 @@
 package amaralus.apps.rogue.generators;
 
 import amaralus.apps.rogue.commands.Command;
-import amaralus.apps.rogue.entities.world.Area;
-import amaralus.apps.rogue.entities.world.Cell;
-import amaralus.apps.rogue.entities.world.Level;
-import amaralus.apps.rogue.entities.world.Room;
+import amaralus.apps.rogue.entities.world.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +32,15 @@ public class LevelGenerator {
         level.setAreas(areaGenerator.bspSplitArea(level.getGameField()));
 
         generateRooms(level);
+        generateCorridors(level);
+        generateStairs(level);
 
+        return level;
+    }
+
+    private void generateCorridors(Level level) {
         List<Room> rooms = level.getRooms();
+        List<Corridor> corridors = new ArrayList<>();
 
         for (int i = 0; i < rooms.size(); i++) {
             int index;
@@ -44,12 +48,11 @@ public class LevelGenerator {
                 index = excRandInt(rooms.size());
             } while (index == i);
 
-            corridorGenerator.generateCorridor(rooms.get(i), rooms.get(index));
+            Corridor corridor = corridorGenerator.generateCorridor(rooms.get(i), rooms.get(index));
+            corridors.add(corridor);
         }
 
-        generateStairs(level);
-
-        return level;
+        level.setCorridors(corridors);
     }
 
     private void generateRooms(Level level) {
@@ -60,6 +63,8 @@ public class LevelGenerator {
         for (Area area : randomAreas) {
             rooms.add(roomGenerator.generateRoom(area));
         }
+
+        rooms.forEach(room -> room.setDarkRoom(randBoolean()));
 
         level.setRooms(rooms);
     }

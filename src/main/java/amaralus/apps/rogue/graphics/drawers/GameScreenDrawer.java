@@ -103,7 +103,7 @@ public class GameScreenDrawer extends ScreenDrawer {
     private void updateVisibleCells() {
         for (Cell cell : visibleCells) cell.setVisibleForPlayer(false);
 
-        visibleCells = explorationService.getVisibleCells(gameScreen.getPlayer());
+        visibleCells = explorationService.getVisibleCells2(gameScreen.getPlayer());
 
         for (Cell cell : visibleCells) {
             if (!cell.isExplored())

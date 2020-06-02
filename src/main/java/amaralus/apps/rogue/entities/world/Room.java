@@ -9,6 +9,7 @@ import static amaralus.apps.rogue.generators.RandomGenerator.excRandInt;
 public class Room extends Area {
 
     private List<Corridor> corridors;
+    private boolean darkRoom;
 
     public Room(List<List<Cell>> cells) {
         super(cells);
@@ -30,6 +31,14 @@ public class Room extends Area {
 
     public void addCorridor(Corridor corridor) {
         corridors.add(corridor);
+    }
+
+    public boolean isDarkRoom() {
+        return darkRoom;
+    }
+
+    public void setDarkRoom(boolean darkRoom) {
+        this.darkRoom = darkRoom;
     }
 
     @Override
