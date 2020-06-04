@@ -5,6 +5,7 @@ import amaralus.apps.rogue.entities.world.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.STAIRS;
@@ -39,18 +40,17 @@ public class LevelGenerator {
     }
 
     private void generateCorridors(Level level) {
-        List<Room> rooms = level.getRooms();
         List<Corridor> corridors = new ArrayList<>();
 
-        for (int i = 0; i < rooms.size(); i++) {
-            int index;
-            do {
-                index = excRandInt(rooms.size());
-            } while (index == i);
-
-            Corridor corridor = corridorGenerator.generateCorridor(rooms.get(i), rooms.get(index));
-            corridors.add(corridor);
-        }
+        for (LevelArea area : level.getLevelAreas())
+            if (area.containsRoom())
+                area.getNeighborAreas().stream()
+                        .filter(LevelArea::containsRoom)
+                        .map(LevelArea::getRoom)
+                        .filter(room -> !room.getCorridors().stream()
+                                .flatMap(corridor -> corridor.getRooms().stream())
+                                .collect(Collectors.toSet()).contains(area.getRoom()))
+                        .forEach(room -> corridors.add(corridorGenerator.generateCorridor(area.getRoom(), room)));
 
         level.setCorridors(corridors);
     }
