@@ -101,8 +101,10 @@ public class LevelGenerator {
     }
 
     private void generateStairs(Level level) {
-        Cell stairsCell = RandomGenerator.randElement(level.getRooms()).getRandCell();
+        Room room = randElement(level.getRooms());
+        Cell stairsCell = room.getRandCell();
 
+        room.setExitRoom(true);
         stairsCell.setGraphicsComponent(STAIRS);
         stairsCell.setCanPutItem(false);
         stairsCell.setCellInteractCommand(new Command<>(() -> gameScreen().setRegenerateLevel(true)));

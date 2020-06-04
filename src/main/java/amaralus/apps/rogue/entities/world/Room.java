@@ -11,6 +11,7 @@ public class Room extends Area {
     private LevelArea levelArea;
     private List<Corridor> corridors;
     private boolean darkRoom;
+    private boolean exitRoom = false;
 
     public Room(List<List<Cell>> cells) {
         super(cells);
@@ -54,6 +55,14 @@ public class Room extends Area {
 
     public void setDarkRoom(boolean darkRoom) {
         this.darkRoom = darkRoom;
+    }
+
+    public boolean isExitRoom() {
+        return exitRoom;
+    }
+
+    public void setExitRoom(boolean exitRoom) {
+        this.exitRoom = exitRoom;
     }
 
     @Override

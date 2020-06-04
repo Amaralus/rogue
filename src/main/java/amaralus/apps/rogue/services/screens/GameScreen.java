@@ -24,7 +24,7 @@ import static javafx.scene.input.KeyCode.*;
 public class GameScreen extends Screen {
 
     private Level level;
-    private Unit player;
+    private PlayerUnit player;
 
     private List<UpdatedEntity> updatedEntityList = new ArrayList<>();
 
@@ -90,7 +90,7 @@ public class GameScreen extends Screen {
         updatedEntityList.clear();
 
         level = ServiceLocator.levelGenerator().generateLevel();
-        level.setUpUnitToRandRoom(player);
+        level.setUpPlayerToRandRoom(player);
         updatedEntityList.add(player);
 
         for (int i = 0; i < excRandInt(0, 10); i++) {

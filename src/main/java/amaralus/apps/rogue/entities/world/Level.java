@@ -3,9 +3,11 @@ package amaralus.apps.rogue.entities.world;
 import amaralus.apps.rogue.entities.Destroyable;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.items.Item;
+import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Unit;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.randElement;
 
@@ -38,6 +40,13 @@ public class Level implements Destroyable {
             return true;
         } else
             return false;
+    }
+
+    public void setUpPlayerToRandRoom(PlayerUnit playerUnit) {
+        setUpUnit(playerUnit, randElement(rooms.stream()
+                .filter(room -> !room.isExitRoom())
+                .collect(Collectors.toList()))
+                .getRandCellPosition());
     }
 
     public boolean setUpUnitToRandRoom(Unit unit) {
