@@ -27,6 +27,14 @@ public class LevelArea extends Area {
         this.neighborAreas = neighborAreas;
     }
 
+    public void addNeighborArea(LevelArea neighborAreas) {
+        this.neighborAreas.add(neighborAreas);
+    }
+
+    public void addNeighborAreas(List<LevelArea> neighborAreas) {
+        this.neighborAreas.addAll(neighborAreas);
+    }
+
     public boolean containsRoom() {
         return room != null;
     }

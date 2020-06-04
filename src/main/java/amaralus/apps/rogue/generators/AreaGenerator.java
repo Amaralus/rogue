@@ -32,12 +32,53 @@ public class AreaGenerator {
     }
 
     public List<LevelArea> bspSplitArea(Area area) {
-        List<LevelArea> areas = new ArrayList<>();
+        List<List<LevelArea>> areas = new ArrayList<>();
 
         for (LevelArea subArea : splitByY(area.getCells(), 2))
-            areas.addAll(splitByX(subArea.getCells(), 2));
+            areas.add(splitByX(subArea.getCells(), 2));
 
-        return areas;
+        connectAreas(areas);
+
+        return areas.stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private void connectAreas(List<List<LevelArea>> areas) {
+        for (int i = 0; i < areas.size(); i++) {
+            List<LevelArea> areaList = areas.get(i);
+
+            for (int j = 0; j < areaList.size(); j++) {
+                LevelArea currentArea = areaList.get(j);
+
+                // добавляем зоны одного ряда в соседние
+                if (j < areaList.size() - 1) {
+                    currentArea.addNeighborArea(areaList.get(j + 1));
+                    areaList.get(j + 1).addNeighborArea(currentArea);
+                }
+
+                // добавлеем нижние зоны в соседние и наоборот
+                if (i < areas.size() - 1) {
+                    List<LevelArea> neighborAreas = areas.get(i + 1).stream()
+                            .filter(bottomArea -> checkBottomAreaForNeighborhood(currentArea, bottomArea))
+                            .collect(Collectors.toList());
+
+                    currentArea.addNeighborAreas(neighborAreas);
+                    neighborAreas.forEach(neighborArea -> neighborArea.addNeighborArea(currentArea));
+                }
+            }
+        }
+    }
+
+    private boolean checkBottomAreaForNeighborhood(Area currentArea, Area bottomArea) {
+        int currentAreaXStart = currentArea.getPosition().x();
+        int currentAreaXEnd = currentArea.getCells().get(0).get(currentArea.getWidth() - 1).getPosition().x();
+        int bottomAreaXStart = bottomArea.getPosition().x();
+        int bottomAreaXEnd = bottomArea.getCells().get(0).get(bottomArea.getWidth() - 1).getPosition().x();
+
+        return (bottomAreaXStart >= currentAreaXStart && bottomAreaXStart <= currentAreaXEnd)
+                || (bottomAreaXEnd >= currentAreaXStart && bottomAreaXEnd <= currentAreaXEnd)
+                || (bottomAreaXStart < currentAreaXStart && bottomAreaXEnd > currentAreaXEnd);
     }
 
     private List<Cell> createCellLine(int y, int width) {
