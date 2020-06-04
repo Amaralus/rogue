@@ -4,7 +4,9 @@ import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.entities.world.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
@@ -28,12 +30,16 @@ public class LevelGenerator {
     }
 
     public Level generateLevel() {
-        Level level = new Level(areaGenerator.generateArea(LEVEL_WIDTH, LEVEL_HEIGHT));
+        Level level;
 
-        level.setLevelAreas(areaGenerator.bspSplitArea(level.getGameField()));
+        do {
+            level = new Level(areaGenerator.generateArea(LEVEL_WIDTH, LEVEL_HEIGHT));
+            level.setLevelAreas(areaGenerator.bspSplitArea(level.getGameField()));
 
-        generateRooms(level);
-        generateCorridors(level);
+            generateRooms(level);
+            generateCorridors(level);
+        } while (checkLevelForRoomsIslands(level.getRooms()));
+
         generateStairs(level);
 
         return level;
@@ -53,6 +59,28 @@ public class LevelGenerator {
                         .forEach(room -> corridors.add(corridorGenerator.generateCorridor(area.getRoom(), room)));
 
         level.setCorridors(corridors);
+    }
+
+    private boolean checkLevelForRoomsIslands(List<Room> levelRooms) {
+        Room startRoom = randElement(levelRooms);
+
+        Set<Room> foundedRooms = new HashSet<>();
+        foundedRooms.add(startRoom);
+
+        List<Room> connectedRooms = new ArrayList<>();
+        connectedRooms.add(startRoom);
+
+        do {
+            for (Room room : connectedRooms) {
+                connectedRooms = room.getCorridors().stream()
+                        .flatMap(corridor -> corridor.getRooms().stream())
+                        .filter(nextRoom -> !foundedRooms.contains(nextRoom))
+                        .collect(Collectors.toList());
+                foundedRooms.addAll(connectedRooms);
+            }
+        } while (!connectedRooms.isEmpty());
+
+        return foundedRooms.size() != levelRooms.size();
     }
 
     private void generateRooms(Level level) {
