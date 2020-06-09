@@ -2,10 +2,7 @@ package amaralus.apps.rogue.generators;
 
 import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.Position;
-import amaralus.apps.rogue.entities.world.Cell;
-import amaralus.apps.rogue.entities.world.CellType;
-import amaralus.apps.rogue.entities.world.Corridor;
-import amaralus.apps.rogue.entities.world.Room;
+import amaralus.apps.rogue.entities.world.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +44,38 @@ public class CorridorGenerator {
         corridor.addRoom(finishRoom);
         startRoom.addCorridor(corridor);
         finishRoom.addCorridor(corridor);
+
+        return corridor;
+    }
+
+    public Corridor generateCorridorToNeighborArea(Room room) {
+
+        List<Area> emptyAreas = room.getLevelArea().getNeighborAreas().stream()
+                .filter(levelArea -> !levelArea.containsRoom())
+                .collect(Collectors.toList());
+
+        if (emptyAreas.isEmpty()) return null;
+
+        List<Cell> corridorCells;
+        boolean validCorridor;
+        do {
+            Cell from = room.getRandCell();
+            Cell to = randElement(emptyAreas).getRandCell();
+
+            List<Direction> directions = corridorDirections(from, to, randBoolean());
+
+            corridorCells = new ArrayList<>();
+            validCorridor = tryGenerate(from, to, directions, corridorCells);
+        } while (!validCorridor);
+
+        corridorCells.forEach(this::updateCell);
+
+        Corridor corridor = new Corridor(corridorCells.stream()
+                .filter(cell -> CORRIDOR == cell.getType() || CellType.DOOR == cell.getType())
+                .collect(Collectors.toList()));
+
+        corridor.addRoom(room);
+        room.addCorridor(corridor);
 
         return corridor;
     }

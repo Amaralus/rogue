@@ -72,9 +72,9 @@ public class AreaGenerator {
 
     private boolean checkBottomAreaForNeighborhood(Area currentArea, Area bottomArea) {
         int currentAreaXStart = currentArea.getPosition().x();
-        int currentAreaXEnd = currentArea.getCells().get(0).get(currentArea.getWidth() - 1).getPosition().x();
+        int currentAreaXEnd = currentArea.getBottomRightPosition().x();
         int bottomAreaXStart = bottomArea.getPosition().x();
-        int bottomAreaXEnd = bottomArea.getCells().get(0).get(bottomArea.getWidth() - 1).getPosition().x();
+        int bottomAreaXEnd = bottomArea.getBottomRightPosition().x();
 
         return (bottomAreaXStart >= currentAreaXStart && bottomAreaXStart <= currentAreaXEnd)
                 || (bottomAreaXEnd >= currentAreaXStart && bottomAreaXEnd <= currentAreaXEnd)

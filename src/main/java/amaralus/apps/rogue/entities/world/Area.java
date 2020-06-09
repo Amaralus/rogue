@@ -17,6 +17,7 @@ public class Area implements Destroyable {
     private final int id;
     private final List<List<Cell>> cells;
     private final Position position;
+    private final Position bottomRightPosition;
     private final int height;
     private final int width;
 
@@ -24,6 +25,7 @@ public class Area implements Destroyable {
         this.cells = cells;
         id = ++idCounter;
         position = cells.get(0).get(0).getPosition();
+        bottomRightPosition = cells.get(cells.size() - 1).get(cells.get(cells.size() - 1).size() - 1).getPosition();
         height = cells.size();
         width = cells.get(0).size();
     }
@@ -84,6 +86,10 @@ public class Area implements Destroyable {
 
     public Position getPosition() {
         return position;
+    }
+
+    public Position getBottomRightPosition() {
+        return bottomRightPosition;
     }
 
     public int getHeight() {

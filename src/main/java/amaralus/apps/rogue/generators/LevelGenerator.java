@@ -30,9 +30,11 @@ public class LevelGenerator {
     }
 
     public Level generateLevel() {
-        Level level;
+        Level level= null;
 
         do {
+            if (level != null) level.destroy();
+
             level = new Level(areaGenerator.generateArea(LEVEL_WIDTH, LEVEL_HEIGHT));
             level.setLevelAreas(areaGenerator.bspSplitArea(level.getGameField()));
 
@@ -48,8 +50,8 @@ public class LevelGenerator {
     private void generateCorridors(Level level) {
         List<Corridor> corridors = new ArrayList<>();
 
-        for (LevelArea area : level.getLevelAreas())
-            if (area.containsRoom())
+        for (LevelArea area : level.getLevelAreas()) {
+            if (area.containsRoom()) {
                 area.getNeighborAreas().stream()
                         .filter(LevelArea::containsRoom)
                         .map(LevelArea::getRoom)
@@ -57,6 +59,13 @@ public class LevelGenerator {
                                 .flatMap(corridor -> corridor.getRooms().stream())
                                 .collect(Collectors.toSet()).contains(area.getRoom()))
                         .forEach(room -> corridors.add(corridorGenerator.generateCorridor(area.getRoom(), room)));
+            }
+        }
+
+        for (int i = 0; i < randInt(5); i++) {
+            Corridor corridor = corridorGenerator.generateCorridorToNeighborArea(randElement(level.getRooms()));
+            if (corridor != null) corridors.add(corridor);
+        }
 
         level.setCorridors(corridors);
     }
