@@ -1,6 +1,5 @@
 package amaralus.apps.rogue.generators;
 
-import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.entities.world.*;
 
 import java.util.ArrayList;
@@ -116,6 +115,6 @@ public class LevelGenerator {
         room.setExitRoom(true);
         stairsCell.setGraphicsComponent(STAIRS);
         stairsCell.setCanPutItem(false);
-        stairsCell.setCellInteractCommand(new Command<>(() -> gameScreen().setRegenerateLevel(true)));
+        stairsCell.setInteractEntity(new InteractEntity(() -> gameScreen().setRegenerateLevel(true)));
     }
 }
