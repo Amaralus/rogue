@@ -11,9 +11,7 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.entities.Direction.*;
-import static amaralus.apps.rogue.entities.world.CellType.CORRIDOR;
-import static amaralus.apps.rogue.entities.world.CellType.EMPTY;
-import static amaralus.apps.rogue.entities.world.CellType.WALL;
+import static amaralus.apps.rogue.entities.world.CellType.*;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.CORRIDOR_FLOR;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.DOOR;
@@ -60,7 +58,8 @@ public class CorridorGenerator {
         boolean validCorridor;
         do {
             Cell from = room.getRandCell();
-            Cell to = randElement(emptyAreas).getRandCell();
+            Area area = randElement(emptyAreas);
+            Cell to = area.getCells().get(area.getHeight() / 2).get(area.getWidth() / 2);
 
             List<Direction> directions = corridorDirections(from, to, randBoolean());
 
@@ -87,7 +86,7 @@ public class CorridorGenerator {
             List<Cell> cells = cellsByDirection(startCell, direction, countCells(from, to, direction));
             startCell = cells.get(cells.size() - 1);
 
-            if (!validateCells(cells, direction))
+            if (!validateCells(cells))
                 return false;
 
             corridorCells.addAll(cells);
@@ -95,16 +94,13 @@ public class CorridorGenerator {
         return true;
     }
 
-    private boolean validateCells(List<Cell> cells, Direction direction) {
+    private boolean validateCells(List<Cell> cells) {
         // конечная клетка не может быть стеной
         if (WALL == cells.get(cells.size() - 1).getType())
             return false;
 
-        // 3 стены подряд это плохо, 2 подряд могут быть 2 комнатами в упор
         for (Cell cell : cells)
-            if (WALL == cell.getType()
-                    && WALL == direction.nextCell(cell).getType()
-                    && WALL == direction.nextCell(direction.nextCell(cell)).getType())
+            if (WALL_CORNER == cell.getType())
                 return false;
 
         return true;
