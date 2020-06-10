@@ -1,5 +1,6 @@
 package amaralus.apps.rogue.generators;
 
+import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.*;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.STAIRS;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.TRAP;
 import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 
 public class LevelGenerator {
@@ -42,6 +44,7 @@ public class LevelGenerator {
         } while (checkLevelForRoomsIslands(level.getRooms()));
 
         generateStairs(level);
+        generateTraps(level);
 
         return level;
     }
@@ -116,5 +119,27 @@ public class LevelGenerator {
         stairsCell.setGraphicsComponent(STAIRS);
         stairsCell.setCanPutItem(false);
         stairsCell.setInteractEntity(new InteractEntity(() -> gameScreen().setRegenerateLevel(true)));
+    }
+
+    private void generateTraps(Level level) {
+        for (int i = 0; i < randInt(1, 5); i++) {
+            Cell cell= randElement(level.getRooms()).getRandCell();
+
+            if (cell.containsInteractEntity()) continue;
+
+            cell.setCanPutItem(false);
+            cell.setInteractEntity(new UpdatedInteractEntity(() -> {
+                if (cell.containsUnit()) {
+                    boolean done;
+                    do {
+                        done = level.setUpUnitToRandRoom(cell.getUnit());
+                    } while (!done);
+
+                    if (cell.getUnit() instanceof PlayerUnit)
+                        cell.setGraphicsComponent(TRAP);
+                    cell.setUnit(null);
+                }
+            }));
+        }
     }
 }

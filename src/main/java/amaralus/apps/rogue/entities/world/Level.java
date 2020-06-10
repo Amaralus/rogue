@@ -6,6 +6,7 @@ import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Unit;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,9 +15,10 @@ import static amaralus.apps.rogue.generators.RandomGenerator.randElement;
 public class Level implements Destroyable {
 
     private Area gameField;
-    private List<LevelArea> levelAreas;
-    private List<Room> rooms;
-    private List<Corridor> corridors;
+    private List<LevelArea> levelAreas = new ArrayList<>();
+    private List<Room> rooms = new ArrayList<>();
+    private List<Corridor> corridors = new ArrayList<>();
+    private List<Unit> units = new ArrayList<>();
 
     public Level(Area gameField) {
         this.gameField = gameField;
@@ -30,6 +32,9 @@ public class Level implements Destroyable {
         rooms.forEach(Destroyable::destroy);
         rooms.clear();
         corridors.forEach(Destroyable::destroy);
+        corridors.clear();
+        units.forEach(Destroyable::destroy);
+        units.clear();
     }
 
     public boolean setUpUnit(Unit unit, Position position) {
@@ -109,5 +114,17 @@ public class Level implements Destroyable {
 
     public void setCorridors(List<Corridor> corridors) {
         this.corridors = corridors;
+    }
+
+    public void setGameField(Area gameField) {
+        this.gameField = gameField;
+    }
+
+    public List<Unit> getUnits() {
+        return units;
+    }
+
+    public void setUnits(List<Unit> units) {
+        this.units = units;
     }
 }

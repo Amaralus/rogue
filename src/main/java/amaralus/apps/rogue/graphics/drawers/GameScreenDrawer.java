@@ -81,7 +81,7 @@ public class GameScreenDrawer extends ScreenDrawer {
         }
 
 
-        if (cell.containsItem())
+        if (cell.containsItem() && (cell.isVisibleForPlayer() || !warFogEnabled))
             return cell.getItem().getGraphicsComponent();
         else
             return cell.getGraphicsComponent();

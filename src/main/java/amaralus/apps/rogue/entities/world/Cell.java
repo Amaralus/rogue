@@ -209,7 +209,6 @@ public class Cell implements Destroyable {
 
     // Взаимодействие с клеткой
 
-
     public InteractEntity getInteractEntity() {
         return interactEntity;
     }
@@ -218,8 +217,12 @@ public class Cell implements Destroyable {
         this.interactEntity = interactEntity;
     }
 
+    public boolean containsInteractEntity() {
+        return interactEntity != null;
+    }
+
     public void interact() {
-        if (interactEntity != null)
+        if (containsInteractEntity())
             interactEntity.interact();
     }
 
