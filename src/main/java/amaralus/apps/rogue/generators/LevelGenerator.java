@@ -1,16 +1,17 @@
 package amaralus.apps.rogue.generators;
 
-import amaralus.apps.rogue.commands.Command;
-import amaralus.apps.rogue.entities.world.Area;
-import amaralus.apps.rogue.entities.world.Cell;
-import amaralus.apps.rogue.entities.world.Level;
-import amaralus.apps.rogue.entities.world.Room;
+import amaralus.apps.rogue.entities.units.PlayerUnit;
+import amaralus.apps.rogue.entities.world.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.STAIRS;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.TRAP;
 import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 
 public class LevelGenerator {
@@ -30,45 +31,115 @@ public class LevelGenerator {
     }
 
     public Level generateLevel() {
-        Level level = new Level(areaGenerator.generateArea(LEVEL_WIDTH, LEVEL_HEIGHT));
+        Level level= null;
 
-        level.setAreas(areaGenerator.bspSplitArea(level.getGameField()));
+        do {
+            if (level != null) level.destroy();
 
-        generateRooms(level);
+            level = new Level(areaGenerator.generateArea(LEVEL_WIDTH, LEVEL_HEIGHT));
+            level.setLevelAreas(areaGenerator.bspSplitArea(level.getGameField()));
 
-        List<Room> rooms = level.getRooms();
-
-        for (int i = 0; i < rooms.size(); i++) {
-            int index;
-            do {
-                index = excRandInt(rooms.size());
-            } while (index == i);
-
-            corridorGenerator.generateCorridor(rooms.get(i), rooms.get(index));
-        }
+            generateRooms(level);
+            generateCorridors(level);
+        } while (checkLevelForRoomsIslands(level.getRooms()));
 
         generateStairs(level);
+        generateTraps(level);
 
         return level;
     }
 
+    private void generateCorridors(Level level) {
+        List<Corridor> corridors = new ArrayList<>();
+
+        for (LevelArea area : level.getLevelAreas()) {
+            if (area.containsRoom()) {
+                area.getNeighborAreas().stream()
+                        .filter(LevelArea::containsRoom)
+                        .map(LevelArea::getRoom)
+                        .filter(room -> !room.getCorridors().stream()
+                                .flatMap(corridor -> corridor.getRooms().stream())
+                                .collect(Collectors.toSet()).contains(area.getRoom()))
+                        .forEach(room -> corridors.add(corridorGenerator.generateCorridor(area.getRoom(), room)));
+            }
+        }
+
+        for (int i = 0; i < randInt(5); i++) {
+            Corridor corridor = corridorGenerator.generateCorridorToNeighborArea(randElement(level.getRooms()));
+            if (corridor != null) corridors.add(corridor);
+        }
+
+        level.setCorridors(corridors);
+    }
+
+    private boolean checkLevelForRoomsIslands(List<Room> levelRooms) {
+        Room startRoom = randElement(levelRooms);
+
+        Set<Room> foundedRooms = new HashSet<>();
+        foundedRooms.add(startRoom);
+
+        List<Room> connectedRooms = new ArrayList<>();
+        connectedRooms.add(startRoom);
+
+        do {
+            for (Room room : connectedRooms) {
+                connectedRooms = room.getCorridors().stream()
+                        .flatMap(corridor -> corridor.getRooms().stream())
+                        .filter(nextRoom -> !foundedRooms.contains(nextRoom))
+                        .collect(Collectors.toList());
+                foundedRooms.addAll(connectedRooms);
+            }
+        } while (!connectedRooms.isEmpty());
+
+        return foundedRooms.size() != levelRooms.size();
+    }
+
     private void generateRooms(Level level) {
-        int roomCount = randInt(MIN_ROOM_COUNT, level.getAreas().size());
-        List<Area> randomAreas = randUniqueElements(level.getAreas(), roomCount);
+        int roomCount = randInt(MIN_ROOM_COUNT, level.getLevelAreas().size());
+        List<LevelArea> randomAreas = randUniqueElements(level.getLevelAreas(), roomCount);
 
         List<Room> rooms = new ArrayList<>(roomCount);
-        for (Area area : randomAreas) {
-            rooms.add(roomGenerator.generateRoom(area));
+        for (LevelArea area : randomAreas) {
+            Room room = roomGenerator.generateRoom(area);
+            room.setLevelArea(area);
+            area.setRoom(room);
+            rooms.add(room);
         }
+
+        rooms.forEach(room -> room.setDarkRoom(randBoolean()));
 
         level.setRooms(rooms);
     }
 
     private void generateStairs(Level level) {
-        Cell stairsCell = RandomGenerator.randElement(level.getRooms()).getRandCell();
+        Room room = randElement(level.getRooms());
+        Cell stairsCell = room.getRandCell();
 
+        room.setExitRoom(true);
         stairsCell.setGraphicsComponent(STAIRS);
         stairsCell.setCanPutItem(false);
-        stairsCell.setCellInteractCommand(new Command<>(() -> gameScreen().setRegenerateLevel(true)));
+        stairsCell.setInteractEntity(new InteractEntity(() -> gameScreen().setRegenerateLevel(true)));
+    }
+
+    private void generateTraps(Level level) {
+        for (int i = 0; i < randInt(1, 5); i++) {
+            Cell cell= randElement(level.getRooms()).getRandCell();
+
+            if (cell.containsInteractEntity()) continue;
+
+            cell.setCanPutItem(false);
+            cell.setInteractEntity(new UpdatedInteractEntity(() -> {
+                if (cell.containsUnit()) {
+                    boolean done;
+                    do {
+                        done = level.setUpUnitToRandRoom(cell.getUnit());
+                    } while (!done);
+
+                    if (cell.getUnit() instanceof PlayerUnit)
+                        cell.setGraphicsComponent(TRAP);
+                    cell.setUnit(null);
+                }
+            }));
+        }
     }
 }

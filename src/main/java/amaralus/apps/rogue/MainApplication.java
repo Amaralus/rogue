@@ -28,7 +28,7 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Rogue v0.7");
+        primaryStage.setTitle("Rogue v-0.8");
         primaryStage.setResizable(false);
 
         primaryStage.setScene(scene);

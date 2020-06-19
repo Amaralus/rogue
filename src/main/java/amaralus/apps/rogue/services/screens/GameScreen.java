@@ -15,8 +15,7 @@ import java.util.List;
 
 import static amaralus.apps.rogue.commands.UnitCommand.*;
 import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.GOLD_PROTOTYPE;
-import static amaralus.apps.rogue.generators.RandomGenerator.excRandInt;
-import static amaralus.apps.rogue.generators.RandomGenerator.randInt;
+import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.services.ServiceLocator.inventoryScreen;
 import static amaralus.apps.rogue.services.ServiceLocator.itemFactory;
 import static javafx.scene.input.KeyCode.*;
@@ -24,7 +23,7 @@ import static javafx.scene.input.KeyCode.*;
 public class GameScreen extends Screen {
 
     private Level level;
-    private Unit player;
+    private PlayerUnit player;
 
     private List<UpdatedEntity> updatedEntityList = new ArrayList<>();
 
@@ -90,13 +89,15 @@ public class GameScreen extends Screen {
         updatedEntityList.clear();
 
         level = ServiceLocator.levelGenerator().generateLevel();
-        level.setUpUnitToRandRoom(player);
-        updatedEntityList.add(player);
+        level.setUpPlayerToRandRoom(player);
+        updatedEntityList.add(0, player);
 
         for (int i = 0; i < excRandInt(0, 10); i++) {
             Zombie zombie = new Zombie();
-            if (level.setUpUnitToRandRoom(zombie))
+            if (level.setUpUnitToRandRoom(zombie)) {
                 updatedEntityList.add(zombie);
+                level.getUnits().add(zombie);
+            }
         }
 
         initGoldOnTheLevel();
@@ -117,5 +118,9 @@ public class GameScreen extends Screen {
 
     public void setRegenerateLevel(boolean regenerateLevel) {
         this.regenerateLevel = regenerateLevel;
+    }
+
+    public List<UpdatedEntity> getUpdatedEntityList() {
+        return updatedEntityList;
     }
 }

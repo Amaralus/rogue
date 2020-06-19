@@ -3,6 +3,7 @@ package amaralus.apps.rogue.generators;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Area;
+import amaralus.apps.rogue.entities.world.LevelArea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +31,54 @@ public class AreaGenerator {
         return new Area(cells);
     }
 
-    public List<Area> bspSplitArea(Area area) {
-        List<Area> areas = new ArrayList<>();
+    public List<LevelArea> bspSplitArea(Area area) {
+        List<List<LevelArea>> areas = new ArrayList<>();
 
-        for (Area subArea : splitByY(area.getCells(), 2))
-            areas.addAll(splitByX(subArea.getCells(), 2));
+        for (LevelArea subArea : splitByY(area.getCells(), 2))
+            areas.add(splitByX(subArea.getCells(), 2));
 
-        return areas;
+        connectAreas(areas);
+
+        return areas.stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private void connectAreas(List<List<LevelArea>> areas) {
+        for (int i = 0; i < areas.size(); i++) {
+            List<LevelArea> areaList = areas.get(i);
+
+            for (int j = 0; j < areaList.size(); j++) {
+                LevelArea currentArea = areaList.get(j);
+
+                // добавляем зоны одного ряда в соседние
+                if (j < areaList.size() - 1) {
+                    currentArea.addNeighborArea(areaList.get(j + 1));
+                    areaList.get(j + 1).addNeighborArea(currentArea);
+                }
+
+                // добавлеем нижние зоны в соседние и наоборот
+                if (i < areas.size() - 1) {
+                    List<LevelArea> neighborAreas = areas.get(i + 1).stream()
+                            .filter(bottomArea -> checkBottomAreaForNeighborhood(currentArea, bottomArea))
+                            .collect(Collectors.toList());
+
+                    currentArea.addNeighborAreas(neighborAreas);
+                    neighborAreas.forEach(neighborArea -> neighborArea.addNeighborArea(currentArea));
+                }
+            }
+        }
+    }
+
+    private boolean checkBottomAreaForNeighborhood(Area currentArea, Area bottomArea) {
+        int currentAreaXStart = currentArea.getPosition().x();
+        int currentAreaXEnd = currentArea.getBottomRightPosition().x();
+        int bottomAreaXStart = bottomArea.getPosition().x();
+        int bottomAreaXEnd = bottomArea.getBottomRightPosition().x();
+
+        return (bottomAreaXStart >= currentAreaXStart && bottomAreaXStart <= currentAreaXEnd)
+                || (bottomAreaXEnd >= currentAreaXStart && bottomAreaXEnd <= currentAreaXEnd)
+                || (bottomAreaXStart < currentAreaXStart && bottomAreaXEnd > currentAreaXEnd);
     }
 
     private List<Cell> createCellLine(int y, int width) {
@@ -66,11 +108,11 @@ public class AreaGenerator {
         }
     }
 
-    private List<Area> splitByY(List<List<Cell>> fieldList, int deepCount) {
-        List<Area> areaList = new ArrayList<>();
+    private List<LevelArea> splitByY(List<List<Cell>> fieldList, int deepCount) {
+        List<LevelArea> areaList = new ArrayList<>();
 
         if (deepCount == 0 || fieldList.size() < (MIN_Y_AREA_SIZE * 2))
-            areaList.add(new Area(fieldList));
+            areaList.add(new LevelArea(fieldList));
         else {
             int splitVal = RandomGenerator.randInt(MIN_Y_AREA_SIZE, fieldList.size() - MIN_Y_AREA_SIZE);
             areaList.addAll(splitByY(fieldList.subList(0, splitVal), deepCount - 1));
@@ -80,11 +122,11 @@ public class AreaGenerator {
         return areaList;
     }
 
-    private List<Area> splitByX(List<List<Cell>> fieldList, int deepCount) {
-        List<Area> areaList = new ArrayList<>();
+    private List<LevelArea> splitByX(List<List<Cell>> fieldList, int deepCount) {
+        List<LevelArea> areaList = new ArrayList<>();
 
         if (deepCount == 0 || fieldList.get(0).size() < (MIN_X_AREA_SIZE * 2))
-            areaList.add(new Area(fieldList));
+            areaList.add(new LevelArea(fieldList));
         else {
             int splitVal = RandomGenerator.randInt(MIN_X_AREA_SIZE, fieldList.get(0).size() - MIN_X_AREA_SIZE);
             areaList.addAll(splitByX(innerSubList(fieldList, 0, splitVal), deepCount - 1));

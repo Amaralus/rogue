@@ -6,7 +6,7 @@ import static amaralus.apps.rogue.graphics.Palette.*;
 public final class GraphicsComponentsPool {
 
     public static final GraphicsComponent EMPTY_CELL = new GraphicsComponent(SPACE, BLACK_BLUE);
-    public static final GraphicsComponent ROOM_FLOOR = new GraphicsComponent(COLON, GRAY, BLACK_BLUE);
+    public static final GraphicsComponent ROOM_FLOOR = new GraphicsComponent(COLON, GRAY, DARK_GRAY);
     public static final GraphicsComponent CORRIDOR_FLOR = new GraphicsComponent(SHADE, GRAY, DARK_GRAY);
 
     public static final GraphicsComponent VERTICAL_WALL = new GraphicsComponent(WALL_VERTICAL, WHITE_GRAY, DARK_GRAY);
@@ -19,6 +19,7 @@ public final class GraphicsComponentsPool {
     public static final GraphicsComponent BL_CORNER = new GraphicsComponent(WALL_BOTTOM_LEFT, WHITE_GRAY, DARK_GRAY);
 
     public static final GraphicsComponent STAIRS = new GraphicsComponent(IDENTICAL_TO, WHITE_GRAY, DARK_GRAY);
+    public static final GraphicsComponent TRAP = new GraphicsComponent(DIAMOND_SUIT, WHITE_GRAY, DARK_GRAY);
 
     public static final GraphicsComponent PLAYER = new GraphicsComponent(SMILING_FACE, YELLOW);
     public static final GraphicsComponent ZOMBIE = new GraphicsComponent(Z, WHITE_GREEN);

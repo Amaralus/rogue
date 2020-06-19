@@ -1,16 +1,28 @@
 package amaralus.apps.rogue.entities.world;
 
+import amaralus.apps.rogue.entities.Destroyable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Corridor {
+public class Corridor implements Destroyable {
 
-    private final List<Cell> cells;
+    private List<Cell> cells;
     private List<Room> rooms;
 
     public Corridor(List<Cell> cells) {
         this.cells = cells;
         rooms = new ArrayList<>(2);
+    }
+
+    @Override
+    public void destroy() {
+        cells = null;
+        rooms.clear();
+    }
+
+    public boolean contains(Cell cell) {
+        return cells.contains(cell);
     }
 
     public List<Cell> getCells() {

@@ -2,10 +2,7 @@ package amaralus.apps.rogue.generators;
 
 import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.Position;
-import amaralus.apps.rogue.entities.world.Cell;
-import amaralus.apps.rogue.entities.world.CellType;
-import amaralus.apps.rogue.entities.world.Corridor;
-import amaralus.apps.rogue.entities.world.Room;
+import amaralus.apps.rogue.entities.world.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,9 +11,7 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import static amaralus.apps.rogue.entities.Direction.*;
-import static amaralus.apps.rogue.entities.world.CellType.CORRIDOR;
-import static amaralus.apps.rogue.entities.world.CellType.EMPTY;
-import static amaralus.apps.rogue.entities.world.CellType.WALL;
+import static amaralus.apps.rogue.entities.world.CellType.*;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.CORRIDOR_FLOR;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.DOOR;
@@ -51,6 +46,39 @@ public class CorridorGenerator {
         return corridor;
     }
 
+    public Corridor generateCorridorToNeighborArea(Room room) {
+
+        List<Area> emptyAreas = room.getLevelArea().getNeighborAreas().stream()
+                .filter(levelArea -> !levelArea.containsRoom())
+                .collect(Collectors.toList());
+
+        if (emptyAreas.isEmpty()) return null;
+
+        List<Cell> corridorCells;
+        boolean validCorridor;
+        do {
+            Cell from = room.getRandCell();
+            Area area = randElement(emptyAreas);
+            Cell to = area.getCells().get(area.getHeight() / 2).get(area.getWidth() / 2);
+
+            List<Direction> directions = corridorDirections(from, to, randBoolean());
+
+            corridorCells = new ArrayList<>();
+            validCorridor = tryGenerate(from, to, directions, corridorCells);
+        } while (!validCorridor);
+
+        corridorCells.forEach(this::updateCell);
+
+        Corridor corridor = new Corridor(corridorCells.stream()
+                .filter(cell -> CORRIDOR == cell.getType() || CellType.DOOR == cell.getType())
+                .collect(Collectors.toList()));
+
+        corridor.addRoom(room);
+        room.addCorridor(corridor);
+
+        return corridor;
+    }
+
     private boolean tryGenerate(Cell from, Cell to, List<Direction> directions, List<Cell> corridorCells) {
         Cell startCell = from;
         for (Direction direction : directions) {
@@ -58,7 +86,7 @@ public class CorridorGenerator {
             List<Cell> cells = cellsByDirection(startCell, direction, countCells(from, to, direction));
             startCell = cells.get(cells.size() - 1);
 
-            if (!validateCells(cells, direction))
+            if (!validateCells(cells))
                 return false;
 
             corridorCells.addAll(cells);
@@ -66,16 +94,13 @@ public class CorridorGenerator {
         return true;
     }
 
-    private boolean validateCells(List<Cell> cells, Direction direction) {
+    private boolean validateCells(List<Cell> cells) {
         // конечная клетка не может быть стеной
         if (WALL == cells.get(cells.size() - 1).getType())
             return false;
 
-        // 3 стены подряд это плохо, 2 подряд могут быть 2 комнатами в упор
         for (Cell cell : cells)
-            if (WALL == cell.getType()
-                    && WALL == direction.nextCell(cell).getType()
-                    && WALL == direction.nextCell(direction.nextCell(cell)).getType())
+            if (WALL_CORNER == cell.getType())
                 return false;
 
         return true;
