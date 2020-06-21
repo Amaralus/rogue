@@ -34,6 +34,13 @@ public class Inventory implements Destroyable {
         return null;
     }
 
+    public boolean containsItem(int itemId) {
+        for (Item item : itemList)
+            if (item.getId() == itemId)
+                return true;
+        return false;
+    }
+
     public int itemCount() {
         return itemList.stream()
                 .mapToInt(Item::count)

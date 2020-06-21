@@ -89,7 +89,7 @@ public final class RandomGenerator {
     }
 
     public static boolean randChanceFraction(int severalCount, int ofCount) {
-        return randInt(ofCount) <= severalCount;
+        return randInt(ofCount) < severalCount;
     }
 
     public static boolean randDice6() {

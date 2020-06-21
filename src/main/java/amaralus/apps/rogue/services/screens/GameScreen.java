@@ -32,19 +32,27 @@ public class GameScreen extends Screen {
     @Override
     public void update() {
         if (inputCommand instanceof UnitCommand) {
-            for (int i = 0; i < gamePlayService.getUpdatedEntityList().size() && !regenerateLevel; i++) {
+            for (int i = 0; updateCycleCondition(i) ; i++) {
                 UpdatedEntity updatedEntity = gamePlayService.getUpdatedEntityList().get(i);
                 updatedEntity.update();
-            }
-
-            if (regenerateLevel) {
-                regenerateLevel = false;
-                gamePlayService.generateLevel();
             }
         } else
             inputCommand.execute();
 
+        if (getGamePlayService().isGameOver()) {
+            setActiveScreen(new GameOverScreen());
+        }
+
+        if (regenerateLevel) {
+            regenerateLevel = false;
+            gamePlayService.generateLevel();
+        }
+
         inputCommand = Command.NULLABLE_COM;
+    }
+
+    private boolean updateCycleCondition(int i) {
+        return i < gamePlayService.getUpdatedEntityList().size() && !regenerateLevel && !getGamePlayService().isGameOver();
     }
 
     private void setUpKeyAction() {
