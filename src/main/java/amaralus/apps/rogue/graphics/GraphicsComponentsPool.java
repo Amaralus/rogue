@@ -25,6 +25,7 @@ public final class GraphicsComponentsPool {
     public static final GraphicsComponent ZOMBIE = new GraphicsComponent(Z, WHITE_GREEN);
 
     public static final GraphicsComponent GOLD = new GraphicsComponent(ASTERISK, YELLOW, BLACK_BLUE);
+    public static final GraphicsComponent AMULET_OF_YENDOR = new GraphicsComponent(YEN, PURPLE, BLACK_BLUE);
 
     private GraphicsComponentsPool() {}
 }

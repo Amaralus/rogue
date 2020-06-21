@@ -17,7 +17,7 @@ public class UpdatedInteractEntity extends InteractEntity implements UpdatedEnti
     }
 
     private void register() {
-        ServiceLocator.gameScreen().getUpdatedEntityList().add(this);
+        ServiceLocator.gameScreen().getGamePlayService().getUpdatedEntityList().add(this);
     }
 
     @Override

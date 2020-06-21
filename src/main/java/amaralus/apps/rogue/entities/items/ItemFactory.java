@@ -8,6 +8,10 @@ public class ItemFactory {
         ServiceLocator.register(this);
     }
 
+    public Item produce(Item itemPrototype) {
+        return produce(itemPrototype, 1);
+    }
+
     public Item produce(Item itemPrototype, int cont) {
         Item item = copyItem(itemPrototype);
         if (item.isStackable())

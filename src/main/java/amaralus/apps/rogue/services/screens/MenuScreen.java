@@ -10,10 +10,14 @@ import static javafx.scene.input.KeyCode.ENTER;
 public abstract class MenuScreen extends Screen {
 
     protected MenuList menuList = new MenuList();
-    private String menuTitle;
+    protected String menuTitle;
 
     public MenuScreen(String menuTitle) {
+        this();
         this.menuTitle = menuTitle;
+    }
+
+    public MenuScreen() {
         screenDrawer = new MenuScreenDrawer(this);
 
         commandPool.put(ESCAPE, returnToPreviousScreenCommand());

@@ -31,7 +31,7 @@ public class LevelGenerator {
     }
 
     public Level generateLevel() {
-        Level level= null;
+        Level level = null;
 
         do {
             if (level != null) level.destroy();
@@ -118,12 +118,21 @@ public class LevelGenerator {
         room.setExitRoom(true);
         stairsCell.setGraphicsComponent(STAIRS);
         stairsCell.setCanPutItem(false);
-        stairsCell.setInteractEntity(new InteractEntity(() -> gameScreen().setRegenerateLevel(true)));
+        stairsCell.setInteractEntity(new InteractEntity(() -> {
+            int levelNumber = gameScreen().getGamePlayService().getLevelNumber();
+            boolean playerContainsAmulet = gameScreen().getGamePlayService().getPlayer().getInventory().containsItem(2);
+
+            if (playerContainsAmulet && levelNumber == 1) {
+                gameScreen().getGamePlayService().setGameOver(true);
+                gameScreen().getGamePlayService().setWin(true);
+            } else
+                gameScreen().setRegenerateLevel(true);
+        }));
     }
 
     private void generateTraps(Level level) {
         for (int i = 0; i < randInt(1, 5); i++) {
-            Cell cell= randElement(level.getRooms()).getRandCell();
+            Cell cell = randElement(level.getRooms()).getRandCell();
 
             if (cell.containsInteractEntity()) continue;
 

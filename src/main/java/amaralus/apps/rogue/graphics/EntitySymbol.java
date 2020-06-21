@@ -19,6 +19,7 @@ public enum EntitySymbol {
     ASTERISK('*'),
     IDENTICAL_TO('\u2261'),
     DIAMOND_SUIT('\u2666'),
+    YEN('\u00a5'),
     Z('Z');
 
     private char symbol;
