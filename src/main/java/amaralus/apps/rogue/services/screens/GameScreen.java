@@ -3,53 +3,43 @@ package amaralus.apps.rogue.services.screens;
 import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.commands.UnitCommand;
 import amaralus.apps.rogue.entities.UpdatedEntity;
-import amaralus.apps.rogue.entities.units.PlayerUnit;
-import amaralus.apps.rogue.entities.units.Unit;
-import amaralus.apps.rogue.entities.units.Zombie;
-import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
+import amaralus.apps.rogue.services.GamePlayService;
 import amaralus.apps.rogue.services.ServiceLocator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static amaralus.apps.rogue.commands.UnitCommand.*;
-import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.GOLD_PROTOTYPE;
-import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.services.ServiceLocator.inventoryScreen;
-import static amaralus.apps.rogue.services.ServiceLocator.itemFactory;
 import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
 
-    private Level level;
-    private PlayerUnit player;
-
-    private List<UpdatedEntity> updatedEntityList = new ArrayList<>();
+    private GamePlayService gamePlayService;
 
     private boolean regenerateLevel = false;
 
     public GameScreen() {
         ServiceLocator.register(this);
+
+        gamePlayService = new GamePlayService();
+        gamePlayService.initGame();
+
         screenDrawer = new GameScreenDrawer(this);
         new InventoryScreen();
 
         setUpKeyAction();
-        initPlayer();
-        generateLevel();
     }
 
     @Override
     public void update() {
         if (inputCommand instanceof UnitCommand) {
-            for (int i = 0; i < updatedEntityList.size() && !regenerateLevel; i++) {
-                UpdatedEntity updatedEntity = updatedEntityList.get(i);
+            for (int i = 0; i < gamePlayService.getUpdatedEntityList().size() && !regenerateLevel; i++) {
+                UpdatedEntity updatedEntity = gamePlayService.getUpdatedEntityList().get(i);
                 updatedEntity.update();
             }
 
             if (regenerateLevel) {
                 regenerateLevel = false;
-                generateLevel();
+                gamePlayService.generateLevel();
             }
         } else
             inputCommand.execute();
@@ -66,7 +56,7 @@ public class GameScreen extends Screen {
             setActiveScreen(inventoryScreen());
         }));
         commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(ServiceLocator.gameMenuScreen())));
-        commandPool.put(SPACE, new Command<>(this::generateLevel));
+        commandPool.put(SPACE, new Command<>(gamePlayService::generateLevel));
     }
 
     private void setUpPlayerKeys() {
@@ -78,49 +68,11 @@ public class GameScreen extends Screen {
         commandPool.put(T, UNIT_PICK_UP_ITEM_COM);
     }
 
-    private void initPlayer() {
-        player = new PlayerUnit();
-        player.setVisibleRadius(3);
-        updatedEntityList.add(player);
-    }
-
-    private void generateLevel() {
-        if (level != null) level.destroy();
-        updatedEntityList.clear();
-
-        level = ServiceLocator.levelGenerator().generateLevel();
-        level.setUpPlayerToRandRoom(player);
-        updatedEntityList.add(0, player);
-
-        for (int i = 0; i < excRandInt(0, 10); i++) {
-            Zombie zombie = new Zombie();
-            if (level.setUpUnitToRandRoom(zombie)) {
-                updatedEntityList.add(zombie);
-                level.getUnits().add(zombie);
-            }
-        }
-
-        initGoldOnTheLevel();
-    }
-
-    private void initGoldOnTheLevel() {
-        for (int i = 0; i < randInt(3, 15); i++)
-            level.setUpItemToRandRoom(itemFactory().produce(GOLD_PROTOTYPE, excRandInt(0, 50)));
-    }
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public Unit getPlayer() {
-        return player;
-    }
-
     public void setRegenerateLevel(boolean regenerateLevel) {
         this.regenerateLevel = regenerateLevel;
     }
 
-    public List<UpdatedEntity> getUpdatedEntityList() {
-        return updatedEntityList;
+    public GamePlayService getGamePlayService() {
+        return gamePlayService;
     }
 }

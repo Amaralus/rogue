@@ -31,10 +31,10 @@ public class InventoryScreen extends MenuScreen {
 
     @Override
     protected void setUpMenuList() {
-        if (gameScreen().getPlayer() == null)
+        if (gameScreen().getGamePlayService().getPlayer() == null)
             menuList.setUpMenuList(new ArrayList<>());
         else
-            menuList.setUpMenuList(gameScreen().getPlayer().getInventory().getItemList().stream()
+            menuList.setUpMenuList(gameScreen().getGamePlayService().getPlayer().getInventory().getItemList().stream()
                     .map(item -> new ItemMenuElement(item, new Command<Object>(this::dropItem)))
                     .collect(Collectors.toList()));
     }
@@ -49,7 +49,7 @@ public class InventoryScreen extends MenuScreen {
 
         if (menuList.getElementList().isEmpty()) return;
 
-        Unit player = gameScreen().getPlayer();
+        Unit player = gameScreen().getGamePlayService().getPlayer();
 
         if (!player.getCurrentCell().isCanPutItem()) return;
         else if (player.getCurrentCell().containsItem()) {
@@ -57,8 +57,7 @@ public class InventoryScreen extends MenuScreen {
 
             if (cellItem.getId() == item.getId())
                 cellItem.setCount(cellItem.count() + item.count());
-            else
-                return;
+            else return;
         } else
             player.getCurrentCell().setItem(item);
 

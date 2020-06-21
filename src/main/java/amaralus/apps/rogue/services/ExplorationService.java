@@ -14,7 +14,7 @@ import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 public class ExplorationService {
 
     public List<Cell> getVisibleCells2(Unit unit) {
-        Room room = gameScreen().getLevel().getRoomByCell(unit.getCurrentCell());
+        Room room = gameScreen().getGamePlayService().getLevel().getRoomByCell(unit.getCurrentCell());
 
         if (room == null)
             return aroundUnitCells(unit);

@@ -33,7 +33,7 @@ public class GameScreenDrawer extends ScreenDrawer {
 
         textList.add(createPlainText(" [Esc] - Меню\n"));
 
-        for (List<Cell> cellLine : gameScreen.getLevel().getGameField().getCells()) {
+        for (List<Cell> cellLine : gameScreen.getGamePlayService().getLevel().getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
 
             // текущий цвет для определения новых цветов
@@ -57,13 +57,13 @@ public class GameScreenDrawer extends ScreenDrawer {
             textList.add(createText(builder.toString(), currentColor));
         }
 
-        textList.add(createPlainText(" Золото: " + getGoldCount() + "\n"));
+        textList.add(createPlainText(" Золото: " + getGoldCount() + " Уровень: " + gameScreen.getGamePlayService().getLevelNumber() + "\n"));
 
         updateTexts(textList);
     }
 
     private int getGoldCount() {
-        Item gold = gameScreen.getPlayer().getInventory().getItemById(1);
+        Item gold = gameScreen.getGamePlayService().getPlayer().getInventory().getItemById(1);
         return gold == null ? 0 : gold.count();
     }
 
@@ -73,7 +73,7 @@ public class GameScreenDrawer extends ScreenDrawer {
         }
 
         if (cell.containsUnit()) {
-            if (cell.getUnit().equals(gameScreen.getPlayer()))
+            if (cell.getUnit().equals(gameScreen.getGamePlayService().getPlayer()))
                 return cell.getUnit().getGraphicsComponent();
             else if (cell.isVisibleForPlayer() || !warFogEnabled)
                 return cell.getUnit().getGraphicsComponent();
@@ -103,7 +103,7 @@ public class GameScreenDrawer extends ScreenDrawer {
     private void updateVisibleCells() {
         for (Cell cell : visibleCells) cell.setVisibleForPlayer(false);
 
-        visibleCells = explorationService.getVisibleCells2(gameScreen.getPlayer());
+        visibleCells = explorationService.getVisibleCells2(gameScreen.getGamePlayService().getPlayer());
 
         for (Cell cell : visibleCells) {
             if (!cell.isExplored())
