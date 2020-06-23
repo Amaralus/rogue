@@ -45,7 +45,7 @@ public class GamePlayService {
         if (level != null) level.destroy();
         updatedEntityList.clear();
 
-        level = ServiceLocator.levelGenerator().generateLevel();
+        level = ServiceLocator.levelGenerator().generateLevel(levelNumber);
         updateLevelNumber();
 
         level.setUpPlayerToRandRoom(player);
@@ -57,14 +57,15 @@ public class GamePlayService {
     }
 
     private void updateLevelNumber() {
-        if (player.getInventory().containsItem(2))
-            --levelNumber;
-        else
+        if (player.getInventory().containsItem(2)) {
+            if (levelNumber > 1)
+                --levelNumber;
+        } else
             ++levelNumber;
     }
 
     private void spawnMonsters() {
-        for (int i = 0; i < excRandInt(1, 10); i++) {
+        for (int i = 0; i < excRandInt(3, 10 + levelNumber); i++) {
             Zombie zombie = new Zombie();
             if (level.setUpUnitToRandRoom(zombie)) {
                 updatedEntityList.add(zombie);
@@ -85,7 +86,7 @@ public class GamePlayService {
     }
 
     private void initGoldOnTheLevel() {
-        for (int i = 0; i < randInt(1, 10); i++)
+        for (int i = 0; i < randInt(3, 10 + (levelNumber / 2)); i++)
             level.setUpItemToRandRoom(itemFactory().produce(GOLD_PROTOTYPE, randInt(1, 10 + (3 * levelNumber))));
     }
 

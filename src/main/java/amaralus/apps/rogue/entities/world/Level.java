@@ -60,7 +60,7 @@ public class Level implements Destroyable {
 
     public boolean setUpItem(Item item, Position position) {
         Cell cell = gameField.getCell(position);
-        if (cell.isCanPutItem() && cell.notContainsItem()) {
+        if (cell.isCanPutItem() && cell.notContainsItem() && cell.notContainsInteractEntity()) {
             cell.setItem(item);
             return true;
         } else

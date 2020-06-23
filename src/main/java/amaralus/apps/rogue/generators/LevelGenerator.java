@@ -1,5 +1,6 @@
 package amaralus.apps.rogue.generators;
 
+import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.*;
 
@@ -8,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.STAIRS;
@@ -31,7 +33,7 @@ public class LevelGenerator {
         areaGenerator = new AreaGenerator();
     }
 
-    public Level generateLevel() {
+    public Level generateLevel(int levelNumber) {
         Level level = null;
 
         do {
@@ -40,12 +42,12 @@ public class LevelGenerator {
             level = new Level(areaGenerator.generateArea(LEVEL_WIDTH, LEVEL_HEIGHT));
             level.setLevelAreas(areaGenerator.bspSplitArea(level.getGameField()));
 
-            generateRooms(level);
+            generateRooms(level, levelNumber);
             generateCorridors(level);
         } while (checkLevelForRoomsIslands(level.getRooms()));
 
         generateStairs(level);
-        generateTraps(level);
+        generateTraps(level, levelNumber);
 
         return level;
     }
@@ -95,7 +97,7 @@ public class LevelGenerator {
         return foundedRooms.size() != levelRooms.size();
     }
 
-    private void generateRooms(Level level) {
+    private void generateRooms(Level level, int levelNumber) {
         int roomCount = randInt(MIN_ROOM_COUNT, level.getLevelAreas().size());
         List<LevelArea> randomAreas = randUniqueElements(level.getLevelAreas(), roomCount);
 
@@ -107,7 +109,7 @@ public class LevelGenerator {
             rooms.add(room);
         }
 
-        rooms.forEach(room -> room.setDarkRoom(randBoolean()));
+        randUniqueElementsPercent(rooms, 8 * levelNumber).forEach(room -> room.setDarkRoom(true));
 
         level.setRooms(rooms);
     }
@@ -131,27 +133,45 @@ public class LevelGenerator {
         }));
     }
 
-    private void generateTraps(Level level) {
-        for (int i = 0; i < randInt(1, 5); i++) {
-            Cell cell = randElement(level.getRooms()).getRandCell();
-
-            if (cell.containsInteractEntity()) continue;
+    private void generateTraps(Level level, int levelNumber) {
+        for (int i = 0; i < randInt(2, 5 + (levelNumber / 2)); i++) {
+            Cell cell = getCellForTrap(randElement(level.getRooms()));
 
             cell.setCanPutItem(false);
-            cell.setInteractEntity(new UpdatedInteractEntity(() -> {
-                if (cell.containsUnit()) {
-                    boolean done;
-                    do {
-                        done = level.setUpUnitToRandRoom(cell.getUnit());
-                    } while (!done);
+            cell.setInteractEntity(new UpdatedInteractEntity(() -> teleportTrapLambda(level, cell)));
+        }
+    }
 
-                    if (cell.getUnit() instanceof PlayerUnit) {
-                        cell.setGraphicsComponent(TRAP);
-                        eventJournal().logEvent("Ловушка телепортирует вас в случайную комнату!");
-                    }
-                    cell.setUnit(null);
-                }
-            }));
+    private Cell getCellForTrap(Room room) {
+        Cell cell;
+        boolean goodCell = false;
+        do {
+            cell = room.getRandCell();
+
+            Cell celForLambda = cell;
+            boolean noDoorsAround = !Stream.of(Direction.values())
+                    .map(direction -> direction.nextCell(celForLambda).getType())
+                    .collect(Collectors.toSet())
+                    .contains(CellType.DOOR);
+
+            if (!cell.containsInteractEntity() && noDoorsAround)
+                goodCell = true;
+        } while (!goodCell);
+        return cell;
+    }
+
+    private void teleportTrapLambda(Level level, Cell cell) {
+        if (cell.containsUnit()) {
+            boolean done;
+            do {
+                done = level.setUpUnitToRandRoom(cell.getUnit());
+            } while (!done);
+
+            if (cell.getUnit() instanceof PlayerUnit) {
+                cell.setGraphicsComponent(TRAP);
+                eventJournal().logEvent("Ловушка телепортирует вас в случайную комнату!");
+            }
+            cell.setUnit(null);
         }
     }
 }
