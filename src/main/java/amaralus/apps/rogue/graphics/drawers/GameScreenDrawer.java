@@ -5,6 +5,7 @@ import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.services.ExplorationService;
+import amaralus.apps.rogue.services.ServiceLocator;
 import amaralus.apps.rogue.services.screens.GameScreen;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -31,7 +32,7 @@ public class GameScreenDrawer extends ScreenDrawer {
 
         List<Text> textList = new ArrayList<>(30);
 
-        textList.add(createPlainText(" [Esc] - Меню\n"));
+        textList.add(createPlainText(" " + ServiceLocator.eventJournal().getLastEvent() + "\n"));
 
         for (List<Cell> cellLine : gameScreen.getGamePlayService().getLevel().getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();

@@ -1,10 +1,13 @@
 package amaralus.apps.rogue.commands;
 
+import amaralus.apps.rogue.entities.items.Item;
+import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Unit;
 
 import java.util.function.Consumer;
 
 import static amaralus.apps.rogue.entities.Direction.*;
+import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
 
 public class UnitCommand extends Command<Unit> {
 
@@ -15,8 +18,12 @@ public class UnitCommand extends Command<Unit> {
 
     public static final UnitCommand UNIT_PICK_UP_ITEM_COM = new UnitCommand(unit -> {
         if (unit.getCurrentCell().containsItem()) {
-            unit.addItemToInventory(unit.getCurrentCell().getItem());
+            Item item = unit.getCurrentCell().getItem();
+            unit.addItemToInventory(item);
             unit.getCurrentCell().setItem(null);
+
+            if (unit instanceof PlayerUnit)
+                eventJournal().logEvent("Подобран предмет " + item.getName() + " " + item.count());
         }
     });
     public static final UnitCommand UNIT_INTERACT_WITH_CELL_COM = new UnitCommand(unit -> unit.getCurrentCell().interact());

@@ -8,12 +8,14 @@ import amaralus.apps.rogue.services.GamePlayService;
 import amaralus.apps.rogue.services.ServiceLocator;
 
 import static amaralus.apps.rogue.commands.UnitCommand.*;
+import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
 import static amaralus.apps.rogue.services.ServiceLocator.inventoryScreen;
 import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
 
     private GamePlayService gamePlayService;
+    private TextScreen journalScreen;
 
     private boolean regenerateLevel = false;
 
@@ -25,6 +27,7 @@ public class GameScreen extends Screen {
 
         screenDrawer = new GameScreenDrawer(this);
         new InventoryScreen();
+        journalScreen = new TextScreen(this, "Журнал событий", () -> eventJournal().getLastEvents(28));
 
         setUpKeyAction();
     }
@@ -63,6 +66,7 @@ public class GameScreen extends Screen {
             inventoryScreen().setUpMenuList();
             setActiveScreen(inventoryScreen());
         }));
+        commandPool.put(J, new Command<>(() -> setActiveScreen(journalScreen)));
         commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(ServiceLocator.gameMenuScreen())));
         commandPool.put(SPACE, new Command<>(gamePlayService::generateLevel));
     }

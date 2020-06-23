@@ -16,4 +16,5 @@ Double click to jar file
 - `E` to interact
 - `T` to take items
 - `I` to open inventory
+- `J` to open Journal
 - `Esc` to open menu

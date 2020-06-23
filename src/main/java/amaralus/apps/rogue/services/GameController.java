@@ -23,6 +23,7 @@ public class GameController {
 
         ServiceLocator.register(this);
         ServiceLocator.register(new LevelGenerator());
+        ServiceLocator.register(new EventJournal());
         new ItemFactory();
 
         application.getScene().setOnKeyPressed(event -> gameLoop(event.getCode()));

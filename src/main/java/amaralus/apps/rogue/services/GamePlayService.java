@@ -12,6 +12,7 @@ import java.util.List;
 import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.AMULET_OF_YENDOR_PROTOTYPE;
 import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.GOLD_PROTOTYPE;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
+import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
 import static amaralus.apps.rogue.services.ServiceLocator.itemFactory;
 
 public class GamePlayService {
@@ -27,6 +28,9 @@ public class GamePlayService {
     private List<UpdatedEntity> updatedEntityList = new ArrayList<>();
 
     public void initGame() {
+        eventJournal().clear();
+        eventJournal().logEvent("Найди амулет Йендара и выберись назад чтобы победить!");
+
         player = new PlayerUnit();
         updatedEntityList.add(player);
 

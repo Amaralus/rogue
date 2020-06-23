@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.STAIRS;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.TRAP;
+import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
 import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 
 public class LevelGenerator {
@@ -144,8 +145,10 @@ public class LevelGenerator {
                         done = level.setUpUnitToRandRoom(cell.getUnit());
                     } while (!done);
 
-                    if (cell.getUnit() instanceof PlayerUnit)
+                    if (cell.getUnit() instanceof PlayerUnit) {
                         cell.setGraphicsComponent(TRAP);
+                        eventJournal().logEvent("Ловушка телепортирует вас в случайную комнату!");
+                    }
                     cell.setUnit(null);
                 }
             }));
