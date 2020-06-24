@@ -4,12 +4,14 @@ import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;
+import amaralus.apps.rogue.entities.world.CellType;
 import amaralus.apps.rogue.entities.world.InteractEntity.Type;
 
 import java.util.function.Consumer;
 
 import static amaralus.apps.rogue.entities.Direction.*;
 import static amaralus.apps.rogue.generators.RandomGenerator.randDice6;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.DOOR;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.TRAP;
 import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
 import static amaralus.apps.rogue.services.ServiceLocator.explorationService;
@@ -38,6 +40,12 @@ public class UnitCommand extends Command<Unit> {
                     && cell.getInteractEntity().getType() == Type.TRAP
                     && randDice6())
                 cell.setGraphicsComponent(TRAP);
+
+            if (cell.getType() == CellType.HIDDEN_DOOR && randDice6()) {
+                cell.setCanWalk(true);
+                cell.setType(CellType.DOOR);
+                cell.setGraphicsComponent(DOOR);
+            }
         }
     });
     public static final UnitCommand UNIT_NULLABLE_COM = new UnitCommand(unit -> NULLABLE_COM.execute());

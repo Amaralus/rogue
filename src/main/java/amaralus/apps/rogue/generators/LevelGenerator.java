@@ -4,6 +4,7 @@ import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.*;
 import amaralus.apps.rogue.entities.world.InteractEntity.Type;
+import amaralus.apps.rogue.graphics.GraphicsComponent;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,6 +48,7 @@ public class LevelGenerator {
             generateCorridors(level);
         } while (checkLevelForRoomsIslands(level.getRooms()));
 
+        setUpHiddenDoors(level);
         generateStairs(level);
         generateTraps(level, levelNumber);
 
@@ -74,6 +76,27 @@ public class LevelGenerator {
         }
 
         level.setCorridors(corridors);
+    }
+
+    private void setUpHiddenDoors(Level level) {
+        List<Cell> doors = level.getRooms().stream()
+                .map(Area::getCells)
+                .flatMap(List::stream)
+                .flatMap(List::stream)
+                .filter(cell -> cell.getType() == CellType.DOOR)
+                .collect(Collectors.toList());
+
+        for (Cell cell : randUniqueElements(doors, randInt(1, doors.size() / 3))) {
+            cell.setCanWalk(false);
+            cell.setType(CellType.HIDDEN_DOOR);
+            GraphicsComponent graphicsComponent = Stream.of(Direction.values())
+                    .map(direction -> direction.nextCell(cell))
+                    .filter(aroundCell -> aroundCell.getType() == CellType.WALL)
+                    .map(Cell::getGraphicsComponent)
+                    .findFirst()
+                    .orElse(null);
+            cell.setGraphicsComponent(graphicsComponent);
+        }
     }
 
     private boolean checkLevelForRoomsIslands(List<Room> levelRooms) {
