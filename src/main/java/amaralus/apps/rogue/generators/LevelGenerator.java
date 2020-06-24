@@ -3,6 +3,7 @@ package amaralus.apps.rogue.generators;
 import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.*;
+import amaralus.apps.rogue.entities.world.InteractEntity.Type;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -121,7 +122,7 @@ public class LevelGenerator {
         room.setExitRoom(true);
         stairsCell.setGraphicsComponent(STAIRS);
         stairsCell.setCanPutItem(false);
-        stairsCell.setInteractEntity(new InteractEntity(() -> {
+        stairsCell.setInteractEntity(new InteractEntity(Type.STAIRS, () -> {
             int levelNumber = gameScreen().getGamePlayService().getLevelNumber();
             boolean playerContainsAmulet = gameScreen().getGamePlayService().getPlayer().getInventory().containsItem(2);
 
@@ -138,7 +139,7 @@ public class LevelGenerator {
             Cell cell = getCellForTrap(randElement(level.getRooms()));
 
             cell.setCanPutItem(false);
-            cell.setInteractEntity(new UpdatedInteractEntity(() -> teleportTrapLambda(level, cell)));
+            cell.setInteractEntity(new UpdatedInteractEntity(Type.TRAP, () -> teleportTrapLambda(level, cell)));
         }
     }
 

@@ -15,6 +15,7 @@ public final class ServiceLocator {
     private static InventoryScreen inventoryScreen;
     private static ItemFactory itemFactory;
     private static EventJournal eventJournal;
+    private static ExplorationService explorationService;
 
     private ServiceLocator() {}
 
@@ -46,6 +47,10 @@ public final class ServiceLocator {
         ServiceLocator.eventJournal = eventJournal;
     }
 
+    public static void register(ExplorationService explorationService) {
+        ServiceLocator.explorationService = explorationService;
+    }
+
     public static GameController gameController() {
         return gameController;
     }
@@ -72,5 +77,9 @@ public final class ServiceLocator {
 
     public static EventJournal eventJournal() {
         return eventJournal;
+    }
+
+    public static ExplorationService explorationService() {
+        return explorationService;
     }
 }

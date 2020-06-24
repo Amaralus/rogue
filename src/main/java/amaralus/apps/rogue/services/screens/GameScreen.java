@@ -78,6 +78,7 @@ public class GameScreen extends Screen {
         commandPool.put(LEFT, UNIT_MOVE_LEFT_COM);
         commandPool.put(E, UNIT_INTERACT_WITH_CELL_COM);
         commandPool.put(T, UNIT_PICK_UP_ITEM_COM);
+        commandPool.put(S, UNIT_SEARCH_AROUND_COM);
     }
 
     private void setUpDevelopCheatKeys() {

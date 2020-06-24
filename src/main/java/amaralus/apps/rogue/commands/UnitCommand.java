@@ -3,11 +3,16 @@ package amaralus.apps.rogue.commands;
 import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Unit;
+import amaralus.apps.rogue.entities.world.Cell;
+import amaralus.apps.rogue.entities.world.InteractEntity.Type;
 
 import java.util.function.Consumer;
 
 import static amaralus.apps.rogue.entities.Direction.*;
+import static amaralus.apps.rogue.generators.RandomGenerator.randDice6;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.TRAP;
 import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
+import static amaralus.apps.rogue.services.ServiceLocator.explorationService;
 
 public class UnitCommand extends Command<Unit> {
 
@@ -27,6 +32,14 @@ public class UnitCommand extends Command<Unit> {
         }
     });
     public static final UnitCommand UNIT_INTERACT_WITH_CELL_COM = new UnitCommand(unit -> unit.getCurrentCell().interact());
+    public static final UnitCommand UNIT_SEARCH_AROUND_COM = new UnitCommand(unit -> {
+        for (Cell cell : explorationService().aroundUnitAllCells(unit)) {
+            if (cell.containsInteractEntity()
+                    && cell.getInteractEntity().getType() == Type.TRAP
+                    && randDice6())
+                cell.setGraphicsComponent(TRAP);
+        }
+    });
     public static final UnitCommand UNIT_NULLABLE_COM = new UnitCommand(unit -> NULLABLE_COM.execute());
 
     UnitCommand(Consumer<Unit> unitConsumer) {

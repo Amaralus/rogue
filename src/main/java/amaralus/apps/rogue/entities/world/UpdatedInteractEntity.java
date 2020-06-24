@@ -6,13 +6,13 @@ import amaralus.apps.rogue.services.ServiceLocator;
 
 public class UpdatedInteractEntity extends InteractEntity implements UpdatedEntity {
 
-    public UpdatedInteractEntity(Command<Object> cellInteractCommand) {
-        super(cellInteractCommand);
+    public UpdatedInteractEntity(Type type, Command<Object> cellInteractCommand) {
+        super(type, cellInteractCommand);
         register();
     }
 
-    public UpdatedInteractEntity(Runnable runnable) {
-        super(runnable);
+    public UpdatedInteractEntity(Type type, Runnable runnable) {
+        super(type, runnable);
         register();
     }
 

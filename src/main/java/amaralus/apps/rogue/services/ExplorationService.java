@@ -26,7 +26,7 @@ public class ExplorationService {
                     .collect(Collectors.toList());
     }
 
-    private List<Cell> aroundUnitCells(Unit unit) {
+    public List<Cell> aroundUnitAllCells(Unit unit) {
         List<Cell> aroundCells = new ArrayList<>();
 
         Cell centralCell = unit.getCurrentCell();
@@ -37,10 +37,15 @@ public class ExplorationService {
             aroundCells.add(cell.getBottomCell());
         }
 
+        return aroundCells.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
 
-        Stream<Cell> cellStream = aroundCells.stream();
+    private List<Cell> aroundUnitCells(Unit unit) {
+        Stream<Cell> cellStream = aroundUnitAllCells(unit).stream();
 
-        cellStream = centralCell.getType() == CORRIDOR ?
+        cellStream = unit.getCurrentCell().getType() == CORRIDOR ?
                 cellStream.filter(cell -> cell.getType() == CORRIDOR || cell.getType() == DOOR)
                 : cellStream.filter(cell -> cell.getType() != EMPTY);
 
