@@ -7,13 +7,13 @@ public class AIUnit extends Unit {
 
     protected AIModule aiModule;
 
-    public AIUnit(AIModule aiModule, GraphicsComponent graphicsComponent) {
-        this(graphicsComponent);
+    public AIUnit(AIModule aiModule, GraphicsComponent graphicsComponent, int health) {
+        this(graphicsComponent, health);
         this.aiModule = aiModule;
     }
 
-    public AIUnit(GraphicsComponent graphicsComponent) {
-        super(graphicsComponent);
+    public AIUnit(GraphicsComponent graphicsComponent, int health) {
+        super(graphicsComponent, health);
     }
 
     @Override

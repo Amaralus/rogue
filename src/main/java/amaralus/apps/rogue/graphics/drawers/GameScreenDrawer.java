@@ -1,15 +1,18 @@
 package amaralus.apps.rogue.graphics.drawers;
 
 import amaralus.apps.rogue.entities.items.Item;
+import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
+import amaralus.apps.rogue.graphics.Palette;
 import amaralus.apps.rogue.services.ServiceLocator;
 import amaralus.apps.rogue.services.screens.GameScreen;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static amaralus.apps.rogue.services.ServiceLocator.explorationService;
@@ -57,9 +60,29 @@ public class GameScreenDrawer extends ScreenDrawer {
             textList.add(createText(builder.toString(), currentColor));
         }
 
-        textList.add(createPlainText(" Золото: " + getGoldCount() + " Уровень: " + gameScreen.getGamePlayService().getLevelNumber() + "\n"));
+        textList.addAll(Arrays.asList(
+                createPlainText("Уровень: " + gameScreen.getGamePlayService().getLevelNumber()),
+                createPlainText("  Здоровье: "),
+                playerHealthText(gameScreen.getGamePlayService().getPlayer()),
+                createPlainText("  Золото: "),
+                createText(getGoldCount() + "", Palette.YELLOW)
+
+        ));
 
         updateTexts(textList);
+    }
+
+    private Text playerHealthText(Unit player) {
+        Color color;
+        if (player.getHealth() < 70) {
+            if (player.getHealth() < 30)
+                color = Palette.RED;
+            else
+                color = Palette.YELLOW;
+        } else
+            color = Palette.GREEN;
+
+        return createText(player.getHealth() + "", color);
     }
 
     private int getGoldCount() {

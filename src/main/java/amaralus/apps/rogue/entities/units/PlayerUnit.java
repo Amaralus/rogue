@@ -8,7 +8,7 @@ import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 public class PlayerUnit extends Unit {
 
     public PlayerUnit() {
-        super(PLAYER);
+        super(PLAYER, 100);
     }
 
     @Override

@@ -12,13 +12,16 @@ import amaralus.apps.rogue.graphics.GraphicsComponent;
 public abstract class Unit implements Destroyable, UpdatedEntity {
 
     private GraphicsComponent graphicsComponent;
+
     protected Cell currentCell;
-    protected int visibleRadius = 1;
+    private int health;
+    private boolean immortal = false;
 
     protected Inventory inventory = new Inventory();
 
-    public Unit(GraphicsComponent graphicsComponent) {
+    public Unit(GraphicsComponent graphicsComponent, int health) {
         this.graphicsComponent = graphicsComponent;
+        this.health = health;
     }
 
     @Override
@@ -65,12 +68,24 @@ public abstract class Unit implements Destroyable, UpdatedEntity {
         return currentCell.getPosition();
     }
 
-    public int getVisibleRadius() {
-        return visibleRadius;
+    public int getHealth() {
+        return health;
     }
 
-    public void setVisibleRadius(int visibleRadius) {
-        this.visibleRadius = visibleRadius;
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void addHealthPoints(int healthPoints) {
+        health += healthPoints;
+    }
+
+    public boolean isImmortal() {
+        return immortal;
+    }
+
+    public void setImmortal(boolean immortal) {
+        this.immortal = immortal;
     }
 
     public Inventory getInventory() {

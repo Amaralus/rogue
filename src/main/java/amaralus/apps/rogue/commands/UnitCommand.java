@@ -10,7 +10,7 @@ import amaralus.apps.rogue.entities.world.InteractEntity.Type;
 import java.util.function.Consumer;
 
 import static amaralus.apps.rogue.entities.Direction.*;
-import static amaralus.apps.rogue.generators.RandomGenerator.randDice6;
+import static amaralus.apps.rogue.generators.RandomGenerator.randDice3;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.DOOR;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.TRAP;
 import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
@@ -38,10 +38,10 @@ public class UnitCommand extends Command<Unit> {
         for (Cell cell : explorationService().aroundUnitAllCells(unit)) {
             if (cell.containsInteractEntity()
                     && cell.getInteractEntity().getType() == Type.TRAP
-                    && randDice6())
+                    && randDice3())
                 cell.setGraphicsComponent(TRAP);
 
-            if (cell.getType() == CellType.HIDDEN_DOOR && randDice6()) {
+            if (cell.getType() == CellType.HIDDEN_DOOR && randDice3()) {
                 cell.setCanWalk(true);
                 cell.setType(CellType.DOOR);
                 cell.setGraphicsComponent(DOOR);

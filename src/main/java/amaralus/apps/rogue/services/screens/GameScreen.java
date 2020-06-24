@@ -42,6 +42,11 @@ public class GameScreen extends Screen {
         } else
             inputCommand.execute();
 
+        if (gamePlayService.getPlayer().getHealth() < 1) {
+            gamePlayService.setWin(false);
+            gamePlayService.setGameOver(true);
+        }
+
         if (getGamePlayService().isGameOver()) {
             setActiveScreen(new GameOverScreen());
         }
