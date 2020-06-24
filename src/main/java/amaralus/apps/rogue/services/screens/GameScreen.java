@@ -60,15 +60,15 @@ public class GameScreen extends Screen {
 
     private void setUpKeyAction() {
         setUpPlayerKeys();
+        setUpDevelopCheatKeys();
 
-        commandPool.put(F, new Command<>(((GameScreenDrawer) screenDrawer)::swapWarFogEnabled));
         commandPool.put(I, new Command<>(() -> {
             inventoryScreen().setUpMenuList();
             setActiveScreen(inventoryScreen());
         }));
         commandPool.put(J, new Command<>(() -> setActiveScreen(journalScreen)));
         commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(ServiceLocator.gameMenuScreen())));
-        commandPool.put(SPACE, new Command<>(gamePlayService::generateLevel));
+
     }
 
     private void setUpPlayerKeys() {
@@ -78,6 +78,11 @@ public class GameScreen extends Screen {
         commandPool.put(LEFT, UNIT_MOVE_LEFT_COM);
         commandPool.put(E, UNIT_INTERACT_WITH_CELL_COM);
         commandPool.put(T, UNIT_PICK_UP_ITEM_COM);
+    }
+
+    private void setUpDevelopCheatKeys() {
+        commandPool.put(F1, new Command<>(((GameScreenDrawer) screenDrawer)::swapWarFogEnabled));
+        commandPool.put(F2, new Command<>(gamePlayService::generateLevel));
     }
 
     public void setRegenerateLevel(boolean regenerateLevel) {
