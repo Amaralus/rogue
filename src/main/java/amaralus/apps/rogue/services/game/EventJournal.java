@@ -1,4 +1,4 @@
-package amaralus.apps.rogue.services;
+package amaralus.apps.rogue.services.game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,10 @@ public class EventJournal {
 
     public void logEvent(String message) {
         eventLogs.add(message);
+    }
+
+    public void logEvent(String message, Object... args) {
+        logEvent(String.format(message, args));
     }
 
     public String getLastEvent() {

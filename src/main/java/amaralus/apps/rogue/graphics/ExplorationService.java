@@ -1,4 +1,4 @@
-package amaralus.apps.rogue.services;
+package amaralus.apps.rogue.graphics;
 
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;

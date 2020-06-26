@@ -6,6 +6,7 @@ import amaralus.apps.rogue.entities.world.interaction.DamageTrap;
 import amaralus.apps.rogue.entities.world.interaction.InteractEntity;
 import amaralus.apps.rogue.entities.world.interaction.InteractEntity.Type;
 import amaralus.apps.rogue.entities.world.interaction.TeleportTrap;
+import amaralus.apps.rogue.services.game.GamePlayService;
 import amaralus.apps.rogue.services.screens.GameScreen;
 
 import java.util.ArrayList;
@@ -158,7 +159,7 @@ public class LevelGenerator {
                 getService(GameScreen.class).getGamePlayService().setGameOver(true);
                 getService(GameScreen.class).getGamePlayService().setWin(true);
             } else
-                getService(GameScreen.class).setRegenerateLevel(true);
+                getService(GamePlayService.class).setRegenerateLevel(true);
         }));
     }
 

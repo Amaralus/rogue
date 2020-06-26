@@ -5,7 +5,7 @@ import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
-import amaralus.apps.rogue.services.EventJournal;
+import amaralus.apps.rogue.services.game.EventJournal;
 
 import static amaralus.apps.rogue.entities.world.interaction.InteractEntity.Type.TRAP;
 import static amaralus.apps.rogue.services.ServiceLocator.getService;

@@ -22,7 +22,7 @@ public class UpdatedInteractEntity extends InteractEntity implements UpdatedEnti
     }
 
     private void register() {
-        getService(GameScreen.class).getGamePlayService().getUpdatedEntityList().add(this);
+        getService(GameScreen.class).getGamePlayService().getUpdateLoop().registerEntity(this);
     }
 
     @Override
