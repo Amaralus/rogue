@@ -165,7 +165,9 @@ public class LevelGenerator {
             Cell cell = getCellForTrap(randElement(level.getRooms()));
 
             cell.setCanPutItem(false);
-            cell.setInteractEntity(new UpdatedInteractEntity(Type.TRAP, () -> teleportTrapLambda(level, cell)));
+            cell.setInteractEntity(new UpdatedInteractEntity(
+                    Type.TRAP,
+                    randBoolean() ? () -> teleportTrapLambda(level, cell) : () -> damageTrapLambda(cell)));
         }
     }
 
@@ -199,6 +201,18 @@ public class LevelGenerator {
                 eventJournal().logEvent("Ловушка телепортирует вас в случайную комнату!");
             }
             cell.setUnit(null);
+        }
+    }
+
+    private void damageTrapLambda(Cell cell) {
+        if (cell.containsUnit()) {
+            int damage = randInt(5, 15);
+            cell.getUnit().addHealthPoints(damage * -1);
+
+            if (cell.getUnit() instanceof PlayerUnit) {
+                cell.setGraphicsComponent(TRAP);
+                eventJournal().logEvent("Ловушка наносит " + damage + " едениц урона!");
+            }
         }
     }
 }
