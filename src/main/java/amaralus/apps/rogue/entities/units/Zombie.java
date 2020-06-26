@@ -7,7 +7,7 @@ import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.ZOMBIE;
 public class Zombie extends AIUnit {
 
     public Zombie() {
-        super(ZOMBIE);
+        super(ZOMBIE, 50);
         aiModule = new RandomWalkingAIModule(this);
     }
 }

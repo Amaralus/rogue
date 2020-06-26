@@ -221,6 +221,10 @@ public class Cell implements Destroyable {
         return interactEntity != null;
     }
 
+    public boolean notContainsInteractEntity() {
+        return !containsInteractEntity();
+    }
+
     public void interact() {
         if (containsInteractEntity())
             interactEntity.interact();

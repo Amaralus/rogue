@@ -18,6 +18,8 @@ public class TextScreenDrawer extends ScreenDrawer {
     public void draw() {
         List<Text> textList = new ArrayList<>();
 
+        textList.add(createPlainText(" " + textScreen.getHeader() + "\n\n"));
+
         for (String text : textScreen.getTextsList())
             textList.add(createPlainText(" " + text + "\n"));
 

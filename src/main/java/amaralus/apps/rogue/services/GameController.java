@@ -3,6 +3,7 @@ package amaralus.apps.rogue.services;
 import amaralus.apps.rogue.MainApplication;
 import amaralus.apps.rogue.entities.items.ItemFactory;
 import amaralus.apps.rogue.generators.LevelGenerator;
+import amaralus.apps.rogue.services.io.FileService;
 import amaralus.apps.rogue.services.screens.GameScreen;
 import amaralus.apps.rogue.services.screens.GameMenuScreen;
 import amaralus.apps.rogue.services.screens.Screen;
@@ -11,6 +12,7 @@ import javafx.scene.text.Text;
 
 import java.util.List;
 
+import static amaralus.apps.rogue.services.ServiceLocator.serviceLocator;
 import static amaralus.apps.rogue.services.screens.Screen.activeScreen;
 
 public class GameController {
@@ -21,8 +23,11 @@ public class GameController {
     public GameController(MainApplication application) {
         this.application = application;
 
-        ServiceLocator.register(this);
-        ServiceLocator.register(new LevelGenerator());
+        serviceLocator().register(this);
+        serviceLocator().register(new FileService());
+        serviceLocator().register(new LevelGenerator());
+        serviceLocator().register(new EventJournal());
+        serviceLocator().register(new ExplorationService());
         new ItemFactory();
 
         application.getScene().setOnKeyPressed(event -> gameLoop(event.getCode()));

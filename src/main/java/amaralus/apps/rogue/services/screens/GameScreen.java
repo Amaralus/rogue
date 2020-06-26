@@ -4,27 +4,30 @@ import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.commands.UnitCommand;
 import amaralus.apps.rogue.entities.UpdatedEntity;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
+import amaralus.apps.rogue.services.EventJournal;
 import amaralus.apps.rogue.services.GamePlayService;
-import amaralus.apps.rogue.services.ServiceLocator;
 
 import static amaralus.apps.rogue.commands.UnitCommand.*;
-import static amaralus.apps.rogue.services.ServiceLocator.inventoryScreen;
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
+import static amaralus.apps.rogue.services.ServiceLocator.serviceLocator;
 import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
 
     private GamePlayService gamePlayService;
+    private TextScreen journalScreen;
 
     private boolean regenerateLevel = false;
 
     public GameScreen() {
-        ServiceLocator.register(this);
+        serviceLocator().register(this);
 
         gamePlayService = new GamePlayService();
         gamePlayService.initGame();
 
         screenDrawer = new GameScreenDrawer(this);
         new InventoryScreen();
+        journalScreen = new TextScreen(this, "Журнал событий", () -> getService(EventJournal.class).getLastEvents(28));
 
         setUpKeyAction();
     }
@@ -38,6 +41,11 @@ public class GameScreen extends Screen {
             }
         } else
             inputCommand.execute();
+
+        if (gamePlayService.getPlayer().getHealth() < 1) {
+            gamePlayService.setWin(false);
+            gamePlayService.setGameOver(true);
+        }
 
         if (getGamePlayService().isGameOver()) {
             setActiveScreen(new GameOverScreen());
@@ -57,14 +65,15 @@ public class GameScreen extends Screen {
 
     private void setUpKeyAction() {
         setUpPlayerKeys();
+        setUpDevelopCheatKeys();
 
-        commandPool.put(F, new Command<>(((GameScreenDrawer) screenDrawer)::swapWarFogEnabled));
         commandPool.put(I, new Command<>(() -> {
-            inventoryScreen().setUpMenuList();
-            setActiveScreen(inventoryScreen());
+            getService(InventoryScreen.class).setUpMenuList();
+            setActiveScreen(getService(InventoryScreen.class));
         }));
-        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(ServiceLocator.gameMenuScreen())));
-        commandPool.put(SPACE, new Command<>(gamePlayService::generateLevel));
+        commandPool.put(J, new Command<>(() -> setActiveScreen(journalScreen)));
+        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(getService(GameMenuScreen.class))));
+
     }
 
     private void setUpPlayerKeys() {
@@ -74,6 +83,12 @@ public class GameScreen extends Screen {
         commandPool.put(LEFT, UNIT_MOVE_LEFT_COM);
         commandPool.put(E, UNIT_INTERACT_WITH_CELL_COM);
         commandPool.put(T, UNIT_PICK_UP_ITEM_COM);
+        commandPool.put(S, UNIT_SEARCH_AROUND_COM);
+    }
+
+    private void setUpDevelopCheatKeys() {
+        commandPool.put(F1, new Command<>(((GameScreenDrawer) screenDrawer)::swapWarFogEnabled));
+        commandPool.put(F2, new Command<>(gamePlayService::generateLevel));
     }
 
     public void setRegenerateLevel(boolean regenerateLevel) {

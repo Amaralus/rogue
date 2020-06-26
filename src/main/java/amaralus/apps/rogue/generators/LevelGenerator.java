@@ -1,18 +1,24 @@
 package amaralus.apps.rogue.generators;
 
+import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.*;
+import amaralus.apps.rogue.entities.world.InteractEntity.Type;
+import amaralus.apps.rogue.services.EventJournal;
+import amaralus.apps.rogue.services.screens.GameScreen;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static amaralus.apps.rogue.entities.Direction.BOTTOM;
+import static amaralus.apps.rogue.entities.Direction.TOP;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
-import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.STAIRS;
-import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.TRAP;
-import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.*;
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
 
 public class LevelGenerator {
 
@@ -30,7 +36,7 @@ public class LevelGenerator {
         areaGenerator = new AreaGenerator();
     }
 
-    public Level generateLevel() {
+    public Level generateLevel(int levelNumber) {
         Level level = null;
 
         do {
@@ -39,12 +45,13 @@ public class LevelGenerator {
             level = new Level(areaGenerator.generateArea(LEVEL_WIDTH, LEVEL_HEIGHT));
             level.setLevelAreas(areaGenerator.bspSplitArea(level.getGameField()));
 
-            generateRooms(level);
+            generateRooms(level, levelNumber);
             generateCorridors(level);
         } while (checkLevelForRoomsIslands(level.getRooms()));
 
+        setUpHiddenDoors(level);
         generateStairs(level);
-        generateTraps(level);
+        generateTraps(level, levelNumber);
 
         return level;
     }
@@ -72,6 +79,30 @@ public class LevelGenerator {
         level.setCorridors(corridors);
     }
 
+    private void setUpHiddenDoors(Level level) {
+        List<Cell> doors = level.getRooms().stream()
+                .map(Area::getCells)
+                .flatMap(List::stream)
+                .flatMap(List::stream)
+                .filter(cell -> cell.getType() == CellType.DOOR)
+                .collect(Collectors.toList());
+
+        for (Cell cell : randUniqueElements(doors, randInt(1, doors.size() / 3))) {
+            cell.setCanWalk(false);
+            cell.setType(CellType.HIDDEN_DOOR);
+
+            for (Direction direction : Direction.values()) {
+                if (direction.nextCell(cell).getType() == CellType.CORRIDOR) {
+                    if (direction == TOP || direction == BOTTOM)
+                        cell.setGraphicsComponent(HORIZONTAL_WALL);
+                    else
+                        cell.setGraphicsComponent(VERTICAL_WALL);
+                    break;
+                }
+            }
+        }
+    }
+
     private boolean checkLevelForRoomsIslands(List<Room> levelRooms) {
         Room startRoom = randElement(levelRooms);
 
@@ -94,7 +125,7 @@ public class LevelGenerator {
         return foundedRooms.size() != levelRooms.size();
     }
 
-    private void generateRooms(Level level) {
+    private void generateRooms(Level level, int levelNumber) {
         int roomCount = randInt(MIN_ROOM_COUNT, level.getLevelAreas().size());
         List<LevelArea> randomAreas = randUniqueElements(level.getLevelAreas(), roomCount);
 
@@ -106,7 +137,7 @@ public class LevelGenerator {
             rooms.add(room);
         }
 
-        rooms.forEach(room -> room.setDarkRoom(randBoolean()));
+        randUniqueElementsPercent(rooms, 8 * levelNumber).forEach(room -> room.setDarkRoom(true));
 
         level.setRooms(rooms);
     }
@@ -118,37 +149,71 @@ public class LevelGenerator {
         room.setExitRoom(true);
         stairsCell.setGraphicsComponent(STAIRS);
         stairsCell.setCanPutItem(false);
-        stairsCell.setInteractEntity(new InteractEntity(() -> {
-            int levelNumber = gameScreen().getGamePlayService().getLevelNumber();
-            boolean playerContainsAmulet = gameScreen().getGamePlayService().getPlayer().getInventory().containsItem(2);
+        stairsCell.setInteractEntity(new InteractEntity(Type.STAIRS, () -> {
+            int levelNumber = getService(GameScreen.class).getGamePlayService().getLevelNumber();
+            boolean playerContainsAmulet = getService(GameScreen.class).getGamePlayService().getPlayer().getInventory().containsItem(2);
 
             if (playerContainsAmulet && levelNumber == 1) {
-                gameScreen().getGamePlayService().setGameOver(true);
-                gameScreen().getGamePlayService().setWin(true);
+                getService(GameScreen.class).getGamePlayService().setGameOver(true);
+                getService(GameScreen.class).getGamePlayService().setWin(true);
             } else
-                gameScreen().setRegenerateLevel(true);
+                getService(GameScreen.class).setRegenerateLevel(true);
         }));
     }
 
-    private void generateTraps(Level level) {
-        for (int i = 0; i < randInt(1, 5); i++) {
-            Cell cell = randElement(level.getRooms()).getRandCell();
-
-            if (cell.containsInteractEntity()) continue;
+    private void generateTraps(Level level, int levelNumber) {
+        for (int i = 0; i < randInt(2, 5 + (levelNumber / 2)); i++) {
+            Cell cell = getCellForTrap(randElement(level.getRooms()));
 
             cell.setCanPutItem(false);
-            cell.setInteractEntity(new UpdatedInteractEntity(() -> {
-                if (cell.containsUnit()) {
-                    boolean done;
-                    do {
-                        done = level.setUpUnitToRandRoom(cell.getUnit());
-                    } while (!done);
+            cell.setInteractEntity(new UpdatedInteractEntity(
+                    Type.TRAP,
+                    randBoolean() ? () -> teleportTrapLambda(level, cell) : () -> damageTrapLambda(cell)));
+        }
+    }
 
-                    if (cell.getUnit() instanceof PlayerUnit)
-                        cell.setGraphicsComponent(TRAP);
-                    cell.setUnit(null);
-                }
-            }));
+    private Cell getCellForTrap(Room room) {
+        Cell cell;
+        boolean goodCell = false;
+        do {
+            cell = room.getRandCell();
+
+            Cell celForLambda = cell;
+            boolean noDoorsAround = !Stream.of(Direction.values())
+                    .map(direction -> direction.nextCell(celForLambda).getType())
+                    .collect(Collectors.toSet())
+                    .contains(CellType.DOOR);
+
+            if (!cell.containsInteractEntity() && noDoorsAround)
+                goodCell = true;
+        } while (!goodCell);
+        return cell;
+    }
+
+    private void teleportTrapLambda(Level level, Cell cell) {
+        if (cell.containsUnit()) {
+            boolean done;
+            do {
+                done = level.setUpUnitToRandRoom(cell.getUnit());
+            } while (!done);
+
+            if (cell.getUnit() instanceof PlayerUnit) {
+                cell.setGraphicsComponent(TRAP);
+                getService(EventJournal.class).logEvent("Ловушка телепортирует вас в случайную комнату!");
+            }
+            cell.setUnit(null);
+        }
+    }
+
+    private void damageTrapLambda(Cell cell) {
+        if (cell.containsUnit()) {
+            int damage = randInt(5, 15);
+            cell.getUnit().addHealthPoints(damage * -1);
+
+            if (cell.getUnit() instanceof PlayerUnit) {
+                cell.setGraphicsComponent(TRAP);
+                getService(EventJournal.class).logEvent("Ловушка наносит " + damage + " едениц урона!");
+            }
         }
     }
 }

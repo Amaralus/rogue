@@ -2,9 +2,11 @@ package amaralus.apps.rogue.services;
 
 import amaralus.apps.rogue.entities.UpdatedEntity;
 import amaralus.apps.rogue.entities.items.Item;
+import amaralus.apps.rogue.entities.items.ItemFactory;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Zombie;
 import amaralus.apps.rogue.entities.world.Level;
+import amaralus.apps.rogue.generators.LevelGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.List;
 import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.AMULET_OF_YENDOR_PROTOTYPE;
 import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.GOLD_PROTOTYPE;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
-import static amaralus.apps.rogue.services.ServiceLocator.itemFactory;
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
 
 public class GamePlayService {
 
@@ -27,6 +29,9 @@ public class GamePlayService {
     private List<UpdatedEntity> updatedEntityList = new ArrayList<>();
 
     public void initGame() {
+        getService(EventJournal.class).clear();
+        getService(EventJournal.class).logEvent("Найди амулет Йендара и выберись назад чтобы победить!");
+
         player = new PlayerUnit();
         updatedEntityList.add(player);
 
@@ -41,7 +46,7 @@ public class GamePlayService {
         if (level != null) level.destroy();
         updatedEntityList.clear();
 
-        level = ServiceLocator.levelGenerator().generateLevel();
+        level = ServiceLocator.getService(LevelGenerator.class).generateLevel(levelNumber);
         updateLevelNumber();
 
         level.setUpPlayerToRandRoom(player);
@@ -53,14 +58,15 @@ public class GamePlayService {
     }
 
     private void updateLevelNumber() {
-        if (player.getInventory().containsItem(2))
-            --levelNumber;
-        else
+        if (player.getInventory().containsItem(2)) {
+            if (levelNumber > 1)
+                --levelNumber;
+        } else
             ++levelNumber;
     }
 
     private void spawnMonsters() {
-        for (int i = 0; i < excRandInt(1, 10); i++) {
+        for (int i = 0; i < excRandInt(3, 10 + levelNumber); i++) {
             Zombie zombie = new Zombie();
             if (level.setUpUnitToRandRoom(zombie)) {
                 updatedEntityList.add(zombie);
@@ -73,7 +79,7 @@ public class GamePlayService {
         if (levelNumber <= 20 || player.getInventory().containsItem(2) || !randDice3())
             return;
 
-        Item amuletOfYendor = itemFactory().produce(AMULET_OF_YENDOR_PROTOTYPE);
+        Item amuletOfYendor = getService(ItemFactory.class).produce(AMULET_OF_YENDOR_PROTOTYPE);
         boolean done;
         do {
             done = level.setUpItemToRandRoom(amuletOfYendor);
@@ -81,8 +87,8 @@ public class GamePlayService {
     }
 
     private void initGoldOnTheLevel() {
-        for (int i = 0; i < randInt(1, 10); i++)
-            level.setUpItemToRandRoom(itemFactory().produce(GOLD_PROTOTYPE, randInt(1, 10 + (3 * levelNumber))));
+        for (int i = 0; i < randInt(3, 10 + (levelNumber / 2)); i++)
+            level.setUpItemToRandRoom(getService(ItemFactory.class).produce(GOLD_PROTOTYPE, randInt(1, 10 + (3 * levelNumber))));
     }
 
     public boolean isGameOver() {

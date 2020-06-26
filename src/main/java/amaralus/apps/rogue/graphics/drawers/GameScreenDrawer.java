@@ -1,28 +1,33 @@
 package amaralus.apps.rogue.graphics.drawers;
 
 import amaralus.apps.rogue.entities.items.Item;
+import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
+import amaralus.apps.rogue.graphics.Palette;
+import amaralus.apps.rogue.services.EventJournal;
 import amaralus.apps.rogue.services.ExplorationService;
 import amaralus.apps.rogue.services.screens.GameScreen;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
+import static amaralus.apps.rogue.services.ServiceLocator.serviceLocator;
 
 public class GameScreenDrawer extends ScreenDrawer {
 
     private GameScreen gameScreen;
-    private ExplorationService explorationService;
 
     private boolean warFogEnabled = true;
     private List<Cell> visibleCells = new ArrayList<>();
 
     public GameScreenDrawer(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        explorationService = new ExplorationService();
     }
 
     @Override
@@ -31,7 +36,7 @@ public class GameScreenDrawer extends ScreenDrawer {
 
         List<Text> textList = new ArrayList<>(30);
 
-        textList.add(createPlainText(" [Esc] - Меню\n"));
+        textList.add(createPlainText(" " + serviceLocator().get(EventJournal.class).getLastEvent() + "\n"));
 
         for (List<Cell> cellLine : gameScreen.getGamePlayService().getLevel().getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
@@ -57,9 +62,29 @@ public class GameScreenDrawer extends ScreenDrawer {
             textList.add(createText(builder.toString(), currentColor));
         }
 
-        textList.add(createPlainText(" Золото: " + getGoldCount() + " Уровень: " + gameScreen.getGamePlayService().getLevelNumber() + "\n"));
+        textList.addAll(Arrays.asList(
+                createPlainText("Уровень: " + gameScreen.getGamePlayService().getLevelNumber()),
+                createPlainText("  Здоровье: "),
+                playerHealthText(gameScreen.getGamePlayService().getPlayer()),
+                createPlainText("  Золото: "),
+                createText(getGoldCount() + "", Palette.YELLOW)
+
+        ));
 
         updateTexts(textList);
+    }
+
+    private Text playerHealthText(Unit player) {
+        Color color;
+        if (player.getHealth() < 70) {
+            if (player.getHealth() < 30)
+                color = Palette.RED;
+            else
+                color = Palette.YELLOW;
+        } else
+            color = Palette.GREEN;
+
+        return createText(player.getHealth() + "", color);
     }
 
     private int getGoldCount() {
@@ -103,7 +128,7 @@ public class GameScreenDrawer extends ScreenDrawer {
     private void updateVisibleCells() {
         for (Cell cell : visibleCells) cell.setVisibleForPlayer(false);
 
-        visibleCells = explorationService.getVisibleCells2(gameScreen.getGamePlayService().getPlayer());
+        visibleCells = getService(ExplorationService.class).getVisibleCells2(gameScreen.getGamePlayService().getPlayer());
 
         for (Cell cell : visibleCells) {
             if (!cell.isExplored())

@@ -1,11 +1,11 @@
 package amaralus.apps.rogue.entities.items;
 
-import amaralus.apps.rogue.services.ServiceLocator;
+import static amaralus.apps.rogue.services.ServiceLocator.serviceLocator;
 
 public class ItemFactory {
 
     public ItemFactory() {
-        ServiceLocator.register(this);
+        serviceLocator().register(this);
     }
 
     public Item produce(Item itemPrototype) {
