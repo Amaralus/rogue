@@ -1,4 +1,4 @@
-package amaralus.apps.rogue.entities.world;
+package amaralus.apps.rogue.entities.world.interaction;
 
 import amaralus.apps.rogue.commands.Command;
 

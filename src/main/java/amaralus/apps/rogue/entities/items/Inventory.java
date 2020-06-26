@@ -27,7 +27,7 @@ public class Inventory implements Destroyable {
 
     public Item getItemById(int itemId) {
         for (Item item : itemList) {
-            if (item.getId() == itemId)
+            if (item.getItemId() == itemId)
                 return item;
         }
 
@@ -36,7 +36,7 @@ public class Inventory implements Destroyable {
 
     public boolean containsItem(int itemId) {
         for (Item item : itemList)
-            if (item.getId() == itemId)
+            if (item.getItemId() == itemId)
                 return true;
         return false;
     }

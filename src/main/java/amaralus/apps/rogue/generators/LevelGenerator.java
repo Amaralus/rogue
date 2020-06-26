@@ -3,7 +3,9 @@ package amaralus.apps.rogue.generators;
 import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.*;
-import amaralus.apps.rogue.entities.world.InteractEntity.Type;
+import amaralus.apps.rogue.entities.world.interaction.InteractEntity;
+import amaralus.apps.rogue.entities.world.interaction.InteractEntity.Type;
+import amaralus.apps.rogue.entities.world.interaction.UpdatedInteractEntity;
 import amaralus.apps.rogue.services.EventJournal;
 import amaralus.apps.rogue.services.screens.GameScreen;
 

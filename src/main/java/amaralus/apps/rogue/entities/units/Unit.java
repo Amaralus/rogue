@@ -9,8 +9,11 @@ import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
+import static amaralus.apps.rogue.generators.UniqueIdGenerator.uniqueId;
+
 public abstract class Unit implements Destroyable, UpdatedEntity {
 
+    private final long id = uniqueId();
     private GraphicsComponent graphicsComponent;
 
     protected Cell currentCell;
@@ -22,6 +25,11 @@ public abstract class Unit implements Destroyable, UpdatedEntity {
     public Unit(GraphicsComponent graphicsComponent, int health) {
         this.graphicsComponent = graphicsComponent;
         this.health = health;
+    }
+
+    @Override
+    public long id() {
+        return id;
     }
 
     @Override

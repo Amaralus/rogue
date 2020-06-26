@@ -6,35 +6,35 @@ import java.util.Objects;
 
 public class Item {
 
-    private final int id;
+    private final int itemId;
     private final String name;
     private boolean stackable;
     private int count;
 
     private GraphicsComponent graphicsComponent;
 
-    public Item(int id, String name, GraphicsComponent graphicsComponent) {
-        this(id, name, graphicsComponent, true, 1);
+    public Item(int itemId, String name, GraphicsComponent graphicsComponent) {
+        this(itemId, name, graphicsComponent, true, 1);
     }
 
-    public Item(int id, String name, GraphicsComponent graphicsComponent, int count) {
-        this(id, name, graphicsComponent, true, count);
+    public Item(int itemId, String name, GraphicsComponent graphicsComponent, int count) {
+        this(itemId, name, graphicsComponent, true, count);
     }
 
-    public Item(int id, String name, GraphicsComponent graphicsComponent, boolean stackable) {
-        this(id, name, graphicsComponent, stackable, 1);
+    public Item(int itemId, String name, GraphicsComponent graphicsComponent, boolean stackable) {
+        this(itemId, name, graphicsComponent, stackable, 1);
     }
 
-    public Item(int id, String name, GraphicsComponent graphicsComponent, boolean stackable, int count) {
-        this.id = id;
+    public Item(int itemId, String name, GraphicsComponent graphicsComponent, boolean stackable, int count) {
+        this.itemId = itemId;
         this.name = name;
         this.stackable = stackable;
         this.graphicsComponent = graphicsComponent;
         setCount(count);
     }
 
-    public int getId() {
-        return id;
+    public int getItemId() {
+        return itemId;
     }
 
     public String getName() {
@@ -62,7 +62,7 @@ public class Item {
         this.count -= count;
     }
 
-        public GraphicsComponent getGraphicsComponent() {
+    public GraphicsComponent getGraphicsComponent() {
         return graphicsComponent;
     }
 
@@ -71,12 +71,11 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return Objects.equals(name, item.name) &&
-                Objects.equals(graphicsComponent, item.graphicsComponent);
+        return itemId == item.itemId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, graphicsComponent);
+        return Objects.hash(itemId);
     }
 }

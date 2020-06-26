@@ -5,7 +5,7 @@ import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.CellType;
-import amaralus.apps.rogue.entities.world.InteractEntity.Type;
+import amaralus.apps.rogue.entities.world.interaction.InteractEntity.Type;
 import amaralus.apps.rogue.services.EventJournal;
 import amaralus.apps.rogue.services.ExplorationService;
 
