@@ -1,31 +1,32 @@
 package amaralus.apps.rogue.services.io;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FileService {
 
     public List<String> loadFileAsLinesFromResources(String path) {
         try {
-            return loadFileLines(getResourcePath(path));
+            return readLinesFromInputStream(ClassLoader.getSystemResourceAsStream(path));
         } catch (Exception e) {
             throw new LoadFileException(e);
         }
     }
 
-    private List<String> loadFileLines(Path path) throws IOException {
-        try (Stream<String> lines = Files.lines(path)) {
-            return lines.collect(Collectors.toList());
-        }
+    public String loadFileAsStringFromResources(String path) {
+        StringBuilder builder = new StringBuilder();
+        loadFileAsLinesFromResources(path).forEach(line -> builder.append(line).append("\n"));
+        return builder.toString();
     }
 
-    private Path getResourcePath(String path) throws URISyntaxException {
-        return Paths.get(ClassLoader.getSystemResource(path).toURI());
+    private List<String> readLinesFromInputStream(InputStream inputStream) throws IOException {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            List<String> list = new ArrayList<>();
+            String line;
+            while ((line = br.readLine()) != null) list.add(line);
+            return list;
+        }
     }
 }
