@@ -6,7 +6,7 @@ public class InteractEntity {
 
     private final Type type;
 
-    private Command<Object> cellInteractCommand;
+    protected Command<Object> cellInteractCommand;
 
     public InteractEntity(Type type, Command<Object> cellInteractCommand) {
         this.type = type;
