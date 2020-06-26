@@ -4,7 +4,6 @@ import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.*;
 import amaralus.apps.rogue.entities.world.InteractEntity.Type;
-import amaralus.apps.rogue.graphics.GraphicsComponent;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,9 +12,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static amaralus.apps.rogue.entities.Direction.BOTTOM;
+import static amaralus.apps.rogue.entities.Direction.TOP;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
-import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.STAIRS;
-import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.TRAP;
+import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.*;
 import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
 import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
 
@@ -89,13 +89,16 @@ public class LevelGenerator {
         for (Cell cell : randUniqueElements(doors, randInt(1, doors.size() / 3))) {
             cell.setCanWalk(false);
             cell.setType(CellType.HIDDEN_DOOR);
-            GraphicsComponent graphicsComponent = Stream.of(Direction.values())
-                    .map(direction -> direction.nextCell(cell))
-                    .filter(aroundCell -> aroundCell.getType() == CellType.WALL)
-                    .map(Cell::getGraphicsComponent)
-                    .findFirst()
-                    .orElse(null);
-            cell.setGraphicsComponent(graphicsComponent);
+
+            for (Direction direction : Direction.values()) {
+                if (direction.nextCell(cell).getType() == CellType.CORRIDOR) {
+                    if (direction == TOP || direction == BOTTOM)
+                        cell.setGraphicsComponent(HORIZONTAL_WALL);
+                    else
+                        cell.setGraphicsComponent(VERTICAL_WALL);
+                    break;
+                }
+            }
         }
     }
 
