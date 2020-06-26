@@ -2,6 +2,7 @@ package amaralus.apps.rogue.services.screens;
 
 import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.services.GameController;
+import amaralus.apps.rogue.services.io.FileService;
 import amaralus.apps.rogue.services.menu.MenuElement;
 
 import static amaralus.apps.rogue.services.ServiceLocator.getService;
@@ -19,15 +20,7 @@ public class GameMenuScreen extends MenuScreen {
         controlsScreen = new TextScreen(
                 this,
                 "Управление",
-                "Игра:",
-                "[\u2190] [\u2191] [\u2192] [\u2193] - Перемещение",
-                "[T] - Подобрать предмет (стоя на нём)",
-                "[I] - Инвентарь",
-                "[E] - Взаимодействовать",
-                "[J] - Журнал событий",
-                "[S] - Искать вокруг игрока скрытые проходы, ловушки и т.д.",
-                "Инвентарь:",
-                "[D] - Выкинуть предмет"
+                getService(FileService.class).loadFileAsLinesFromResources("controls.txt")
         );
 
         setUpMenuList();

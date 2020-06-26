@@ -3,6 +3,7 @@ package amaralus.apps.rogue.services;
 import amaralus.apps.rogue.MainApplication;
 import amaralus.apps.rogue.entities.items.ItemFactory;
 import amaralus.apps.rogue.generators.LevelGenerator;
+import amaralus.apps.rogue.services.io.FileService;
 import amaralus.apps.rogue.services.screens.GameScreen;
 import amaralus.apps.rogue.services.screens.GameMenuScreen;
 import amaralus.apps.rogue.services.screens.Screen;
@@ -23,6 +24,7 @@ public class GameController {
         this.application = application;
 
         serviceLocator().register(this);
+        serviceLocator().register(new FileService());
         serviceLocator().register(new LevelGenerator());
         serviceLocator().register(new EventJournal());
         serviceLocator().register(new ExplorationService());
