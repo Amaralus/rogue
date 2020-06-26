@@ -21,7 +21,7 @@ public class DamageTrap extends UpdatedInteractEntity {
     }
 
     private void damage() {
-        if (cell.containsUnit()) {
+        if (cell.containsUnit() && !cell.getUnit().isInvulnerable()) {
             int damage = randInt(5, 10);
             cell.getUnit().removeHealthPoints(damage);
 

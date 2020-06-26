@@ -2,6 +2,7 @@ package amaralus.apps.rogue.services.screens;
 
 import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.commands.UnitCommand;
+import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
 import amaralus.apps.rogue.services.game.EventJournal;
 import amaralus.apps.rogue.services.game.GamePlayService;
@@ -72,6 +73,11 @@ public class GameScreen extends Screen {
     private void setUpDevelopCheatKeys() {
         commandPool.put(F1, new Command<>(((GameScreenDrawer) screenDrawer)::swapWarFogEnabled));
         commandPool.put(F2, new Command<>(gamePlayService::generateLevel));
+        commandPool.put(F3, new Command<>((() -> {
+            Unit player = getGamePlayService().getPlayer();
+            player.setInvulnerable(!player.isInvulnerable());
+            getService(EventJournal.class).logEvent("Бессмертие " + (player.isInvulnerable() ? "включено!" : "выключено!"));
+        })));
     }
 
     public GamePlayService getGamePlayService() {
