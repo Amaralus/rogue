@@ -3,18 +3,19 @@ package amaralus.apps.rogue.services;
 import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.Room;
+import amaralus.apps.rogue.services.screens.GameScreen;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static amaralus.apps.rogue.entities.world.CellType.*;
-import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
 
 public class ExplorationService {
 
     public List<Cell> getVisibleCells2(Unit unit) {
-        Room room = gameScreen().getGamePlayService().getLevel().getRoomByCell(unit.getCurrentCell());
+        Room room = getService(GameScreen.class).getGamePlayService().getLevel().getRoomByCell(unit.getCurrentCell());
 
         if (room == null)
             return aroundUnitCells(unit);

@@ -4,12 +4,12 @@ import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.commands.UnitCommand;
 import amaralus.apps.rogue.entities.UpdatedEntity;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
+import amaralus.apps.rogue.services.EventJournal;
 import amaralus.apps.rogue.services.GamePlayService;
-import amaralus.apps.rogue.services.ServiceLocator;
 
 import static amaralus.apps.rogue.commands.UnitCommand.*;
-import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
-import static amaralus.apps.rogue.services.ServiceLocator.inventoryScreen;
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
+import static amaralus.apps.rogue.services.ServiceLocator.serviceLocator;
 import static javafx.scene.input.KeyCode.*;
 
 public class GameScreen extends Screen {
@@ -20,14 +20,14 @@ public class GameScreen extends Screen {
     private boolean regenerateLevel = false;
 
     public GameScreen() {
-        ServiceLocator.register(this);
+        serviceLocator().register(this);
 
         gamePlayService = new GamePlayService();
         gamePlayService.initGame();
 
         screenDrawer = new GameScreenDrawer(this);
         new InventoryScreen();
-        journalScreen = new TextScreen(this, "Журнал событий", () -> eventJournal().getLastEvents(28));
+        journalScreen = new TextScreen(this, "Журнал событий", () -> getService(EventJournal.class).getLastEvents(28));
 
         setUpKeyAction();
     }
@@ -68,11 +68,11 @@ public class GameScreen extends Screen {
         setUpDevelopCheatKeys();
 
         commandPool.put(I, new Command<>(() -> {
-            inventoryScreen().setUpMenuList();
-            setActiveScreen(inventoryScreen());
+            getService(InventoryScreen.class).setUpMenuList();
+            setActiveScreen(getService(InventoryScreen.class));
         }));
         commandPool.put(J, new Command<>(() -> setActiveScreen(journalScreen)));
-        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(ServiceLocator.gameMenuScreen())));
+        commandPool.put(ESCAPE, new Command<>(() -> setActiveScreen(getService(GameMenuScreen.class))));
 
     }
 

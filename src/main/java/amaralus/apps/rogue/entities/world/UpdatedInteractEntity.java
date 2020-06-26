@@ -2,7 +2,9 @@ package amaralus.apps.rogue.entities.world;
 
 import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.entities.UpdatedEntity;
-import amaralus.apps.rogue.services.ServiceLocator;
+import amaralus.apps.rogue.services.screens.GameScreen;
+
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
 
 public class UpdatedInteractEntity extends InteractEntity implements UpdatedEntity {
 
@@ -17,7 +19,7 @@ public class UpdatedInteractEntity extends InteractEntity implements UpdatedEnti
     }
 
     private void register() {
-        ServiceLocator.gameScreen().getGamePlayService().getUpdatedEntityList().add(this);
+        getService(GameScreen.class).getGamePlayService().getUpdatedEntityList().add(this);
     }
 
     @Override

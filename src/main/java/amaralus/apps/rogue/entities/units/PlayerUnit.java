@@ -1,9 +1,10 @@
 package amaralus.apps.rogue.entities.units;
 
 import amaralus.apps.rogue.commands.UnitCommand;
+import amaralus.apps.rogue.services.screens.GameScreen;
 
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.PLAYER;
-import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
 
 public class PlayerUnit extends Unit {
 
@@ -13,7 +14,7 @@ public class PlayerUnit extends Unit {
 
     @Override
     public void update() {
-        UnitCommand command = (UnitCommand) gameScreen().getInputCommand();
+        UnitCommand command = (UnitCommand) getService(GameScreen.class).getInputCommand();
         command.execute(this);
     }
 }

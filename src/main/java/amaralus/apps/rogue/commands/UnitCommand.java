@@ -6,6 +6,8 @@ import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.entities.world.CellType;
 import amaralus.apps.rogue.entities.world.InteractEntity.Type;
+import amaralus.apps.rogue.services.EventJournal;
+import amaralus.apps.rogue.services.ExplorationService;
 
 import java.util.function.Consumer;
 
@@ -13,8 +15,7 @@ import static amaralus.apps.rogue.entities.Direction.*;
 import static amaralus.apps.rogue.generators.RandomGenerator.randDice3;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.DOOR;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.TRAP;
-import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
-import static amaralus.apps.rogue.services.ServiceLocator.explorationService;
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
 
 public class UnitCommand extends Command<Unit> {
 
@@ -30,12 +31,12 @@ public class UnitCommand extends Command<Unit> {
             unit.getCurrentCell().setItem(null);
 
             if (unit instanceof PlayerUnit)
-                eventJournal().logEvent("Подобран предмет " + item.getName() + " " + item.count());
+                getService(EventJournal.class).logEvent("Подобран предмет " + item.getName() + " " + item.count());
         }
     });
     public static final UnitCommand UNIT_INTERACT_WITH_CELL_COM = new UnitCommand(unit -> unit.getCurrentCell().interact());
     public static final UnitCommand UNIT_SEARCH_AROUND_COM = new UnitCommand(unit -> {
-        for (Cell cell : explorationService().aroundUnitAllCells(unit)) {
+        for (Cell cell : getService(ExplorationService.class).aroundUnitAllCells(unit)) {
             if (cell.containsInteractEntity()
                     && cell.getInteractEntity().getType() == Type.TRAP
                     && randDice3())

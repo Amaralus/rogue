@@ -6,7 +6,8 @@ import amaralus.apps.rogue.entities.world.Cell;
 import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 import amaralus.apps.rogue.graphics.Palette;
-import amaralus.apps.rogue.services.ServiceLocator;
+import amaralus.apps.rogue.services.EventJournal;
+import amaralus.apps.rogue.services.ExplorationService;
 import amaralus.apps.rogue.services.screens.GameScreen;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -15,7 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static amaralus.apps.rogue.services.ServiceLocator.explorationService;
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
+import static amaralus.apps.rogue.services.ServiceLocator.serviceLocator;
 
 public class GameScreenDrawer extends ScreenDrawer {
 
@@ -34,7 +36,7 @@ public class GameScreenDrawer extends ScreenDrawer {
 
         List<Text> textList = new ArrayList<>(30);
 
-        textList.add(createPlainText(" " + ServiceLocator.eventJournal().getLastEvent() + "\n"));
+        textList.add(createPlainText(" " + serviceLocator().get(EventJournal.class).getLastEvent() + "\n"));
 
         for (List<Cell> cellLine : gameScreen.getGamePlayService().getLevel().getGameField().getCells()) {
             StringBuilder builder = new StringBuilder();
@@ -126,7 +128,7 @@ public class GameScreenDrawer extends ScreenDrawer {
     private void updateVisibleCells() {
         for (Cell cell : visibleCells) cell.setVisibleForPlayer(false);
 
-        visibleCells = explorationService().getVisibleCells2(gameScreen.getGamePlayService().getPlayer());
+        visibleCells = getService(ExplorationService.class).getVisibleCells2(gameScreen.getGamePlayService().getPlayer());
 
         for (Cell cell : visibleCells) {
             if (!cell.isExplored())

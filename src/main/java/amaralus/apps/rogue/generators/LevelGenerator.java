@@ -4,6 +4,8 @@ import amaralus.apps.rogue.entities.Direction;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.*;
 import amaralus.apps.rogue.entities.world.InteractEntity.Type;
+import amaralus.apps.rogue.services.EventJournal;
+import amaralus.apps.rogue.services.screens.GameScreen;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,8 +18,7 @@ import static amaralus.apps.rogue.entities.Direction.BOTTOM;
 import static amaralus.apps.rogue.entities.Direction.TOP;
 import static amaralus.apps.rogue.generators.RandomGenerator.*;
 import static amaralus.apps.rogue.graphics.GraphicsComponentsPool.*;
-import static amaralus.apps.rogue.services.ServiceLocator.eventJournal;
-import static amaralus.apps.rogue.services.ServiceLocator.gameScreen;
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
 
 public class LevelGenerator {
 
@@ -149,14 +150,14 @@ public class LevelGenerator {
         stairsCell.setGraphicsComponent(STAIRS);
         stairsCell.setCanPutItem(false);
         stairsCell.setInteractEntity(new InteractEntity(Type.STAIRS, () -> {
-            int levelNumber = gameScreen().getGamePlayService().getLevelNumber();
-            boolean playerContainsAmulet = gameScreen().getGamePlayService().getPlayer().getInventory().containsItem(2);
+            int levelNumber = getService(GameScreen.class).getGamePlayService().getLevelNumber();
+            boolean playerContainsAmulet = getService(GameScreen.class).getGamePlayService().getPlayer().getInventory().containsItem(2);
 
             if (playerContainsAmulet && levelNumber == 1) {
-                gameScreen().getGamePlayService().setGameOver(true);
-                gameScreen().getGamePlayService().setWin(true);
+                getService(GameScreen.class).getGamePlayService().setGameOver(true);
+                getService(GameScreen.class).getGamePlayService().setWin(true);
             } else
-                gameScreen().setRegenerateLevel(true);
+                getService(GameScreen.class).setRegenerateLevel(true);
         }));
     }
 
@@ -198,7 +199,7 @@ public class LevelGenerator {
 
             if (cell.getUnit() instanceof PlayerUnit) {
                 cell.setGraphicsComponent(TRAP);
-                eventJournal().logEvent("Ловушка телепортирует вас в случайную комнату!");
+                getService(EventJournal.class).logEvent("Ловушка телепортирует вас в случайную комнату!");
             }
             cell.setUnit(null);
         }
@@ -211,7 +212,7 @@ public class LevelGenerator {
 
             if (cell.getUnit() instanceof PlayerUnit) {
                 cell.setGraphicsComponent(TRAP);
-                eventJournal().logEvent("Ловушка наносит " + damage + " едениц урона!");
+                getService(EventJournal.class).logEvent("Ловушка наносит " + damage + " едениц урона!");
             }
         }
     }

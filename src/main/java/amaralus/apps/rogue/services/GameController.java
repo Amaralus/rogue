@@ -11,6 +11,7 @@ import javafx.scene.text.Text;
 
 import java.util.List;
 
+import static amaralus.apps.rogue.services.ServiceLocator.serviceLocator;
 import static amaralus.apps.rogue.services.screens.Screen.activeScreen;
 
 public class GameController {
@@ -21,10 +22,10 @@ public class GameController {
     public GameController(MainApplication application) {
         this.application = application;
 
-        ServiceLocator.register(this);
-        ServiceLocator.register(new LevelGenerator());
-        ServiceLocator.register(new EventJournal());
-        ServiceLocator.register(new ExplorationService());
+        serviceLocator().register(this);
+        serviceLocator().register(new LevelGenerator());
+        serviceLocator().register(new EventJournal());
+        serviceLocator().register(new ExplorationService());
         new ItemFactory();
 
         application.getScene().setOnKeyPressed(event -> gameLoop(event.getCode()));

@@ -1,12 +1,14 @@
 package amaralus.apps.rogue.graphics.drawers;
 
 import amaralus.apps.rogue.graphics.Palette;
-import amaralus.apps.rogue.services.ServiceLocator;
+import amaralus.apps.rogue.services.GameController;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.List;
+
+import static amaralus.apps.rogue.services.ServiceLocator.getService;
 
 public abstract class ScreenDrawer {
 
@@ -26,6 +28,6 @@ public abstract class ScreenDrawer {
     }
 
     protected void updateTexts(List<Text> textList) {
-        ServiceLocator.gameController().updateTexts(textList);
+        getService(GameController.class).updateTexts(textList);
     }
 }
