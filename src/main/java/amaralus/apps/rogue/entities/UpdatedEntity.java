@@ -1,6 +1,6 @@
 package amaralus.apps.rogue.entities;
 
-public interface UpdatedEntity {
+public interface UpdatedEntity extends Entity {
 
     void update();
 }

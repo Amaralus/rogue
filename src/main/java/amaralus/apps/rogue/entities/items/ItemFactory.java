@@ -22,7 +22,7 @@ public class ItemFactory {
 
     private Item copyItem(Item item) {
         return new Item(
-                item.getId(),
+                item.getItemId(),
                 item.getName(),
                 item.getGraphicsComponent(),
                 item.isStackable());

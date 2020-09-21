@@ -1,15 +1,21 @@
 package amaralus.apps.rogue.entities.world;
 
 import amaralus.apps.rogue.entities.Destroyable;
+import amaralus.apps.rogue.entities.Entity;
 import amaralus.apps.rogue.entities.Position;
 import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.units.Unit;
+import amaralus.apps.rogue.entities.world.interaction.InteractEntity;
 import amaralus.apps.rogue.graphics.GraphicsComponentsPool;
 import amaralus.apps.rogue.graphics.GraphicsComponent;
 
 import java.util.Objects;
 
-public class Cell implements Destroyable {
+import static amaralus.apps.rogue.generators.UniqueIdGenerator.uniqueId;
+
+public class Cell implements Entity, Destroyable {
+
+    private final long id = uniqueId();
 
     private final Position position;
     private Cell topCell;
@@ -45,6 +51,11 @@ public class Cell implements Destroyable {
         graphicsComponent = null;
         unit = null;
         item = null;
+    }
+
+    @Override
+    public long id() {
+        return id;
     }
 
     public Position getPosition() {
@@ -235,16 +246,11 @@ public class Cell implements Destroyable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cell cell = (Cell) o;
-        return canWalk == cell.canWalk &&
-                explored == cell.explored &&
-                visibleForPlayer == cell.visibleForPlayer &&
-                Objects.equals(position, cell.position) &&
-                Objects.equals(graphicsComponent, cell.graphicsComponent) &&
-                type == cell.type;
+        return id == cell.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, graphicsComponent, type, canWalk, explored, visibleForPlayer);
+        return Objects.hash(id);
     }
 }

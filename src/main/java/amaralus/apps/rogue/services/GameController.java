@@ -3,6 +3,8 @@ package amaralus.apps.rogue.services;
 import amaralus.apps.rogue.MainApplication;
 import amaralus.apps.rogue.entities.items.ItemFactory;
 import amaralus.apps.rogue.generators.LevelGenerator;
+import amaralus.apps.rogue.graphics.ExplorationService;
+import amaralus.apps.rogue.services.game.EventJournal;
 import amaralus.apps.rogue.services.io.FileService;
 import amaralus.apps.rogue.services.screens.GameScreen;
 import amaralus.apps.rogue.services.screens.GameMenuScreen;

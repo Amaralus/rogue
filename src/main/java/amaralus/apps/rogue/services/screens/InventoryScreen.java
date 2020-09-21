@@ -55,7 +55,7 @@ public class InventoryScreen extends MenuScreen {
         else if (player.getCurrentCell().containsItem()) {
             Item cellItem = player.getCurrentCell().getItem();
 
-            if (cellItem.getId() == item.getId())
+            if (cellItem.getItemId() == item.getItemId())
                 cellItem.setCount(cellItem.count() + item.count());
             else return;
         } else

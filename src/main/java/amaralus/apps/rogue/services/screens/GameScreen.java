@@ -2,10 +2,10 @@ package amaralus.apps.rogue.services.screens;
 
 import amaralus.apps.rogue.commands.Command;
 import amaralus.apps.rogue.commands.UnitCommand;
-import amaralus.apps.rogue.entities.UpdatedEntity;
+import amaralus.apps.rogue.entities.units.Unit;
 import amaralus.apps.rogue.graphics.drawers.GameScreenDrawer;
-import amaralus.apps.rogue.services.EventJournal;
-import amaralus.apps.rogue.services.GamePlayService;
+import amaralus.apps.rogue.services.game.EventJournal;
+import amaralus.apps.rogue.services.game.GamePlayService;
 
 import static amaralus.apps.rogue.commands.UnitCommand.*;
 import static amaralus.apps.rogue.services.ServiceLocator.getService;
@@ -17,12 +17,13 @@ public class GameScreen extends Screen {
     private GamePlayService gamePlayService;
     private TextScreen journalScreen;
 
-    private boolean regenerateLevel = false;
+
 
     public GameScreen() {
         serviceLocator().register(this);
 
         gamePlayService = new GamePlayService();
+        serviceLocator().register(gamePlayService);
         gamePlayService.initGame();
 
         screenDrawer = new GameScreenDrawer(this);
@@ -35,32 +36,15 @@ public class GameScreen extends Screen {
     @Override
     public void update() {
         if (inputCommand instanceof UnitCommand) {
-            for (int i = 0; updateCycleCondition(i) ; i++) {
-                UpdatedEntity updatedEntity = gamePlayService.getUpdatedEntityList().get(i);
-                updatedEntity.update();
-            }
+            gamePlayService.getUpdateLoop().update();
         } else
             inputCommand.execute();
-
-        if (gamePlayService.getPlayer().getHealth() < 1) {
-            gamePlayService.setWin(false);
-            gamePlayService.setGameOver(true);
-        }
 
         if (getGamePlayService().isGameOver()) {
             setActiveScreen(new GameOverScreen());
         }
 
-        if (regenerateLevel) {
-            regenerateLevel = false;
-            gamePlayService.generateLevel();
-        }
-
         inputCommand = Command.NULLABLE_COM;
-    }
-
-    private boolean updateCycleCondition(int i) {
-        return i < gamePlayService.getUpdatedEntityList().size() && !regenerateLevel && !getGamePlayService().isGameOver();
     }
 
     private void setUpKeyAction() {
@@ -89,10 +73,11 @@ public class GameScreen extends Screen {
     private void setUpDevelopCheatKeys() {
         commandPool.put(F1, new Command<>(((GameScreenDrawer) screenDrawer)::swapWarFogEnabled));
         commandPool.put(F2, new Command<>(gamePlayService::generateLevel));
-    }
-
-    public void setRegenerateLevel(boolean regenerateLevel) {
-        this.regenerateLevel = regenerateLevel;
+        commandPool.put(F3, new Command<>((() -> {
+            Unit player = getGamePlayService().getPlayer();
+            player.setInvulnerable(!player.isInvulnerable());
+            getService(EventJournal.class).logEvent("Бессмертие " + (player.isInvulnerable() ? "включено!" : "выключено!"));
+        })));
     }
 
     public GamePlayService getGamePlayService() {

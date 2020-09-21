@@ -1,10 +1,12 @@
 package amaralus.apps.rogue.generators;
 
 import amaralus.apps.rogue.entities.Direction;
-import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.world.*;
-import amaralus.apps.rogue.entities.world.InteractEntity.Type;
-import amaralus.apps.rogue.services.EventJournal;
+import amaralus.apps.rogue.entities.world.interaction.DamageTrap;
+import amaralus.apps.rogue.entities.world.interaction.InteractEntity;
+import amaralus.apps.rogue.entities.world.interaction.InteractEntity.Type;
+import amaralus.apps.rogue.entities.world.interaction.TeleportTrap;
+import amaralus.apps.rogue.services.game.GamePlayService;
 import amaralus.apps.rogue.services.screens.GameScreen;
 
 import java.util.ArrayList;
@@ -92,7 +94,7 @@ public class LevelGenerator {
             cell.setType(CellType.HIDDEN_DOOR);
 
             for (Direction direction : Direction.values()) {
-                if (direction.nextCell(cell).getType() == CellType.CORRIDOR) {
+                if (direction.nextCell(cell).getType() == CellType.FLOOR) {
                     if (direction == TOP || direction == BOTTOM)
                         cell.setGraphicsComponent(HORIZONTAL_WALL);
                     else
@@ -157,7 +159,7 @@ public class LevelGenerator {
                 getService(GameScreen.class).getGamePlayService().setGameOver(true);
                 getService(GameScreen.class).getGamePlayService().setWin(true);
             } else
-                getService(GameScreen.class).setRegenerateLevel(true);
+                getService(GamePlayService.class).setRegenerateLevel(true);
         }));
     }
 
@@ -166,9 +168,7 @@ public class LevelGenerator {
             Cell cell = getCellForTrap(randElement(level.getRooms()));
 
             cell.setCanPutItem(false);
-            cell.setInteractEntity(new UpdatedInteractEntity(
-                    Type.TRAP,
-                    randBoolean() ? () -> teleportTrapLambda(level, cell) : () -> damageTrapLambda(cell)));
+            cell.setInteractEntity(randBoolean() ? new TeleportTrap(level, cell) : new DamageTrap(cell));
         }
     }
 
@@ -188,32 +188,5 @@ public class LevelGenerator {
                 goodCell = true;
         } while (!goodCell);
         return cell;
-    }
-
-    private void teleportTrapLambda(Level level, Cell cell) {
-        if (cell.containsUnit()) {
-            boolean done;
-            do {
-                done = level.setUpUnitToRandRoom(cell.getUnit());
-            } while (!done);
-
-            if (cell.getUnit() instanceof PlayerUnit) {
-                cell.setGraphicsComponent(TRAP);
-                getService(EventJournal.class).logEvent("Ловушка телепортирует вас в случайную комнату!");
-            }
-            cell.setUnit(null);
-        }
-    }
-
-    private void damageTrapLambda(Cell cell) {
-        if (cell.containsUnit()) {
-            int damage = randInt(5, 15);
-            cell.getUnit().addHealthPoints(damage * -1);
-
-            if (cell.getUnit() instanceof PlayerUnit) {
-                cell.setGraphicsComponent(TRAP);
-                getService(EventJournal.class).logEvent("Ловушка наносит " + damage + " едениц урона!");
-            }
-        }
     }
 }

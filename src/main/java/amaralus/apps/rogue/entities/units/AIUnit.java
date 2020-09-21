@@ -7,18 +7,18 @@ public class AIUnit extends Unit {
 
     protected AIModule aiModule;
 
-    public AIUnit(AIModule aiModule, GraphicsComponent graphicsComponent, int health) {
-        this(graphicsComponent, health);
+    public AIUnit(AIModule aiModule, GraphicsComponent graphicsComponent, String name, int health) {
+        this(graphicsComponent, name, health);
         this.aiModule = aiModule;
     }
 
-    public AIUnit(GraphicsComponent graphicsComponent, int health) {
-        super(graphicsComponent, health);
+    public AIUnit(GraphicsComponent graphicsComponent, String name, int health) {
+        super(graphicsComponent, name, health);
     }
 
     @Override
     public void update() {
-        aiModule.getNextUnitAction().execute(this);
+        if (isAlive()) aiModule.getNextUnitAction().execute(this);
     }
 
 

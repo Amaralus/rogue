@@ -1,11 +1,16 @@
 package amaralus.apps.rogue.entities.world;
 
 import amaralus.apps.rogue.entities.Destroyable;
+import amaralus.apps.rogue.entities.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Corridor implements Destroyable {
+import static amaralus.apps.rogue.generators.UniqueIdGenerator.uniqueId;
+
+public class Corridor implements Entity, Destroyable {
+
+    private final long id = uniqueId();
 
     private List<Cell> cells;
     private List<Room> rooms;
@@ -13,6 +18,11 @@ public class Corridor implements Destroyable {
     public Corridor(List<Cell> cells) {
         this.cells = cells;
         rooms = new ArrayList<>(2);
+    }
+
+    @Override
+    public long id() {
+        return id;
     }
 
     @Override

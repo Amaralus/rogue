@@ -1,15 +1,12 @@
-package amaralus.apps.rogue.services;
+package amaralus.apps.rogue.services.game;
 
-import amaralus.apps.rogue.entities.UpdatedEntity;
 import amaralus.apps.rogue.entities.items.Item;
 import amaralus.apps.rogue.entities.items.ItemFactory;
 import amaralus.apps.rogue.entities.units.PlayerUnit;
 import amaralus.apps.rogue.entities.units.Zombie;
 import amaralus.apps.rogue.entities.world.Level;
 import amaralus.apps.rogue.generators.LevelGenerator;
-
-import java.util.ArrayList;
-import java.util.List;
+import amaralus.apps.rogue.services.ServiceLocator;
 
 import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.AMULET_OF_YENDOR_PROTOTYPE;
 import static amaralus.apps.rogue.entities.items.ItemPrototypesPool.GOLD_PROTOTYPE;
@@ -18,6 +15,7 @@ import static amaralus.apps.rogue.services.ServiceLocator.getService;
 
 public class GamePlayService {
 
+    private boolean regenerateLevel = false;
     private boolean gameOver = false;
     private boolean win = false;
 
@@ -26,14 +24,17 @@ public class GamePlayService {
 
     private PlayerUnit player;
 
-    private List<UpdatedEntity> updatedEntityList = new ArrayList<>();
+    private UpdateLoop updateLoop;
+
+    public GamePlayService() {
+        updateLoop = new UpdateLoop(this);
+    }
 
     public void initGame() {
         getService(EventJournal.class).clear();
         getService(EventJournal.class).logEvent("Найди амулет Йендара и выберись назад чтобы победить!");
 
         player = new PlayerUnit();
-        updatedEntityList.add(player);
 
         generateLevel();
         levelNumber = 1;
@@ -44,13 +45,13 @@ public class GamePlayService {
 
     public void generateLevel() {
         if (level != null) level.destroy();
-        updatedEntityList.clear();
+        updateLoop.clearEntities();
 
         level = ServiceLocator.getService(LevelGenerator.class).generateLevel(levelNumber);
         updateLevelNumber();
 
         level.setUpPlayerToRandRoom(player);
-        updatedEntityList.add(0, player);
+        updateLoop.registerEntity(player);
 
         spawnMonsters();
         setUpAmuletOfYendor();
@@ -69,7 +70,7 @@ public class GamePlayService {
         for (int i = 0; i < excRandInt(3, 10 + levelNumber); i++) {
             Zombie zombie = new Zombie();
             if (level.setUpUnitToRandRoom(zombie)) {
-                updatedEntityList.add(zombie);
+                updateLoop.registerEntity(zombie);
                 level.getUnits().add(zombie);
             }
         }
@@ -89,6 +90,14 @@ public class GamePlayService {
     private void initGoldOnTheLevel() {
         for (int i = 0; i < randInt(3, 10 + (levelNumber / 2)); i++)
             level.setUpItemToRandRoom(getService(ItemFactory.class).produce(GOLD_PROTOTYPE, randInt(1, 10 + (3 * levelNumber))));
+    }
+
+    public boolean isRegenerateLevel() {
+        return regenerateLevel;
+    }
+
+    public void setRegenerateLevel(boolean regenerateLevel) {
+        this.regenerateLevel = regenerateLevel;
     }
 
     public boolean isGameOver() {
@@ -119,7 +128,7 @@ public class GamePlayService {
         return player;
     }
 
-    public List<UpdatedEntity> getUpdatedEntityList() {
-        return updatedEntityList;
+    public UpdateLoop getUpdateLoop() {
+        return updateLoop;
     }
 }

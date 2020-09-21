@@ -9,7 +9,7 @@ import static amaralus.apps.rogue.services.ServiceLocator.getService;
 public class PlayerUnit extends Unit {
 
     public PlayerUnit() {
-        super(PLAYER, 100);
+        super(PLAYER, "Игрок", 100);
     }
 
     @Override
